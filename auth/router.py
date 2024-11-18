@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, APIRouter, BackgroundTasks
 from datetime import datetime, timedelta, timezone
 from fastapi.security import HTTPBearer
 from typing import Annotated
@@ -7,6 +7,7 @@ from jwt.exceptions import InvalidTokenError
 import string
 import secrets
 
+from .models import EmailRequest, VerificationRequest, Token
 from config import get_settings
 from database import get_database
 
@@ -65,3 +66,35 @@ async def send_verification_email(email: str, code: str):
     # TODO: obsluga email
     print(f"Sending verification code {code} to {email}")
 
+router = APIRouter()
+
+@router.post("/auth/request-code")
+async def request_verification_code(
+        email_request: EmailRequest,
+        background_tasks: BackgroundTasks
+):
+    """Endpoint do pobrania kodu weryfikacyjnego"""
+
+    code = generate_verification_code()
+    expiry = datetime.now(timezone.utc) + timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES)
+    database.save_code(email_request.email, code, expiry)
+
+    background_tasks.add_task(send_verification_email, email_request.email, code)
+
+    return {"message": "Verification code sent"}
+
+@router.post("/auth/verify")
+async def verify_code(verification_request: VerificationRequest):
+    """Endpoint do logowania - weryfikacji kodu i wygenerowania JWT"""
+
+    if not database.verify_code(
+            verification_request.email,
+            verification_request.code
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired verification code"
+        )
+
+    access_token = create_access_token(verification_request.email)
+    return Token(access_token=access_token, token_type="bearer")
