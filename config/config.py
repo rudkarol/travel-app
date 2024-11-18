@@ -6,6 +6,7 @@ from pathlib import Path
 class Settings(BaseSettings):
     app_name: str
     admin_email: str
+    jwt_secret_key: str
 
     model_config = SettingsConfigDict(env_file=Path(__file__).parent / ".env", env_file_encoding='utf-8')
 
