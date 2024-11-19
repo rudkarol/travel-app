@@ -7,7 +7,7 @@ from jwt.exceptions import InvalidTokenError
 import string
 import secrets
 
-from .models import EmailRequest, VerificationRequest, Token
+from .models import EmailRequest, VerificationRequest, Token, TokenData
 from config import get_settings
 from database import get_database
 
@@ -31,7 +31,6 @@ def generate_verification_code():
     verification_code = ''.join(secrets.choice(alphabet) for _ in range(VERIFICATION_CODE_LENGTH))
     return verification_code
 
-
 def create_access_token(email: str):
     """Tworzy JWT"""
 
@@ -39,7 +38,6 @@ def create_access_token(email: str):
     to_encode = {"sub": email, "exp": expire}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
 
 async def get_current_user(token: Annotated[str, Depends(security)]):
     """Weryfikuje JWT i zwraca użytkownika"""
@@ -52,13 +50,17 @@ async def get_current_user(token: Annotated[str, Depends(security)]):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("sub")
+        print(f"user email: {email}")
+        if email is None:
             raise credentials_exception
-        return username
+        token_data = TokenData(email=email)
     except InvalidTokenError:
         raise credentials_exception
-
+    user = database.get_user(email=token_data.email)
+    if user is None:
+        raise credentials_exception
+    return user
 
 async def send_verification_email(email: str, code: str):
     """Wysyla email z kodem weryfikacyjnym"""
@@ -77,7 +79,7 @@ async def request_verification_code(
 
     code = generate_verification_code()
     expiry = datetime.now(timezone.utc) + timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES)
-    database.save_code(email_request.email, code, expiry)
+    database.save_code(email = email_request.email, code = code, expiry = expiry)
 
     background_tasks.add_task(send_verification_email, email_request.email, code)
 
@@ -88,8 +90,8 @@ async def verify_code(verification_request: VerificationRequest):
     """Endpoint do logowania - weryfikacji kodu i wygenerowania JWT"""
 
     if not database.verify_code(
-            verification_request.email,
-            verification_request.code
+            email = verification_request.email,
+            code_to_verify = verification_request.code
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

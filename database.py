@@ -5,31 +5,25 @@ from functools import lru_cache
 class Database:
     def __init__(self):
         self.fake_users_db = {
-            "johndoe": {
-                "username": "johndoe",
-                "full_name": "John Doe",
+            "johndoe@example.com": {
                 "email": "johndoe@example.com",
-                "disabled": False,
+                "name": "johndoe"
             }
         }
 
         self.code_db = {}
 
-    def save_code(self, username: str, code: str, expiry: datetime):
-        self.code_db[username] = {
+    def save_code(self, email: str, code: str, expiry: datetime):
+        self.code_db[email] = {
             "code": code,
             "expiry": expiry
         }
 
-    def verify_code(self, username: str, code_to_verify: str):
-        try:
-            if self.code_db[username]["code"] == code_to_verify:
-                if datetime.now(timezone.utc) < self.code_db[username]["expiry"]:
+    def verify_code(self, email: str, code_to_verify: str):
+        if email in self.code_db:
+            if self.code_db[email]["code"] == code_to_verify:
+                if datetime.now(timezone.utc) < self.code_db[email]["expiry"]:
                     return True
-        except KeyError:
-            pass
-
-        return False
 
 @lru_cache
 def get_database():
