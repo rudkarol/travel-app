@@ -7,7 +7,7 @@ from jwt.exceptions import InvalidTokenError
 import string
 import secrets
 
-from .models import EmailRequest, VerificationRequest, Token, TokenData
+from .models import EmailRequest, VerificationRequest, User, Token, TokenData
 from config import get_settings
 from database import get_database
 
@@ -39,7 +39,7 @@ def create_access_token(email: str):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def get_current_user(token: Annotated[str, Depends(security)]):
+async def get_current_user(token: str = Depends(security)):
     """Weryfikuje JWT i zwraca użytkownika"""
 
     credentials_exception = HTTPException(
@@ -49,7 +49,7 @@ async def get_current_user(token: Annotated[str, Depends(security)]):
     )
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         print(f"user email: {email}")
         if email is None:
@@ -79,7 +79,7 @@ async def request_verification_code(
 
     code = generate_verification_code()
     expiry = datetime.now(timezone.utc) + timedelta(minutes=VERIFICATION_CODE_EXPIRE_MINUTES)
-    database.save_code(email = email_request.email, code = code, expiry = expiry)
+    database.save_code(email=email_request.email, code=code, expiry=expiry)
 
     background_tasks.add_task(send_verification_email, email_request.email, code)
 
@@ -90,8 +90,8 @@ async def verify_code(verification_request: VerificationRequest):
     """Endpoint do logowania - weryfikacji kodu i wygenerowania JWT"""
 
     if not database.verify_code(
-            email = verification_request.email,
-            code_to_verify = verification_request.code
+            email=verification_request.email,
+            code_to_verify=verification_request.code
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -100,3 +100,9 @@ async def verify_code(verification_request: VerificationRequest):
 
     access_token = create_access_token(verification_request.email)
     return Token(access_token=access_token, token_type="bearer")
+
+@router.get("/users/me/", response_model=User)
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    return current_user
