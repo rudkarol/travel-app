@@ -1,40 +1,29 @@
 from datetime import datetime, timezone
 from functools import lru_cache
+from odmantic import AIOEngine
+from pydantic import EmailStr
 
-from auth.models import User
-
+from auth.models import User, Otp
 
 class Database:
     def __init__(self):
-        self.fake_users_db = {
-            "johndoe@example.com": {
-                "email": "johndoe@example.com",
-                "name": "johndoe"
-            },
-            "user@example.com": {
-                "email": "user@example.com",
-                "name": "example user"
-            }
-        }
+        self.engine = AIOEngine(database="travelDB")
 
-        self.code_db = {}
+    async def get_code(self, email: EmailStr):
+        code_data = await self.engine.find_one(Otp, Otp.email == email)
+        return code_data
 
-    def save_code(self, email: str, code: str, expiry: datetime):
-        self.code_db[email] = {
-            "code": code,
-            "expiry": expiry
-        }
+    async def save_code(self, email: EmailStr, code: str, expiry: datetime):
+        code_data = await self.get_code(email)
+        if not code_data:
+            code_data = Otp(email=email, code=code, expiry=expiry)
+        code_data.code = code
+        code_data.expiry = expiry
+        await self.engine.save(code_data)
 
-    def verify_code(self, email: str, code_to_verify: str):
-        if email in self.code_db:
-            if self.code_db[email]["code"] == code_to_verify:
-                if datetime.now(timezone.utc) < self.code_db[email]["expiry"]:
-                    return True
-
-    def get_user(self, email: str):
-        if email in self.fake_users_db:
-            user_dict = self.fake_users_db[email]
-            return User(**user_dict)
+    async def get_user(self, email: EmailStr):
+        user_data = await self.engine.find_one(User, User.email == email)
+        return user_data
 
 @lru_cache
 def get_database():

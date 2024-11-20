@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from odmantic import Model
 from typing import List, Optional
 from uuid import UUID
+from datetime import datetime
 
 
 class EmailRequest(BaseModel):
@@ -26,3 +27,9 @@ class User(Model):
     email: EmailStr
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
+
+class Otp(Model):
+    """OTP - (one-time password) klasa kodu weryfikacyjnego"""
+    email: EmailStr
+    code: str
+    expiry: datetime
