@@ -1,11 +1,28 @@
 from fastapi import Depends, FastAPI
 from typing_extensions import Annotated
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from contextlib import asynccontextmanager
 
 from config import Settings, get_settings
 from routers import auth as auth_router
+from utils.risks import update_risks
 
-app = FastAPI()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Uruchomienie przy starcie aplikacji update'u i schedulera,
+    ktory co 24h aktualizuje baze danych zawierajaca
+    informacje o pozimie bezpieczenstwa w krajach.
+    Wylaczenie schedulera przy zamykaniu aplikacji"""
+
+    await update_risks()
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(update_risks, 'interval', hours=24)
+    scheduler.start()
+    yield
+    scheduler.shutdown()
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router.router)
 
 @app.get("/info")
@@ -14,4 +31,3 @@ async def info(settings: Annotated[Settings, Depends(get_settings)]):
         "app_name": settings.app_name,
         "admin_email": settings.admin_email
     }
-

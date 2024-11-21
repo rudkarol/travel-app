@@ -6,6 +6,7 @@ from pydantic import EmailStr
 from models.auth import User, Otp
 from models.risks import CountryAdvisories, CountryItem
 
+
 class Database:
     def __init__(self):
         self.engine = AIOEngine(database="travelDB")
@@ -18,8 +19,9 @@ class Database:
         code_data = await self.get_code(email)
         if not code_data:
             code_data = Otp(email=email, code=code, expiry=expiry)
-        code_data.code = code
-        code_data.expiry = expiry
+        else:
+            code_data.code = code
+            code_data.expiry = expiry
         await self.engine.save(code_data)
 
     async def get_user(self, email: EmailStr):
@@ -28,7 +30,10 @@ class Database:
 
     async def update_country_advisories(self, country_to_update: CountryItem):
         country_data = await self.engine.find_one(CountryAdvisories, CountryAdvisories.country == country_to_update.country)
-        country_data.model_update(country_to_update)
+        if not country_data:
+            country_data = CountryAdvisories(**country_to_update.model_dump())
+        else:
+            country_data.model_update(country_to_update)
         await self.engine.save(country_data)
 
 @lru_cache
