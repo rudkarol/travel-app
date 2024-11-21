@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI
 from typing_extensions import Annotated
 
 from config import Settings, get_settings
-from auth import router as auth_router
+from routers import auth as auth_router
 
 app = FastAPI()
 

@@ -6,4 +6,4 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
-**/.env
+.env

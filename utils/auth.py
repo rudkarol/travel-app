@@ -7,9 +7,9 @@ from jwt.exceptions import InvalidTokenError
 import string
 import secrets
 
-from .models import TokenData
 from config import get_settings
 from database import get_database
+from models.auth import TokenData
 
 
 settings = get_settings()
@@ -57,7 +57,6 @@ async def get_current_user(token: str = Depends(security)):
     try:
         payload = jwt.decode(token.credentials, settings.jwt_secret_key, algorithms=[settings.algorithm])
         email: EmailStr = payload.get("sub")
-        print(f"user email: {email}")
         if email is None:
             raise credentials_exception
         token_data = TokenData(email=email)

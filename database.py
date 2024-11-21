@@ -1,9 +1,9 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from functools import lru_cache
 from odmantic import AIOEngine
 from pydantic import EmailStr
 
-from auth.models import User, Otp
+from models.auth import User, Otp
 
 class Database:
     def __init__(self):

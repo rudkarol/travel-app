@@ -1,8 +1,9 @@
 from pydantic import BaseModel, EmailStr
 from odmantic import Model
 from typing import List, Optional
-from uuid import UUID
 from datetime import datetime
+
+from .places import Place
 
 
 class EmailRequest(BaseModel):
@@ -18,10 +19,6 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[EmailStr] = None
-
-class Place(BaseModel):
-    place_id: UUID
-    name: str
 
 class User(Model):
     email: EmailStr

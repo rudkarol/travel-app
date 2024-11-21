@@ -2,9 +2,9 @@ from fastapi import Depends, HTTPException, status, APIRouter, BackgroundTasks
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from .models import EmailRequest, VerificationRequest, User, Token
 from config import get_settings
-from .utils import generate_verification_code, send_verification_email, verify_db_code, create_access_token, get_current_user, save_code
+from models.auth import EmailRequest, VerificationRequest, User, Token
+from utils.auth import generate_verification_code, send_verification_email, verify_db_code, create_access_token, get_current_user, save_code
 
 
 settings = get_settings()

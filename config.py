@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
-from pathlib import Path
 
 
 class Settings(BaseSettings):
@@ -14,7 +13,7 @@ class Settings(BaseSettings):
     verification_code_length: int = 6
     verification_code_expire_minutes: int = 15
 
-    model_config = SettingsConfigDict(env_file=Path(__file__).parent / ".env", env_file_encoding='utf-8')
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding='utf-8')
 
 @lru_cache
 def get_settings():
