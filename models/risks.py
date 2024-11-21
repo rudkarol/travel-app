@@ -19,7 +19,7 @@ class CountryItem(BaseModel):
         values["level"] = level_parts[0]
         return v
 
-class Country(Model):
+class CountryAdvisories(Model):
     country: str
     level: int
     pub_date: datetime
