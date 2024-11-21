@@ -28,8 +28,12 @@ class Database:
         user_data = await self.engine.find_one(User, User.email == email)
         return user_data
 
+    async def get_country_advisories(self, country_name: str):
+        country_data = await self.engine.find_one(CountryAdvisories, CountryAdvisories.country == country_name)
+        return country_data
+
     async def update_country_advisories(self, country_to_update: CountryItem):
-        country_data = await self.engine.find_one(CountryAdvisories, CountryAdvisories.country == country_to_update.country)
+        country_data = await self.get_country_advisories(country_to_update.country)
         if not country_data:
             country_data = CountryAdvisories(**country_to_update.model_dump())
         else:
