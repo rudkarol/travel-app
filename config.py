@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     verification_code_length: int = 6
     verification_code_expire_minutes: int = 15
 
+    tripadvisor_api_key: str
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding='utf-8')
 
 @lru_cache
