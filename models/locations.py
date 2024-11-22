@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 from typing import Literal, List, Optional
-from uuid import UUID
 
 from config import get_settings
 
@@ -9,7 +8,7 @@ settings = get_settings()
 
 
 class DbPlace(BaseModel):
-    location_id: UUID
+    location_id: str
     name: str
 
 
@@ -24,7 +23,7 @@ class AddressObj(BaseModel):
 
 
 class Location(BaseModel):
-    location_id: UUID
+    location_id: str
     name: str
     address_obj: AddressObj
 
@@ -34,13 +33,13 @@ class TripadvisorRequest(BaseModel):
 
 
 class TripadvisorFindSearchRequest(TripadvisorRequest):
-    search_query: str = Field(..., alias="searchQuery")
-    category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]]
+    query: str = Field(..., alias="searchQuery")
+    category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
 
 
 class SearchRequest(BaseModel):
-    search_query: str = Field(..., alias="searchQuery")
-    category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]]
+    query: str
+    category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
 
 
 class SearchResponse(BaseModel):
