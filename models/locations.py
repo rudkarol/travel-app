@@ -17,7 +17,7 @@ class AddressObj(BaseModel):
     # street2: Optional[str]
     # city: str
     # state: str
-    # country: str
+    country: str
     # postalcode: Optional[str]
     address_string: str
 
@@ -28,11 +28,8 @@ class Location(BaseModel):
     address_obj: AddressObj
 
 
-class TripadvisorRequest(BaseModel):
+class TripadvisorFindSearchRequest(BaseModel):
     key: str = settings.tripadvisor_api_key
-
-
-class TripadvisorFindSearchRequest(TripadvisorRequest):
     query: str = Field(..., alias="searchQuery")
     category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
 
@@ -44,3 +41,25 @@ class SearchRequest(BaseModel):
 
 class SearchResponse(BaseModel):
     data: List[Location]
+
+
+class TripadvisorLocationDetailsRequest(BaseModel):
+    key: str = settings.tripadvisor_api_key
+    currency: str = Field(..., description="ISO 4217 currency code")
+
+
+class DetailsRequest(BaseModel):
+    location_id: str
+    currency: str = Field(..., description="ISO 4217 currency code")
+
+
+class Ancestor(BaseModel):
+    level: str
+    name: str
+    location_id: str
+
+class LocationDetails(Location):
+    description: Optional[str] = None
+    # ancestors: List[Ancestor]
+    latitude: float
+    longitude: float
