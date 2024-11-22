@@ -4,7 +4,7 @@ from odmantic import AIOEngine
 from pydantic import EmailStr
 
 from models.auth import User, Otp
-from models.risks import CountryAdvisories, CountryItem
+from models.risks import DbCountryAdvisories, CountryItem
 
 
 class Database:
@@ -29,13 +29,13 @@ class Database:
         return user_data
 
     async def get_country_advisories(self, country_name: str):
-        country_data = await self.engine.find_one(CountryAdvisories, CountryAdvisories.country == country_name)
+        country_data = await self.engine.find_one(DbCountryAdvisories, DbCountryAdvisories.country == country_name)
         return country_data
 
     async def update_country_advisories(self, country_to_update: CountryItem):
         country_data = await self.get_country_advisories(country_to_update.country)
         if not country_data:
-            country_data = CountryAdvisories(**country_to_update.model_dump())
+            country_data = DbCountryAdvisories(**country_to_update.model_dump())
         else:
             country_data.model_update(country_to_update)
         await self.engine.save(country_data)

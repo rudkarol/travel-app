@@ -22,4 +22,3 @@ async def fetch_tripadvisor_location_details(query_params: lm.DetailsRequest):
         r = await client.get(url, params=params.model_dump(), headers=headers)
         r.raise_for_status()
         return lm.LocationDetails(**r.json())
-

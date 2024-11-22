@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Literal, List, Optional
 
 from config import get_settings
-
+from models.risks import CountryAdvisories
 
 settings = get_settings()
 
@@ -17,7 +17,7 @@ class AddressObj(BaseModel):
     # street2: Optional[str]
     # city: str
     # state: str
-    country: str
+    country: Optional[str] = None
     # postalcode: Optional[str]
     address_string: str
 
@@ -58,8 +58,17 @@ class Ancestor(BaseModel):
     name: str
     location_id: str
 
+
+class LocationCategory(BaseModel):
+    name: str
+
+
 class LocationDetails(Location):
     description: Optional[str] = None
     # ancestors: List[Ancestor]
     latitude: float
     longitude: float
+    category: LocationCategory
+    subcategory: List[LocationCategory]
+    safety_level: Optional[CountryAdvisories] = None
+    #     TODO photos i inne pola

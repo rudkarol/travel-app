@@ -9,8 +9,13 @@ class CountryItem(BaseModel):
     pub_date: datetime
     link: str
 
-class CountryAdvisories(Model):
+class DbCountryAdvisories(Model):
     country: str
+    level: int
+    pub_date: datetime
+    link: str
+
+class CountryAdvisories(BaseModel):
     level: int
     pub_date: datetime
     link: str

@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Query
 from typing import Annotated
 
+from database import get_database
+from models.risks import CountryAdvisories
 from utils.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
-from models.locations import SearchRequest, DetailsRequest
+from models.locations import SearchRequest, DetailsRequest, LocationDetails
 
 
+database = get_database()
 router = APIRouter()
 
 @router.get("/locations/search/")
@@ -22,4 +25,16 @@ async def get_location_details(query_params: Annotated[DetailsRequest, Query()])
     lotow i zakwaterowania"""
 
     location_details = await fetch_tripadvisor_location_details(query_params)
+    if location_details.category.name == "geographic":
+        if location_details.address_obj.country:
+            safety_level = await database.get_country_advisories(location_details.address_obj.country)
+            safety_level = CountryAdvisories(**safety_level.model_dump())
+        elif location_details.subcategory[0].name == "country":
+            safety_level = await database.get_country_advisories(location_details.name)
+            safety_level = CountryAdvisories(**safety_level.model_dump())
+        else:
+            safety_level = None
+
+        location_details.safety_level = safety_level
+
     return location_details
