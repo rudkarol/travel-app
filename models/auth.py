@@ -3,7 +3,7 @@ from odmantic import Model
 from typing import List, Optional
 from datetime import datetime
 
-from .places import Place
+from .locations import DbPlace
 
 
 class EmailRequest(BaseModel):
@@ -23,7 +23,7 @@ class TokenData(BaseModel):
 class User(Model):
     email: EmailStr
     name: Optional[str] = None
-    favourite_places: Optional[List[Place]] = None
+    favourite_places: Optional[List[DbPlace]] = None
 
 class Otp(Model):
     """OTP - (one-time password) klasa kodu weryfikacyjnego"""
