@@ -4,8 +4,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from contextlib import asynccontextmanager
 
 from config import Settings, get_settings
-from routers import auth as auth_router
 from utils.risks import update_risks
+from routers import auth as auth_router
+from routers import locations
 
 
 @asynccontextmanager
@@ -24,6 +25,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router.router)
+app.include_router(locations.router)
 
 @app.get("/info")
 async def info(settings: Annotated[Settings, Depends(get_settings)]):
