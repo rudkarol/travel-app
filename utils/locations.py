@@ -22,3 +22,15 @@ async def fetch_tripadvisor_location_details(query_params: lm.DetailsRequest):
         r = await client.get(url, params=params.model_dump(), headers=headers)
         r.raise_for_status()
         return lm.LocationDetails(**r.json())
+
+async def fetch_tripadvisor_location_photos(location_id: str):
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{location_id}/photos"
+    params = lm.TripadvisorRequest()
+    headers = {"accept": "application/json"}
+
+    async with httpx.AsyncClient() as client:
+        r = await client.get(url, params=params.model_dump(), headers=headers)
+        r.raise_for_status()
+        photos = lm.Photos.from_response(r.json())
+        return photos.model_dump(by_alias=False)
+

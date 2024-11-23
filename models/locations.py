@@ -28,8 +28,11 @@ class Location(BaseModel):
     address_obj: AddressObj
 
 
-class TripadvisorFindSearchRequest(BaseModel):
+class TripadvisorRequest(BaseModel):
     key: str = settings.tripadvisor_api_key
+
+
+class TripadvisorFindSearchRequest(TripadvisorRequest):
     query: str = Field(..., alias="searchQuery")
     category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
 
@@ -43,8 +46,7 @@ class SearchResponse(BaseModel):
     data: List[Location]
 
 
-class TripadvisorLocationDetailsRequest(BaseModel):
-    key: str = settings.tripadvisor_api_key
+class TripadvisorLocationDetailsRequest(TripadvisorRequest):
     currency: str = Field(..., description="ISO 4217 currency code")
 
 
@@ -53,10 +55,10 @@ class DetailsRequest(BaseModel):
     currency: str = Field(..., description="ISO 4217 currency code")
 
 
-class Ancestor(BaseModel):
-    level: str
-    name: str
-    location_id: str
+# class Ancestor(BaseModel):
+#     level: str
+#     name: str
+#     location_id: str
 
 
 class LocationCategory(BaseModel):
@@ -72,3 +74,26 @@ class LocationDetails(Location):
     subcategory: List[LocationCategory]
     safety_level: Optional[CountryAdvisories] = None
     #     TODO photos i inne pola
+
+
+class Image(BaseModel):
+    width: int
+    height: int
+    url: str
+
+    @classmethod
+    def from_response(cls, data: dict) -> "Image":
+        return cls(
+            width=data["images"]["large"]["width"],
+            height=data["images"]["large"]["height"],
+            url=data["images"]["large"]["url"]
+        )
+
+
+class Photos(BaseModel):
+    photos: List[Image] = Field(..., alias="data")
+
+    @classmethod
+    def from_response(cls, response: dict) -> "Photos":
+        data = [Image.from_response(item) for item in response["data"]]
+        return cls(data=data)
