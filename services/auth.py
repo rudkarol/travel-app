@@ -10,7 +10,6 @@ import secrets
 from dependencies import get_database, get_settings
 from schemas.auth import TokenData
 
-
 settings = get_settings()
 database = get_database()
 security = HTTPBearer()
@@ -25,9 +24,17 @@ def generate_verification_code():
 async def verify_db_code(email: EmailStr, code_to_verify: str):
     code_data = await database.get_code(email)
 
+    if not code_data:
+        return False
+
     if code_data.code == code_to_verify:
         if datetime.now() < code_data.expiry:
             await database.delete_code(code_data)
+
+            db_user = await database.get_user(email)
+            if not db_user:
+                # Rejestracja nowego użytkownika - jeśli nie istnieje w bazie danych
+                await database.create_user(email)
             return True
 
 
@@ -36,7 +43,7 @@ async def save_code(email: EmailStr, code: str, expiry: datetime):
 
 
 def create_access_token(email: EmailStr):
-    expire = datetime.now() + timedelta(minutes=settings.access_token_expire_minutes)
+    expire = datetime.now() + timedelta(days=settings.access_token_expire_minutes)
     to_encode = {"sub": email, "exp": expire}
     encoded_jwt = jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.algorithm)
     return encoded_jwt
@@ -59,7 +66,7 @@ async def verify_token_and_user(token: str = Depends(security)):
         token_data = TokenData(email=email)
     except InvalidTokenError:
         raise credentials_exception
-    user = await database.get_user(email=token_data.email)
+    user = await database.get_user(token_data.email)
     if user is None:
         raise credentials_exception
     return user
