@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query
 from typing import Annotated
 
-from database import get_database
+from dependencies import get_database
 from schemas.risks import CountryAdvisories
 from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
 from schemas.locations import SearchRequest, DetailsRequest

@@ -3,7 +3,6 @@ from typing_extensions import Annotated
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from contextlib import asynccontextmanager
 
-from config import Settings, get_settings
 from services.risks import update_risks
 from routers import auth as auth_router
 from routers import locations
@@ -27,6 +26,8 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router.router)
 app.include_router(locations.router)
 
+from config import Settings
+from dependencies import get_settings
 @app.get("/info")
 async def info(settings: Annotated[Settings, Depends(get_settings)]):
     return {

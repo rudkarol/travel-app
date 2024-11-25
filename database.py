@@ -1,5 +1,4 @@
 from datetime import datetime
-from functools import lru_cache
 from odmantic import AIOEngine
 from pydantic import EmailStr
 
@@ -39,7 +38,3 @@ class Database:
         else:
             country_data.model_update(country_to_update)
         await self.engine.save(country_data)
-
-@lru_cache
-def get_database():
-    return Database()

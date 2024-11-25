@@ -2,9 +2,9 @@ from fastapi import Depends, HTTPException, status, APIRouter, BackgroundTasks
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from config import get_settings
+from dependencies import get_settings, send_verification_email
 from schemas.auth import EmailRequest, VerificationRequest, User, Token
-from services.auth import generate_verification_code, send_verification_email, verify_db_code, create_access_token, get_current_user, save_code
+from services.auth import generate_verification_code, verify_db_code, create_access_token, get_current_user, save_code
 
 
 settings = get_settings()

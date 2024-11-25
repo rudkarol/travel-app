@@ -3,8 +3,7 @@ import xmltodict
 from datetime import datetime
 
 from schemas.risks import CountryItem
-from database import get_database
-
+from dependencies import get_database
 
 database = get_database()
 

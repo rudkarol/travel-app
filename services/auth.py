@@ -7,8 +7,7 @@ from jwt.exceptions import InvalidTokenError
 import string
 import secrets
 
-from config import get_settings
-from database import get_database
+from dependencies import get_database, get_settings
 from schemas.auth import TokenData
 
 
@@ -66,9 +65,3 @@ async def get_current_user(token: str = Depends(security)):
     if user is None:
         raise credentials_exception
     return user
-
-async def send_verification_email(email: EmailStr, code: str):
-    """Wysyla email z kodem weryfikacyjnym"""
-
-    # TODO: obsluga email
-    print(f"Sending verification code {code} to {email}")

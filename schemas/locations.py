@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Literal, List, Optional
 
-from config import get_settings
+from dependencies import get_settings
 from schemas.risks import CountryAdvisories
 
 settings = get_settings()
