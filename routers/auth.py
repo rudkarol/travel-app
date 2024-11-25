@@ -4,7 +4,7 @@ from typing import Annotated
 
 from config import get_settings
 from models.auth import EmailRequest, VerificationRequest, User, Token
-from utils.auth import generate_verification_code, send_verification_email, verify_db_code, create_access_token, get_current_user, save_code
+from services.auth import generate_verification_code, send_verification_email, verify_db_code, create_access_token, get_current_user, save_code
 
 
 settings = get_settings()

@@ -3,7 +3,7 @@ from typing import Annotated
 
 from database import get_database
 from models.risks import CountryAdvisories
-from utils.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
+from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
 from models.locations import SearchRequest, DetailsRequest
 
 
