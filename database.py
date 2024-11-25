@@ -2,7 +2,7 @@ from datetime import datetime
 from odmantic import AIOEngine
 from pydantic import EmailStr
 
-from schemas.auth import User, Otp
+from schemas.auth import DbUser, Otp
 from schemas.risks import DbCountryAdvisories, CountryItem
 
 
@@ -23,8 +23,11 @@ class Database:
             code_data.expiry = expiry
         await self.engine.save(code_data)
 
+    async def delete_code(self, code_data: Otp):
+        await self.engine.delete(code_data)
+
     async def get_user(self, email: EmailStr):
-        user_data = await self.engine.find_one(User, User.email == email)
+        user_data = await self.engine.find_one(DbUser, DbUser.email == email)
         return user_data
 
     async def get_country_advisories(self, country_name: str):
