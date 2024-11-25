@@ -2,7 +2,7 @@ import httpx
 import xmltodict
 from datetime import datetime
 
-from models.risks import CountryItem
+from schemas.risks import CountryItem
 from database import get_database
 
 

@@ -3,7 +3,7 @@ from odmantic import Model
 from typing import List, Optional
 from datetime import datetime
 
-from .locations import DbPlace
+from schemas.locations import DbPlace
 
 
 class EmailRequest(BaseModel):

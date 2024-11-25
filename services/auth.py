@@ -9,7 +9,7 @@ import secrets
 
 from config import get_settings
 from database import get_database
-from models.auth import TokenData
+from schemas.auth import TokenData
 
 
 settings = get_settings()

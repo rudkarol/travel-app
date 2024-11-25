@@ -2,9 +2,9 @@ from fastapi import APIRouter, Query
 from typing import Annotated
 
 from database import get_database
-from models.risks import CountryAdvisories
+from schemas.risks import CountryAdvisories
 from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
-from models.locations import SearchRequest, DetailsRequest
+from schemas.locations import SearchRequest, DetailsRequest
 
 
 database = get_database()

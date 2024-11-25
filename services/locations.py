@@ -1,6 +1,6 @@
 import httpx
 
-import models.locations as lm
+import schemas.locations as lm
 
 
 async def fetch_tripadvisor_find_search(search_params: lm.SearchRequest):

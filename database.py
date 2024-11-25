@@ -3,8 +3,8 @@ from functools import lru_cache
 from odmantic import AIOEngine
 from pydantic import EmailStr
 
-from models.auth import User, Otp
-from models.risks import DbCountryAdvisories, CountryItem
+from schemas.auth import User, Otp
+from schemas.risks import DbCountryAdvisories, CountryItem
 
 
 class Database:

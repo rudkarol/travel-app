@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Annotated
 
 from config import get_settings
-from models.auth import EmailRequest, VerificationRequest, User, Token
+from schemas.auth import EmailRequest, VerificationRequest, User, Token
 from services.auth import generate_verification_code, send_verification_email, verify_db_code, create_access_token, get_current_user, save_code
 
 
