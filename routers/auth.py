@@ -5,7 +5,7 @@ from typing import Annotated
 from dependencies import get_settings, send_verification_email
 from schemas.auth import CodeRequest, VerificationRequest, User, Token
 from services.auth import generate_verification_code, verify_db_code, create_access_token, verify_token_and_user, \
-    save_code, login_or_register
+    save_code
 
 settings = get_settings()
 router = APIRouter()
@@ -13,22 +13,22 @@ router = APIRouter()
 
 @router.post("/auth/request-code")
 async def request_verification_code(
-        email_request: CodeRequest,
+        code_request: CodeRequest,
         background_tasks: BackgroundTasks
 ):
     """Endpoint do pobrania kodu weryfikacyjnego"""
 
     code = generate_verification_code()
     expiry = datetime.now() + timedelta(minutes=settings.verification_code_expire_minutes)
-    await save_code(email=email_request.email, code=code, expiry=expiry)
+    await save_code(email=code_request.email, code=code, expiry=expiry)
 
-    background_tasks.add_task(send_verification_email, email_request.email, code)
+    background_tasks.add_task(send_verification_email, code_request.email, code)
 
     return {"message": "Verification code sent"}
 
 
-@router.post("/auth/verify")
-async def verify_code(verification_request: VerificationRequest, response: Response):
+@router.post("/auth/verify", response_model=Token)
+async def verify_code(verification_request: VerificationRequest):
     """Endpoint do logowania - weryfikacja kodu i generowanie JWT"""
 
     verification_result = await verify_db_code(email=verification_request.email, code_to_verify=verification_request.code)
@@ -37,13 +37,6 @@ async def verify_code(verification_request: VerificationRequest, response: Respo
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired verification code"
         )
-
-    is_login = await login_or_register(verification_request.email)
-    if is_login:
-        response.status_code = status.HTTP_200_OK
-    else:
-        response.status_code = status.HTTP_201_CREATED
-
     access_token = create_access_token(verification_request.email)
     return Token(access_token=access_token, token_type="bearer")
 
