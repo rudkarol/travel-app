@@ -8,6 +8,7 @@ settings = get_settings
 
 
 def openai_request(places: SearchResponse):
+    client = OpenAI(api_key=settings.openai_api_key)
     # TODO: prompt, response model
     prompt = ""
 
