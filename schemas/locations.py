@@ -97,3 +97,11 @@ class Photos(BaseModel):
     def from_response(cls, response: dict) -> "Photos":
         data = [Image.from_response(item) for item in response["data"]]
         return cls(data=data)
+
+
+class ClimateMonth(BaseModel):
+    tavg: Optional[float] = None
+    tsun: Optional[int] = None
+
+    class Config:
+        from_attributes = True
