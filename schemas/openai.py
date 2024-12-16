@@ -40,4 +40,4 @@ class AIResponseFormat(BaseModel):
 class GenerateTripPlanRequest(BaseModel):
     lat: float
     lon: float
-    days: int = Field(gt=0, le=5)
+    days: int = Field(gt=0, le=7)
