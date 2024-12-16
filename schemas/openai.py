@@ -18,6 +18,11 @@ class AIInputLocation(BaseModel):
         )
 
 
+class AIInputFormat(BaseModel):
+    attractions: List[AIInputLocation]
+    restaurants: List[AIInputLocation]
+
+
 class AIResponseLocation(BaseModel):
     location_id: str
     description: str

@@ -1,16 +1,16 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 from dependencies import get_settings
-from schemas.openai import AIResponseFormat
+from schemas.openai import AIResponseFormat, AIInputFormat
 from schemas.locations import SearchResponse
 
 
 settings = get_settings()
 
 
-def openai_request(places: list[SearchResponse], days: int) -> AIResponseFormat:
-    # TODO: rozdzielić places na attractions i restaurants
-    client = OpenAI(api_key=settings.openai_api_key)
+async def openai_request(attractions: list[SearchResponse], restaurants: list[SearchResponse], days: int) -> AIResponseFormat:
+    places = AIInputFormat(attractions=attractions, restaurants=restaurants)
+    client = AsyncOpenAI(api_key=settings.openai_api_key)
     prompt = f"""
     You are a travel assistant tasked with creating a multi-day trip plan for a traveler. Here is a list of places they want to visit:
     {places}
@@ -20,7 +20,7 @@ def openai_request(places: list[SearchResponse], days: int) -> AIResponseFormat:
     If relevant, suggest the best time of day to visit specific locations.
     """
 
-    completion = client.beta.chat.completions.parse (
+    completion = await client.beta.chat.completions.parse (
         model="gpt-4o-mini",
         messages=[
             {
