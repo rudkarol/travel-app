@@ -39,6 +39,21 @@ async def fetch_tripadvisor_location_photos(location_id: str):
         return photos.model_dump(by_alias=False)
 
 
+async def fetch_tripadvisor_nearby_search(lat: float, lon: float, category: str):
+    url = "https://api.content.tripadvisor.com/api/v1/location/nearby_search"
+    params = lm.TripadvisorRequest().model_dump()
+    params.update({
+        "latLong": str(lat) + "," + str(lon),
+        "category": category
+    })
+    headers = {"accept": "application/json"}
+
+    async with httpx.AsyncClient() as client:
+        r = await client.get(url, params=params, headers=headers)
+        r.raise_for_status()
+        return lm.SearchResponse(**r.json())
+
+
 def fetch_climate_data(lat: float, lon: float):
     year = datetime.now().year
     year = year - 1
