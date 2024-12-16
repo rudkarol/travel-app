@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from services.risks import update_risks
 from routers import auth as auth_router
-from routers import locations
+from routers import locations, trip_plans
 
 
 @asynccontextmanager
@@ -25,6 +25,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router.router)
 app.include_router(locations.router)
+app.include_router(trip_plans.router)
 
 from config import Settings
 from dependencies import get_settings

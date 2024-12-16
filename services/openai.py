@@ -5,10 +5,10 @@ from schemas.openai import AIResponseFormat
 from schemas.locations import SearchResponse
 
 
-settings = get_settings
+settings = get_settings()
 
 
-def openai_request(places: list[SearchResponse], days: int):
+def openai_request(places: list[SearchResponse], days: int) -> AIResponseFormat:
     # TODO: rozdzielić places na attractions i restaurants
     client = OpenAI(api_key=settings.openai_api_key)
     prompt = f"""
@@ -33,8 +33,7 @@ def openai_request(places: list[SearchResponse], days: int):
             }
         ],
         response_format=AIResponseFormat,
-        temperature=0.7,
-        max_tokens=254
+        temperature=0.7
     )
 
     r = completion.choices[0].message

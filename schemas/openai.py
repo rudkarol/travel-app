@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
 
 from schemas.locations import Location
@@ -30,3 +30,8 @@ class AIResponseDay(BaseModel):
 
 class AIResponseFormat(BaseModel):
     days: List[AIResponseDay]
+
+
+class GenerateTripPlanRequest(BaseModel):
+    location: str
+    days: int = Field(gt=0, le=5)
