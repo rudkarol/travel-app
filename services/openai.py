@@ -1,18 +1,26 @@
 from openai import OpenAI
 
 from dependencies import get_settings
+from schemas.openai import AIResponseFormat
 from schemas.locations import SearchResponse
 
 
 settings = get_settings
 
 
-def openai_request(places: SearchResponse):
+def openai_request(places: list[SearchResponse], days: int):
+    # TODO: rozdzielić places na attractions i restaurants
     client = OpenAI(api_key=settings.openai_api_key)
-    # TODO: prompt, response model
-    prompt = ""
+    prompt = f"""
+    You are a travel assistant tasked with creating a multi-day trip plan for a traveler. Here is a list of places they want to visit:
+    {places}
+    Create a {days}-day itinerary that groups places logically to minimize travel time and maximize the travel experience. 
+    Distribute visits evenly across each day and suggest a lunch option for each day. 
+    For each location, provide a short description of what the traveler will experience there, including key highlights or unique features. 
+    If relevant, suggest the best time of day to visit specific locations.
+    """
 
-    r = client.chat.completions.create (
+    completion = client.beta.chat.completions.parse (
         model="gpt-4o-mini",
         messages=[
             {
@@ -24,9 +32,14 @@ def openai_request(places: SearchResponse):
                 "content": prompt
             }
         ],
+        response_format=AIResponseFormat,
         temperature=0.7,
-        max_tokens=254,
-        top_p=1
+        max_tokens=254
     )
-    # TODO: convert response to pydantic model
-    return r.choices[0].message
+
+    r = completion.choices[0].message
+
+    if r.refusal:
+        raise Exception(r.refusal)
+
+    return r.parsed

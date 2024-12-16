@@ -45,6 +45,10 @@ class SearchRequest(BaseModel):
 class SearchResponse(BaseModel):
     data: List[Location]
 
+    def to_ai_input_list(self):
+        from schemas.openai import AIInputLocation
+        return [AIInputLocation.from_location(location) for location in self.data]
+
 
 class TripadvisorLocationDetailsRequest(TripadvisorRequest):
     currency: str = Field(..., description="ISO 4217 currency code")
