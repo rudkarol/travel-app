@@ -2,7 +2,8 @@ from datetime import datetime
 from odmantic import AIOEngine
 from pydantic import EmailStr
 
-from schemas.auth import DbUser, Otp
+from schemas.auth import Otp
+from schemas.user import DbUser
 from schemas.risks import DbCountryAdvisories, CountryItem
 
 

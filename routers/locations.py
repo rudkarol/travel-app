@@ -5,8 +5,7 @@ from dependencies import get_database, verify_token_and_user
 from schemas.risks import CountryAdvisories
 from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
 from schemas.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse
-from schemas.auth import User
-
+from schemas.user import User
 
 database = get_database()
 router = APIRouter()

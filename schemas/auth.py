@@ -1,9 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from odmantic import Model
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime
-
-from schemas.locations import DbPlace
 
 
 class CodeRequest(BaseModel):
@@ -22,19 +20,6 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[EmailStr] = None
-
-
-class DbUser(Model):
-    email: EmailStr
-    name: Optional[str] = None
-    favourite_places: Optional[List[DbPlace]] = None
-
-
-class User(BaseModel):
-    email: EmailStr
-    name: Optional[str] = None
-    favourite_places: Optional[List[DbPlace]] = None
-#     TODO change DbPlace to Place
 
 
 class Otp(Model):

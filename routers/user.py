@@ -3,7 +3,8 @@ from typing import Annotated
 from pydantic import EmailStr
 
 from dependencies import verify_token_and_user, get_database
-from schemas.auth import User, Token
+from schemas.auth import Token
+from schemas.user import User
 from services.auth import create_access_token, verify_db_code
 
 database = get_database()

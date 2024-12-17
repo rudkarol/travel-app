@@ -5,7 +5,7 @@ import math
 from services.openai import openai_request
 from services.locations import fetch_tripadvisor_nearby_search
 from schemas.openai import GenerateTripPlanRequest, AIResponseFormat
-from schemas.auth import User
+from schemas.user import User
 from dependencies import verify_token_and_user
 
 
