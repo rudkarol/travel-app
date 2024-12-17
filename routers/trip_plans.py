@@ -1,15 +1,23 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from typing import Annotated
 import math
 
 from services.openai import openai_request
 from services.locations import fetch_tripadvisor_nearby_search
 from schemas.openai import GenerateTripPlanRequest, AIResponseFormat
+from schemas.auth import User
+from dependencies import verify_token_and_user
 
 
 router = APIRouter()
 
 @router.post("/trip/generate")
-async def generate_trip_plan(query_params: GenerateTripPlanRequest) -> AIResponseFormat:
+async def generate_trip_plan(
+        query_params: GenerateTripPlanRequest,
+        current_user: Annotated[User, Depends(verify_token_and_user)]
+) -> AIResponseFormat:
+    """Endpoint do generowania kilkudniowego planu podróży.
+    Dostępne generowanie planu dla 1 do 7 dni."""
     attractions=[]
     for day in range(math.ceil(query_params.days / 2)):
         a = await fetch_tripadvisor_nearby_search(lat=query_params.lat, lon=query_params.lon, category="attractions")
