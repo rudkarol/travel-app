@@ -2,10 +2,9 @@ from fastapi import Depends, HTTPException, status, APIRouter, BackgroundTasks, 
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from dependencies import get_settings, send_verification_email
+from dependencies import get_settings, send_verification_email, verify_token_and_user
 from schemas.auth import CodeRequest, VerificationRequest, User, Token
-from services.auth import generate_verification_code, verify_db_code, create_access_token, verify_token_and_user, \
-    save_code
+from services.auth import generate_verification_code, verify_db_code, create_access_token, save_code
 
 settings = get_settings()
 router = APIRouter()
@@ -43,6 +42,6 @@ async def verify_code(verification_request: VerificationRequest):
 
 @router.get("/users/me/", response_model=User)
 async def read_users_me(
-        current_user: Annotated[User, Depends(verify_token_and_user)],
+        current_user: Annotated[User, Depends(verify_token_and_user)]
 ):
     return current_user
