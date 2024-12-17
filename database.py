@@ -3,7 +3,7 @@ from odmantic import AIOEngine
 from pydantic import EmailStr
 
 from schemas.auth import Otp
-from schemas.user import DbUser
+from schemas.user import DbUser, User
 from schemas.risks import DbCountryAdvisories, CountryItem
 
 
@@ -38,9 +38,9 @@ class Database:
     async def delete_user(self, email: EmailStr):
         await self.engine.remove(DbUser, DbUser.email == email)
 
-    async def update_user_email(self, email: EmailStr, new_email: EmailStr):
-        user_data = await self.get_user(email)
-        user_data.email = new_email
+    async def update_user(self, user: User, new_user_data: User):
+        user_data = await self.get_user(user.email)
+        user_data.model_update(new_user_data)
         await self.engine.save(user_data)
 
     async def get_country_advisories(self, country_name: str):

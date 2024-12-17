@@ -9,9 +9,17 @@ class User(BaseModel):
     email: EmailStr
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
+#     TODO: add trips
 
 
 class DbUser(Model):
     email: EmailStr
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
+    #     TODO: add trips
+
+
+class UserDataUpdate(BaseModel):
+    name: Optional[str] = None
+    favourite_places: Optional[List[Place]] = None
+    #     TODO: add trips
