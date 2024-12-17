@@ -25,9 +25,10 @@ async def request_verification_code(
     return {"message": "Verification code sent"}
 
 
-@router.post("/auth/verify", response_model=Token)
-async def verify_code(verification_request: VerificationRequest):
-    """Endpoint do logowania - weryfikacja kodu i generowanie JWT"""
+@router.post("/auth/login", response_model=Token)
+async def login_or_register_new_account(verification_request: VerificationRequest):
+    """Endpoint do logowania - weryfikacja kodu i generowanie JWT.
+    Jeśli konto nie istnieje, to zostanie zarejestrowane"""
 
     await verify_db_code(email=verification_request.email, code_to_verify=verification_request.code)
     access_token = create_access_token(verification_request.email)
