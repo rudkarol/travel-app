@@ -37,6 +37,11 @@ class Database:
     async def delete_user(self, email: EmailStr):
         await self.engine.remove(DbUser, DbUser.email == email)
 
+    async def update_user_email(self, email: EmailStr, new_email: EmailStr):
+        user_data = await self.get_user(email)
+        user_data.email = new_email
+        await self.engine.save(user_data)
+
     async def get_country_advisories(self, country_name: str):
         country_data = await self.engine.find_one(DbCountryAdvisories, DbCountryAdvisories.country == country_name)
         return country_data

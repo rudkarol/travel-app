@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from fastapi import HTTPException, status
 from fastapi.security import HTTPBearer
 from pydantic import EmailStr
 import jwt
@@ -19,10 +20,15 @@ def generate_verification_code():
 
 
 async def verify_db_code(email: EmailStr, code_to_verify: str):
+    invalid_code_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or expired verification code"
+    )
+
     code_data = await database.get_code(email)
 
     if not code_data:
-        return False
+        raise invalid_code_exception
 
     if code_data.code == code_to_verify:
         if datetime.now() < code_data.expiry:
@@ -31,8 +37,10 @@ async def verify_db_code(email: EmailStr, code_to_verify: str):
             db_user = await database.get_user(email)
             if not db_user:
                 # Rejestracja nowego użytkownika - jeśli nie istnieje w bazie danych
+                # Jeśli wywołano z zabezpieczonego endpointu - użytkownik już istnieje
                 await database.create_user(email)
             return True
+    raise invalid_code_exception
 
 
 async def save_code(email: EmailStr, code: str, expiry: datetime):
