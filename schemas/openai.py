@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List
 
-from schemas.locations import Location
+from schemas.locations import Location, Place
 
 
 class AIInputLocation(BaseModel):
@@ -23,14 +23,9 @@ class AIInputFormat(BaseModel):
     restaurants: List[AIInputLocation]
 
 
-class AIResponseLocation(BaseModel):
-    location_id: str
-    description: str
-
-
 class AIResponseDay(BaseModel):
-    attractions: List[AIResponseLocation]
-    restaurant: AIResponseLocation
+    attractions: List[Place]
+    restaurant: Place
 
 
 class AIResponseFormat(BaseModel):

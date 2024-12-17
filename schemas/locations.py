@@ -7,9 +7,10 @@ from schemas.risks import CountryAdvisories
 settings = get_settings()
 
 
-class DbPlace(BaseModel):
+class Place(BaseModel):
     location_id: str
     name: str
+    description: Optional[str] = None
 
 
 class AddressObj(BaseModel):
