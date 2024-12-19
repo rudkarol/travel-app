@@ -27,7 +27,7 @@ async def delete_current_user_account(
 
     await verify_db_code(email=current_user.email, code_to_verify=verification_code)
     await database.delete_user(current_user.email)
-    return {"message": "User deleted succesfully"}
+    return {"message": "User deleted successfully"}
 
 
 @router.patch("/user/me/update-email", response_model=Token)
@@ -55,4 +55,4 @@ async def update_current_user_data(
     """Updates current user data (name and favourite places)"""
 
     await database.update_user(user=current_user, new_user_data=data)
-    return {"message": "User data updated succesfully"}
+    return {"message": "User data updated successfully"}
