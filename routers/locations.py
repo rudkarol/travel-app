@@ -1,19 +1,20 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Security
 from typing import Annotated
 
-from dependencies import get_database, verify_token_and_user
+from dependencies import get_database, get_token_verification
 from schemas.risks import CountryAdvisories
 from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
 from schemas.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse
-from schemas.user import User
+from schemas.auth import TokenData
 
 database = get_database()
 router = APIRouter()
+verify_user = get_token_verification()
 
 @router.get("/locations/search/", response_model=SearchResponse)
 async def search_locations(
         search_params: Annotated[SearchRequest, Query()],
-        current_user: Annotated[User, Depends(verify_token_and_user)]
+        auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
     """Endpoint do wyszukiwania lokacji"""
 
@@ -23,7 +24,7 @@ async def search_locations(
 @router.get("/location/", response_model=LocationDetails)
 async def get_location_details(
         query_params: Annotated[DetailsRequest, Query()],
-        current_user: Annotated[User, Depends(verify_token_and_user)]
+        auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
     """Endpoint zwraca szczegoly lokalizacji,
     jesli jest to panstwo albo miasto, to zwraca dodatkowo

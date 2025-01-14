@@ -1,13 +1,13 @@
 from typing import Optional, List
 from odmantic import Model
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from schemas.locations import Place
 from schemas.trip_plans import Trip
 
 
 class User(BaseModel):
-    email: EmailStr
+    user_id: str
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
     trips: Optional[List[Trip]] = None
@@ -22,7 +22,7 @@ class User(BaseModel):
 
 
 class DbUser(Model):
-    email: EmailStr
+    user_id: str
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
     trips: Optional[List[Trip]] = None

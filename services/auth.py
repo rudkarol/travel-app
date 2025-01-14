@@ -1,54 +1,62 @@
-from datetime import datetime, timedelta
-from fastapi import HTTPException, status
-from fastapi.security import HTTPBearer
-from pydantic import EmailStr
 import jwt
-import string
-import secrets
+from fastapi import HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Optional
 
-from dependencies import get_database, get_settings
+from dependencies import get_settings
+from schemas.auth import TokenData
 
-settings = get_settings()
-database = get_database()
+
 security = HTTPBearer()
 
 
-def generate_verification_code():
-    alphabet = string.ascii_uppercase + string.digits
-    verification_code = ''.join(secrets.choice(alphabet) for _ in range(settings.verification_code_length))
-    return verification_code
+class UnauthorizedException(HTTPException):
+    def __init__(self, detail: str):
+        super().__init__(
+            status.HTTP_403_FORBIDDEN,
+            detail=detail
+        )
 
 
-async def verify_db_code(email: EmailStr, code_to_verify: str):
-    invalid_code_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid or expired verification code"
-    )
-
-    code_data = await database.get_code(email)
-
-    if not code_data:
-        raise invalid_code_exception
-
-    if code_data.code == code_to_verify:
-        if datetime.now() < code_data.expiry:
-            await database.delete_code(code_data)
-
-            db_user = await database.get_user(email)
-            if not db_user:
-                # Rejestracja nowego użytkownika - jeśli nie istnieje w bazie danych
-                # Jeśli wywołano z zabezpieczonego endpointu - użytkownik już istnieje
-                await database.create_user(email)
-            return True
-    raise invalid_code_exception
+class UnauthenticatedException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
 
-async def save_code(email: EmailStr, code: str, expiry: datetime):
-    await database.save_code(email=email, code=code, expiry=expiry)
+class VerifyToken:
+    """Auth0 token verification"""
 
+    def __init__(self):
+        self.settings = get_settings()
 
-def create_access_token(email: EmailStr):
-    expire = datetime.now() + timedelta(days=settings.access_token_expire_minutes)
-    to_encode = {"sub": email, "exp": expire}
-    encoded_jwt = jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.algorithm)
-    return encoded_jwt
+        jwks_url = f"https://{self.settings.auth0_domain}/.well-known/jwks.json"
+        self.jwks_client = jwt.PyJWKClient(jwks_url)
+
+    async def verify(self, token: Optional[HTTPAuthorizationCredentials] = Depends(security)):
+        if token is None:
+            raise UnauthenticatedException
+
+        # This gets the 'kid' from the passed token
+        try:
+            signing_key = self.jwks_client.get_signing_key_from_jwt(token.credentials).key
+        except jwt.exceptions.PyJWKClientError as error:
+            raise UnauthorizedException(str(error))
+        except jwt.exceptions.DecodeError as error:
+            raise UnauthorizedException(str(error))
+
+        try:
+            payload = jwt.decode(
+                token.credentials,
+                signing_key,
+                algorithms=self.settings.auth0_algorithms,
+                audience=self.settings.auth0_api_audience,
+                issuer=self.settings.auth0_issuer,
+            )
+        except Exception as error:
+            raise UnauthorizedException(str(error))
+
+        return TokenData(**payload)

@@ -5,12 +5,11 @@ class Settings(BaseSettings):
     app_name: str
     admin_email: str
 
-    # auth
-    jwt_secret_key: str
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
-    verification_code_length: int = 6
-    verification_code_expire_minutes: int = 15
+    # auth0
+    auth0_domain: str
+    auth0_api_audience: str
+    auth0_issuer: str
+    auth0_algorithms: str
 
     tripadvisor_api_key: str
     openai_api_key: str

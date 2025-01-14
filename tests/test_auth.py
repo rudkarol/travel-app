@@ -5,22 +5,6 @@ from main import app
 client = TestClient(app)
 
 
-def test_request_code():
-    r = client.post(
-        "/auth/request-code",
-        json={"email": "user@example.com"}
-    )
-    assert r.status_code == 200
-
-
-def test_request_code_bad_email_format():
-    r = client.post(
-        "/auth/request-code",
-        json={"email": "user@examplecom"}
-    )
-    assert r.status_code == 422
-
-
 # def test_verify_code():
 #     r = client.post(
 #         "/auth/verify/",

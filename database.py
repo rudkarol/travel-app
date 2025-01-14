@@ -1,8 +1,6 @@
 from datetime import datetime
 from odmantic import AIOEngine
-from pydantic import EmailStr
 
-from schemas.auth import Otp
 from schemas.user import DbUser, User
 from schemas.risks import DbCountryAdvisories, CountryItem
 
@@ -11,35 +9,19 @@ class Database:
     def __init__(self):
         self.engine = AIOEngine(database="travelDB")
 
-    async def get_code(self, email: EmailStr):
-        code_data = await self.engine.find_one(Otp, Otp.email == email)
-        return code_data
-
-    async def save_code(self, email: EmailStr, code: str, expiry: datetime):
-        code_data = await self.get_code(email)
-        if not code_data:
-            code_data = Otp(email=email, code=code, expiry=expiry)
-        else:
-            code_data.code = code
-            code_data.expiry = expiry
-        await self.engine.save(code_data)
-
-    async def delete_code(self, code_data: Otp):
-        await self.engine.delete(code_data)
-
-    async def get_user(self, email: EmailStr):
-        user_data = await self.engine.find_one(DbUser, DbUser.email == email)
+    async def get_user(self, user_id: str):
+        user_data = await self.engine.find_one(DbUser, DbUser.user_id == user_id)
         return user_data
 
-    async def create_user(self, email: EmailStr):
-        new_user = DbUser(email=email)
-        await self.engine.save(new_user)
+    # async def create_user(self, user_id: str):
+    #     new_user = DbUser(user_id=user_id)
+    #     await self.engine.save(new_user)
+    #
+    # async def delete_user(self, user_id: str):
+    #     await self.engine.remove(DbUser, DbUser.user_id == user_id)
 
-    async def delete_user(self, email: EmailStr):
-        await self.engine.remove(DbUser, DbUser.email == email)
-
-    async def update_user(self, user: User, new_user_data: User):
-        user_data = await self.get_user(user.email)
+    async def update_user(self, user_id: str, new_user_data: User):
+        user_data = await self.get_user(user_id)
         user_data.model_update(new_user_data)
         await self.engine.save(user_data)
 

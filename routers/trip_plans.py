@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Security
 from typing import Annotated, List, Optional
 import math
 
@@ -7,16 +7,19 @@ from services.locations import fetch_tripadvisor_nearby_search
 from schemas.openai import GenerateTripPlanRequest, AIResponseFormat
 from schemas.user import User
 from schemas.trip_plans import Trip
-from dependencies import verify_token_and_user, get_database
+from schemas.auth import TokenData
+from dependencies import get_token_verification, get_database
 
 
 database = get_database()
 router = APIRouter()
+verify_user = get_token_verification()
+
 
 @router.post("/trip/generate")
 async def generate_trip_plan(
         query_params: GenerateTripPlanRequest,
-        current_user: Annotated[User, Depends(verify_token_and_user)]
+        auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ) -> AIResponseFormat:
     """Endpoint do generowania kilkudniowego planu podróży.
     Dostępne generowanie planu dla 1 do 7 dni."""
@@ -39,24 +42,25 @@ async def generate_trip_plan(
 
 @router.get("/trip/plans")
 async def get_current_user_trip_plans(
-    current_user: Annotated[User, Depends(verify_token_and_user)]
+    auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ) -> Optional[List[Trip]]:
     """Returns a list of the current user's trip plans"""
-
-    return current_user.trips
+    user = await database.get_user(auth_result.user_id)
+    return user.trips
 
 
 @router.put("/trip/create")
 async def create_users_trip_plan(
     trip_plan: Trip,
-    current_user: Annotated[User, Depends(verify_token_and_user)]
+    auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
     """Creates a new trip plan of the current user's"""
+    user = await database.get_user(auth_result.user_id)
+    new_user_data = User(**user.model_dump())
 
-    new_user_data = User(**current_user.model_dump())
     if not new_user_data.trips:
         new_user_data.trips = [trip_plan]
     else:
         new_user_data.trips.append(trip_plan)
-    await database.update_user(user=current_user, new_user_data=new_user_data)
+    await database.update_user(user_id=auth_result.user_id, new_user_data=new_user_data)
     return {"message": "Trip plan created successfully"}
