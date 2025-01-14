@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     app_name: str
     admin_email: str
 
+    mongo_uri: str
+
     # auth0
     auth0_domain: str
     auth0_api_audience: str

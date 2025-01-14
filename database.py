@@ -1,13 +1,19 @@
-from datetime import datetime
 from odmantic import AIOEngine
+from odmantic.engine import AsyncIOMotorClient
 
 from schemas.user import DbUser, User
 from schemas.risks import DbCountryAdvisories, CountryItem
+from dependencies import get_settings
+
+settings = get_settings()
 
 
 class Database:
     def __init__(self):
-        self.engine = AIOEngine(database="travelDB")
+        self.engine = AIOEngine(
+            client=AsyncIOMotorClient(settings.mongo_uri),
+            database="travel_app"
+        )
 
     async def get_user(self, user_id: str):
         user_data = await self.engine.find_one(DbUser, DbUser.user_id == user_id)
