@@ -39,12 +39,12 @@ async def fetch_tripadvisor_location_photos(location_id: str):
         return photos.model_dump(by_alias=False)
 
 
-async def fetch_tripadvisor_nearby_search(lat: float, lon: float, category: str):
+async def fetch_tripadvisor_nearby_search(search_params: lm.NearbySearchRequest):
     url = "https://api.content.tripadvisor.com/api/v1/location/nearby_search"
     params = lm.TripadvisorRequest().model_dump()
     params.update({
-        "latLong": str(lat) + "," + str(lon),
-        "category": category
+        "latLong": str(search_params.lat) + "," + str(search_params.lon),
+        "category": search_params.category
     })
     headers = {"accept": "application/json"}
 

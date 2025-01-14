@@ -3,8 +3,8 @@ from typing import Annotated
 
 from dependencies import get_database, get_token_verification
 from schemas.risks import CountryAdvisories
-from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details
-from schemas.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse
+from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details, fetch_tripadvisor_nearby_search
+from schemas.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse, NearbySearchRequest
 from schemas.auth import TokenData
 
 database = get_database()
@@ -19,6 +19,16 @@ async def search_locations(
     """Endpoint do wyszukiwania lokacji"""
 
     locations = await fetch_tripadvisor_find_search(search_params)
+    return locations
+
+@router.get("/locations/nearby_search/", response_model=SearchResponse)
+async def search_nearby_locations(
+        search_params: Annotated[NearbySearchRequest, Query()],
+        auth_result: Annotated[TokenData, Security(verify_user.verify)]
+):
+    """Endpoint do wyszukiwania lokacji w pobliżu danych koordynatów"""
+
+    locations = await fetch_tripadvisor_nearby_search(search_params)
     return locations
 
 @router.get("/location/", response_model=LocationDetails)

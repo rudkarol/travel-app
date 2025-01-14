@@ -43,6 +43,12 @@ class SearchRequest(BaseModel):
     category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
 
 
+class NearbySearchRequest(BaseModel):
+    lat: float
+    lon: float
+    category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
+
+
 class SearchResponse(BaseModel):
     data: List[Location]
 

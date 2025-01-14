@@ -8,6 +8,7 @@ from schemas.openai import GenerateTripPlanRequest, AIResponseFormat
 from schemas.user import User
 from schemas.trip_plans import Trip
 from schemas.auth import TokenData
+from schemas.locations import NearbySearchRequest
 from dependencies import get_token_verification, get_database
 
 
@@ -26,13 +27,13 @@ async def generate_trip_plan(
 
     attractions=[]
     for day in range(math.ceil(query_params.days / 2)):
-        a = await fetch_tripadvisor_nearby_search(lat=query_params.lat, lon=query_params.lon, category="attractions")
+        a = await fetch_tripadvisor_nearby_search(NearbySearchRequest(lat=query_params.lat, lon=query_params.lon, category="attractions"))
         a = a.to_ai_input_list()
         attractions.extend(a)
 
     restaurants=[]
     for day in range(math.ceil(query_params.days / 7)):
-        r = await fetch_tripadvisor_nearby_search(lat=query_params.lat, lon=query_params.lon, category="restaurants")
+        r = await fetch_tripadvisor_nearby_search(NearbySearchRequest(lat=query_params.lat, lon=query_params.lon, category="restaurants"))
         r = r.to_ai_input_list()
         restaurants.extend(r)
 
