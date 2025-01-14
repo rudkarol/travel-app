@@ -8,6 +8,7 @@ from schemas.trip_plans import Trip
 
 class User(BaseModel):
     user_id: str
+    email: str
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
     trips: Optional[List[Trip]] = None
@@ -23,6 +24,7 @@ class User(BaseModel):
 
 class DbUser(Model):
     user_id: str
+    email: str
     name: Optional[str] = None
     favourite_places: Optional[List[Place]] = None
     trips: Optional[List[Trip]] = None
