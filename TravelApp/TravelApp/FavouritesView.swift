@@ -13,7 +13,7 @@ struct FavouritesView: View {
     
     var body: some View {
         NavigationView{
-            VStack {
+            ZStack {
                 List(viewModel.favouritePlaces) { place in
                     PlaceListCell(place: place)
                         .listRowSeparator(.hidden)
@@ -38,7 +38,6 @@ struct FavouritesView: View {
                         message: "Your favourite places list is empty"
                     )
                 }
-                
             }
             .navigationTitle("Favourite Places")
         }

@@ -1,5 +1,5 @@
 //
-//  PlaceListCell.swift
+//  PlanListCell.swift
 //  TravelApp
 //
 //  Created by osx on 17/01/2025.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct PlaceListCell: View {
+struct PlanListCell: View {
     
-    let place: Place
+    let plan: Plan
     
     var body: some View {
         VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: place.imageUrl)) {image in
+            AsyncImage(url: URL(string: plan.places[0].imageUrl)) {image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -21,33 +21,24 @@ struct PlaceListCell: View {
                     .clipped()
                     .cornerRadius(8)
             } placeholder: {
-                Image("place-placehoilder")
+                Image("plan-placeholder")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(height: 200)
                     .clipped()
                     .cornerRadius(8)
             }
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "heart.fill")
-                        .imageScale(.large)
-                        .foregroundStyle(Color.red)
-                }
-                .padding()
-            }
 
-            Text(place.name)
+            Text(plan.name)
                 .bold()
                 .padding(.leading)
-            Text(place.location)
+//            TODO: DatePicker range
+            Text("\(plan.startDate) to \(plan.endDate)")
                 .padding(.leading)
         }
     }
 }
 
 #Preview {
-    PlaceListCell(place: MockDataPlace.samplePlaceOne)
+    PlanListCell(plan: MockDataPlan.samplePlanOne)
 }

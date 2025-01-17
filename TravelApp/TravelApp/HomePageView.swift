@@ -43,11 +43,12 @@ struct HomePageView: View {
                 }
                 
                 Text("Explore")
-                    .font(.title2)
+                    .font(.title)
+                    .bold()
                     .padding([.horizontal, .top])
                 
                 LazyVStack(spacing: 0) {
-                    ForEach(MockData.samplePlaces) { place in
+                    ForEach(MockDataPlace.samplePlaces) { place in
                         PlaceListCell(place: place)
                             .padding()
                     }
