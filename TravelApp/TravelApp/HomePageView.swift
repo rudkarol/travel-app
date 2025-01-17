@@ -49,6 +49,7 @@ struct HomePageView: View {
                 LazyVStack(spacing: 0) {
                     ForEach(MockData.samplePlaces) { place in
                         PlaceListCell(place: place)
+                            .padding()
                     }
                 }
             }

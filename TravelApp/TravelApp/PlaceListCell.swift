@@ -45,7 +45,6 @@ struct PlaceListCell: View {
             Text(place.location)
                 .padding(.leading)
         }
-        .padding()
     }
 }
 
