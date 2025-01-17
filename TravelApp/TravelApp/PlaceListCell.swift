@@ -10,6 +10,7 @@ import SwiftUI
 struct PlaceListCell: View {
     
     let place: Place
+    let showingAddToFavButton: Bool = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -29,14 +30,16 @@ struct PlaceListCell: View {
                     .cornerRadius(8)
             }
             .overlay(alignment: .topTrailing) {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "heart.fill")
-                        .imageScale(.large)
-                        .foregroundStyle(Color.red)
+                if showingAddToFavButton {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "heart.fill")
+                            .imageScale(.large)
+                            .foregroundStyle(Color.red)
+                    }
+                    .padding()
                 }
-                .padding()
             }
 
             Text(place.name)

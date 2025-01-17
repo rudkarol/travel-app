@@ -8,6 +8,6 @@
 import Foundation
 
 @Observable final class PlansViewModel {
-//    TODO: var favouritePlaces: [Place] = []
+//    TODO: var userPlans: [Plan] = []
     var userPlans: [Plan] = MockDataPlan.samplePlans
 }

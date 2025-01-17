@@ -48,7 +48,7 @@ struct HomePageView: View {
                     .padding([.horizontal, .top])
                 
                 LazyVStack(spacing: 0) {
-                    ForEach(MockDataPlace.samplePlaces) { place in
+                    ForEach(viewModel.exploreItems) { place in
                         PlaceListCell(place: place)
                             .padding()
                     }
