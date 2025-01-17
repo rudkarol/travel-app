@@ -8,36 +8,52 @@
 import SwiftUI
 
 struct HomePageView: View {
+    
+    var viewModel = HomePageViewModel()
+    
     var body: some View {
-        VStack {
-            ZStack(alignment: .top) {
-                Image("ha-long-view")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                
-                HStack {
-                    Text("Logo")
+        
+        ScrollView {
+            VStack(alignment: .leading) {
+                ZStack(alignment: .top) {
+                    Image("ha-long-view")
+                        .resizable()
+                        .aspectRatio(0.62, contentMode: .fill)
+                        .clipped()
                     
-                    Spacer()
-                    
-                    ZStack {
-                        Circle()
-                            .frame(width: 45, height: 45)
-                            .foregroundColor(.white)
+                    HStack {
+                        Text("Logo")
+                            .font(.title)
                         
-                        Image(systemName: "person")
-                            .imageScale(.large)
-                            .frame(width: 60, height: 60)
-                            .foregroundColor(.black)
+                        Spacer()
+                        
+                        ZStack {
+                            Circle()
+                                .frame(width: 45, height: 45)
+                                .foregroundColor(.white)
+                            
+                            Image(systemName: "person")
+                                .imageScale(.large)
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(.black)
+                        }
+                    }
+                    .padding()
+                    .padding(.top, 45)
+                }
+                
+                Text("Explore")
+                    .font(.title2)
+                    .padding([.horizontal, .top])
+                
+                LazyVStack(spacing: 0) {
+                    ForEach(MockData.samplePlaces) { place in
+                        PlaceListCell(place: place)
                     }
                 }
-                .padding()
             }
-            
-            Spacer()
-            
-            
         }
+        .ignoresSafeArea()
     }
 }
 
