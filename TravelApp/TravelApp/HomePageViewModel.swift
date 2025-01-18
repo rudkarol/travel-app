@@ -11,5 +11,5 @@ import Observation
 
 @Observable final class HomePageViewModel {
 //    TODO: exploreItems: [Place] = []
-    var exploreItems: [Place] = MockDataPlace.samplePlaces
+    var exploreItems: [LocationBasic] = MockDataPlace.samplePlaces
 }

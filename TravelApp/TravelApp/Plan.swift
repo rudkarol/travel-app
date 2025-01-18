@@ -12,7 +12,7 @@ struct Plan: Codable, Identifiable {
     let name: String
     let startDate: String
     let endDate: String
-    let places: [Place]
+    let places: [LocationBasic]
 }
 
 struct MockDataPlan {

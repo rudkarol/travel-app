@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PlaceListCell: View {
     
-    let place: Place
+    let place: LocationBasic
     var showingAddToFavButton: Bool = true
     
     var body: some View {

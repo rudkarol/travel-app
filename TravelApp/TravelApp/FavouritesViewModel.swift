@@ -9,5 +9,5 @@ import Observation
 
 @Observable final class FavouritesViewModel {
 //    TODO: var favouritePlaces: [Place] = []
-    var favouritePlaces: [Place] = MockDataPlace.samplePlaces
+    var favouritePlaces: [LocationBasic] = MockDataPlace.samplePlaces
 }
