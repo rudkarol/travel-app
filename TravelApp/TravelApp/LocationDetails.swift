@@ -10,7 +10,7 @@ import Foundation
 struct LocationDetails: Decodable {
     let locationId: String
     let name: String
-    let imageUrl: String
+    let photos: [Photo]
     let addressObj: AddressObj
     let description: String
     let latitude: Double
@@ -21,20 +21,21 @@ struct LocationDetails: Decodable {
     
     var id: String { locationId }
     
-    init(locationId: String,
-         name: String,
-         imageUrl: String,
-         addressObj: AddressObj,
-         description: String,
-         latitude: Double,
-         longitude: Double,
-         category: LocationCategory,
-         subcategory: [LocationCategory],
-         safetyLevel: SafetyLevel
+    init(
+        locationId: String,
+        name: String,
+        photos: [Photo],
+        addressObj: AddressObj,
+        description: String,
+        latitude: Double,
+        longitude: Double,
+        category: LocationCategory,
+        subcategory: [LocationCategory],
+        safetyLevel: SafetyLevel
     ) {
         self.locationId = locationId
         self.name = name
-        self.imageUrl = imageUrl
+        self.photos = photos
         self.addressObj = addressObj
         self.description = description
         self.latitude = latitude
@@ -118,7 +119,10 @@ struct MockDataLocationDetails {
     static let sampleLocationDetails = LocationDetails(
         locationId: "274856",
         name: "Warsaw",
-        imageUrl: "https://picsum.photos/600/400",
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ],
         addressObj: AddressObj(
             country: "Poland",
             addressString: "Warsaw Poland"

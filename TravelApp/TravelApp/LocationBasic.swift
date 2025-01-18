@@ -10,7 +10,7 @@ import Foundation
 struct LocationBasic: Decodable, Identifiable {
     let locationId: String
     let name: String
-    let imageUrl: String
+    let photos: [Photo]
     let addressObj: AddressObj
     
     var id: String { locationId }
@@ -27,9 +27,12 @@ struct LocationBasicResponse : Decodable {
 
 struct MockDataPlace {
     static let samplePlaceOne = LocationBasic(
-        locationId: "321431",
+        locationId: "105127",
         name: "Central park",
-        imageUrl: "https://picsum.photos/600/400",
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ],
         addressObj: AddressObj (
             country: "USA",
             addressString: "NY, USA"
@@ -37,9 +40,12 @@ struct MockDataPlace {
     )
     
     static let samplePlaceTwo = LocationBasic(
-        locationId: "54321",
+        locationId: "276740",
         name: "Rynek gółwny",
-        imageUrl: "https://picsum.photos/600/400",
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ],
         addressObj: AddressObj (
             country: "Poland",
             addressString: "Kraków, Poland"
@@ -47,12 +53,15 @@ struct MockDataPlace {
     )
     
     static let samplePlaceThree = LocationBasic(
-        locationId: "62342",
-        name: "Museum of Contemportary Art",
-        imageUrl: "https://picsum.photos/600/400",
+        locationId: "199909",
+        name: "Museum of Contemportary Art Kiasma",
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ],
         addressObj: AddressObj (
             country: "Finland",
-            addressString: "Kiasma, Finland"
+            addressString: "Helsinki, Finland"
         )
     )
     

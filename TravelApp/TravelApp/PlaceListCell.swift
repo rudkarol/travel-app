@@ -15,7 +15,7 @@ struct PlaceListCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            CachedAsyncImage(url: URL(string: place.imageUrl)!) {image in
+            CachedAsyncImage(url: URL(string: place.photos[0].url)!) {image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -46,7 +46,7 @@ struct PlaceListCell: View {
             Text(place.name)
                 .bold()
                 .padding(.leading)
-            Text(place.location)
+            Text(place.addressObj.addressString)
                 .padding(.leading)
         }
     }
