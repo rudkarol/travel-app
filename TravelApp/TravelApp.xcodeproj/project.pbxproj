@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1056FDAD2D3A8FD8005033B5 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 1056FDAC2D3A8FD8005033B5 /* Auth0 */; };
 		1056FDAF2D3A910A005033B5 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1056FDAE2D3A90F7005033B5 /* Auth0.plist */; };
+		108BB88F2D3C11C6002C2A30 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 108BB88E2D3C11C6002C2A30 /* CachedAsyncImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1056FDAD2D3A8FD8005033B5 /* Auth0 in Frameworks */,
+				108BB88F2D3C11C6002C2A30 /* CachedAsyncImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +76,7 @@
 			name = TravelApp;
 			packageProductDependencies = (
 				1056FDAC2D3A8FD8005033B5 /* Auth0 */,
+				108BB88E2D3C11C6002C2A30 /* CachedAsyncImage */,
 			);
 			productName = TravelApp;
 			productReference = 1056FD882D3A7D7E005033B5 /* TravelApp.app */;
@@ -105,6 +108,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1056FDAB2D3A8FD8005033B5 /* XCRemoteSwiftPackageReference "Auth0" */,
+				108BB88D2D3C11C6002C2A30 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1056FD892D3A7D7E005033B5 /* Products */;
@@ -345,6 +349,14 @@
 				minimumVersion = 2.10.0;
 			};
 		};
+		108BB88D2D3C11C6002C2A30 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -352,6 +364,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1056FDAB2D3A8FD8005033B5 /* XCRemoteSwiftPackageReference "Auth0" */;
 			productName = Auth0;
+		};
+		108BB88E2D3C11C6002C2A30 /* CachedAsyncImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 108BB88D2D3C11C6002C2A30 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
+			productName = CachedAsyncImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

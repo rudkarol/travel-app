@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct PlanListCell: View {
     
@@ -13,7 +14,7 @@ struct PlanListCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: plan.places[0].imageUrl)) {image in
+            CachedAsyncImage(url: URL(string: plan.places[0].imageUrl)!) {image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
