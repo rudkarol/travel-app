@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Plan: Codable, Identifiable {
+struct Plan: Decodable, Identifiable {
     let id: Int
     let name: String
     let startDate: String
