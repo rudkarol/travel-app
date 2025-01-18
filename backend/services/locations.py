@@ -35,8 +35,7 @@ async def fetch_tripadvisor_location_photos(location_id: str):
     async with httpx.AsyncClient() as client:
         r = await client.get(url, params=params.model_dump(), headers=headers)
         r.raise_for_status()
-        photos = lm.Photos.from_response(r.json())
-        return photos.model_dump(by_alias=False)
+        return lm.Photos.from_response(r.json())
 
 
 async def fetch_tripadvisor_nearby_search(search_params: lm.NearbySearchRequest):

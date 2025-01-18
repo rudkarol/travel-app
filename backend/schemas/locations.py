@@ -7,6 +7,16 @@ from schemas.risks import CountryAdvisories
 settings = get_settings()
 
 
+class Image(BaseModel):
+    url: str
+
+    @classmethod
+    def from_response(cls, data: dict) -> "Image":
+        return cls(
+            url=data["images"]["large"]["url"]
+        )
+
+
 class Place(BaseModel):
     location_id: str
     name: str
@@ -27,6 +37,7 @@ class Location(BaseModel):
     location_id: str
     name: str
     address_obj: AddressObj
+    photos: Optional[List[Image]] = None
 
 
 class TripadvisorRequest(BaseModel):
@@ -84,21 +95,7 @@ class LocationDetails(Location):
     category: LocationCategory
     subcategory: List[LocationCategory]
     safety_level: Optional[CountryAdvisories] = None
-    #     TODO photos i inne pola
-
-
-class Image(BaseModel):
-    width: int
-    height: int
-    url: str
-
-    @classmethod
-    def from_response(cls, data: dict) -> "Image":
-        return cls(
-            width=data["images"]["large"]["width"],
-            height=data["images"]["large"]["height"],
-            url=data["images"]["large"]["url"]
-        )
+    photos: Optional[List[Image]] = None
 
 
 class Photos(BaseModel):
