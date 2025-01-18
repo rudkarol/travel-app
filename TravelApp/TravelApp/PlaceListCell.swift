@@ -10,7 +10,7 @@ import SwiftUI
 struct PlaceListCell: View {
     
     let place: Place
-    let showingAddToFavButton: Bool = true
+    var showingAddToFavButton: Bool = true
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -52,5 +52,5 @@ struct PlaceListCell: View {
 }
 
 #Preview {
-    PlaceListCell(place: MockDataPlace.samplePlaceOne)
+    PlaceListCell(place: MockDataPlace.samplePlaceOne, showingAddToFavButton: false)
 }
