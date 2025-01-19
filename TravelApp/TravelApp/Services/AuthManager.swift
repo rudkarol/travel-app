@@ -19,7 +19,11 @@ class AuthManager {
     
     func login() async {
         do {
-            let credentials = try await Auth0.webAuth().start()
+            let credentials = try await Auth0
+                .webAuth()
+                .scope("openid profile email offline_access")
+                .start()
+            
             let isSaved = credentialsManager.store(credentials: credentials)
             
             if isSaved {
@@ -27,7 +31,7 @@ class AuthManager {
                 print("Obtained credentials: \(self.credentials!)")
             }
         } catch {
-            print("Failed with: \(error)")
+            print("Failed login with: \(error)")
         }
     }
     
@@ -39,12 +43,18 @@ class AuthManager {
             
             print("Session cookie cleared")
         } catch {
-            print("Failed with: \(error)")
+            print("Failed logout with: \(error)")
         }
     }
     
     func isAuthenticated() -> Bool {
-//        return credentialsManager.canRenew()
-        return credentialsManager.hasValid()
+        return credentialsManager.canRenew()
     }
 }
+
+//let credentials = try await AuthManager.shared.getCredentials()
+//
+//guard let accessToken = credentials.accessToken else {
+//    print("No access token available")
+//    return
+//}

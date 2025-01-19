@@ -10,11 +10,11 @@ import SwiftUI
 struct HomePageView: View {
     
     var viewModel = HomePageViewModel()
-    @State var isAuthenticated = AuthManager.shared.isAuthenticated()
+    
     
     var body: some View {
 
-        if (isAuthenticated) {
+        if (viewModel.isAuthenticated) {
             ScrollView {
                 VStack(alignment: .leading) {
                     ZStack(alignment: .top) {
@@ -64,7 +64,7 @@ struct HomePageView: View {
                     Task {
                         await AuthManager.shared.login()
                     }
-                    isAuthenticated = AuthManager.shared.isAuthenticated()
+                    viewModel.isAuthenticated = AuthManager.shared.isAuthenticated()
                 })
             }
         }
