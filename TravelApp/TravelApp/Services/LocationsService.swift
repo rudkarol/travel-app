@@ -7,8 +7,11 @@
 
 import Foundation
 
-func getLocationDetails() async throws -> LocationDetails {
-    let endpoinUrl = ""
+func getLocationDetails(locationId: String) async throws -> LocationDetails {
+    
+    let locale = NSLocale.current
+    let currencyCode = locale.currency?.identifier
+    let endpoinUrl = "http://http://192.168.18.12:8000/location?location_id=\(locationId)&currency=\(currencyCode ?? "usd")"
     var accessToken: String
     
     guard let url = URL(string: endpoinUrl) else {

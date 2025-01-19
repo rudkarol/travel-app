@@ -8,12 +8,9 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>auth0</string>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-				<string>com.rudkarol.TravelApp</string>
-			</array>
+			<array/>
 		</dict>
 	</array>
 </dict>
