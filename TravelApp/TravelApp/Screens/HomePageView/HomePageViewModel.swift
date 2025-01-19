@@ -10,6 +10,8 @@ import Observation
 
 
 @Observable final class HomePageViewModel {
-//    TODO: exploreItems: [Place] = []
+    //    TODO: exploreItems: [Place] = []
+    //    TODO: exploreItems: [Place]?
     var exploreItems: [LocationBasic] = MockDataPlace.samplePlaces
 }
+
