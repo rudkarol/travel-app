@@ -17,10 +17,6 @@ struct FavouritesView: View {
                 List(viewModel.favouritePlaces) { place in
                     PlaceListCell(place: place)
                         .listRowSeparator(.hidden)
-                        .onTapGesture {
-                            //                      TODO: go to placePage, może przenieść onTapGesture do PlaceListCell
-                            print("item clicked")
-                        }
                         .swipeActions(allowsFullSwipe: false) {
                             Button(role: .destructive) {
                                 //                          TODO: delete
