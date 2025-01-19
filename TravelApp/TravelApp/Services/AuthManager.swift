@@ -50,11 +50,16 @@ class AuthManager {
     func isAuthenticated() -> Bool {
         return credentialsManager.canRenew()
     }
-}
+    
+    func getCredentials() async throws -> Credentials {
+        do {
+            let credentials = try await credentialsManager.credentials()
+            print("Renewed credentials: \(credentials)")
+            return credentials
+        } catch {
+            print("Failed to renew credentials with: \(error)")
+            throw error
+        }
+    }
 
-//let credentials = try await AuthManager.shared.getCredentials()
-//
-//guard let accessToken = credentials.accessToken else {
-//    print("No access token available")
-//    return
-//}
+}
