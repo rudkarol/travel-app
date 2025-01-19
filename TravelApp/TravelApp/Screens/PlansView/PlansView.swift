@@ -34,7 +34,7 @@ struct PlansView: View {
                 
                 if viewModel.userPlans.isEmpty {
                     EmptyState(
-                        imageName: "empty-plans",
+                        systemName: "bookmark.slash",
                         message: "Your plans list is empty"
                     )
                 }

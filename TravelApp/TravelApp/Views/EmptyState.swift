@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EmptyState: View {
     
-    let imageName: String
+    let systemName: String
     let message: String
     
     var body: some View {
@@ -18,10 +18,11 @@ struct EmptyState: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    Image(imageName)
+                    Image(systemName: systemName)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 150)
+                        .frame(height: 80)
+                        .symbolRenderingMode(.hierarchical)
                     
                     Text(message)
                         .font(.title3)
@@ -37,5 +38,5 @@ struct EmptyState: View {
 }
 
 #Preview {
-    EmptyState(imageName: "empty-favourites", message: "Your favourite places list is empty. Please add some places to your favourites.")
+    EmptyState(systemName: "heart.slash", message: "Your favourite places list is empty. Please add some places to your favourites.")
 }

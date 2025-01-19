@@ -49,7 +49,7 @@ struct PlanPage: View {
                     
                     if plan.places.isEmpty {
                         EmptyState(
-                            imageName: "empty-plan",
+                            systemName: "bookmark.slash",
                             message: "There are no places added to your trip plan"
                         )
                     }

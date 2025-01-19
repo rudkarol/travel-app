@@ -34,7 +34,7 @@ struct FavouritesView: View {
                 
                 if viewModel.favouritePlaces.isEmpty {
                     EmptyState(
-                        imageName: "empty-favourites",
+                        systemName: "heart.slash",
                         message: "Your favourite places list is empty"
                     )
                 }
