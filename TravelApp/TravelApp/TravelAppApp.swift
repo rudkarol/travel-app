@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct TravelAppApp: App {
+    
     var body: some Scene {
         WindowGroup {
-            AppTabView()
+            ContentView()
         }
     }
 }

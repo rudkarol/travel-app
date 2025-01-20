@@ -13,6 +13,5 @@ import Observation
     //    TODO: exploreItems: [Place] = []
     //    TODO: exploreItems: [Place]?
     var exploreItems: [LocationBasic] = MockDataPlace.samplePlaces
-    var isAuthenticated: Bool = AuthManager.shared.isAuthenticated()
 }
 

@@ -7,30 +7,31 @@
 
 import Foundation
 import Auth0
+import Observation
 
-class AuthManager {
-    static let shared = AuthManager() // Singleton - dostęp w całej aplikaacji
-    private let credentialsManager: CredentialsManager
-    private var credentials: Credentials?
+@Observable final class AuthManager {
+    var isLoggedIn: Bool = false
     
-    private init() {
-        self.credentialsManager = CredentialsManager(authentication: Auth0.authentication())
-    }
+    static let shared = AuthManager() //Singleton - dostępne w całej aplikaacji
+    private let credentialsManager = CredentialsManager(authentication: Auth0.authentication())
+    private init() {}
+    
     
     func login() async {
         do {
             let credentials = try await Auth0
                 .webAuth()
+                .audience("https://travel-planner.com")
                 .scope("openid profile email offline_access")
                 .start()
             
-            let isSaved = credentialsManager.store(credentials: credentials)
+            _ = credentialsManager.store(credentials: credentials)
             
-            if isSaved {
-                self.credentials = credentials
-                print("Obtained credentials: \(self.credentials!)")
-            }
+            await MainActor.run { self.isLoggedIn = true }
+            
+            print("Obtained credentials: \(credentials)")
         } catch {
+            await MainActor.run { self.isLoggedIn = false }
             print("Failed login with: \(error)")
         }
     }
@@ -39,7 +40,8 @@ class AuthManager {
         do {
             try await Auth0.webAuth().clearSession()
             _ = credentialsManager.clear()
-            self.credentials = nil
+
+            await MainActor.run { self.isLoggedIn = false }
             
             print("Session cookie cleared")
         } catch {
@@ -47,19 +49,32 @@ class AuthManager {
         }
     }
     
-    func isAuthenticated() -> Bool {
-        return credentialsManager.canRenew()
-    }
-    
-    func getCredentials() async throws -> Credentials {
-        do {
-            let credentials = try await credentialsManager.credentials()
-            print("Renewed credentials: \(credentials)")
-            return credentials
-        } catch {
-            print("Failed to renew credentials with: \(error)")
-            throw error
+    func checkLoginStatus() async {
+        if credentialsManager.hasValid() {
+            await MainActor.run {
+                self.isLoggedIn = true
+            }
+        } else if credentialsManager.canRenew() {
+            do {
+                _ = try await credentialsManager.credentials()
+                await MainActor.run {
+                    self.isLoggedIn = true
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoggedIn = false
+                }
+            }
+        } else {
+            await MainActor.run {
+                self.isLoggedIn = false
+            }
         }
     }
-
+    
+    func getAccessToken() async throws -> String {
+        let credentials = try await credentialsManager.credentials()
+        print("AccessToken: \(credentials.accessToken)")
+        return credentials.accessToken
+    }
 }

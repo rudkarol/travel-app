@@ -8,27 +8,28 @@
 import SwiftUI
 
 struct HomePageView: View {
-    
-    var viewModel = HomePageViewModel()
-    
+
+    private let viewModel = HomePageViewModel()
     
     var body: some View {
-
-        if (viewModel.isAuthenticated) {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ZStack(alignment: .top) {
-                        Image("ha-long-view")
-                            .resizable()
-                            .aspectRatio(0.62, contentMode: .fill)
-                            .clipped()
+        
+        ScrollView {
+            VStack(alignment: .leading) {
+                ZStack(alignment: .top) {
+                    Image("ha-long-view")
+                        .resizable()
+                        .aspectRatio(0.62, contentMode: .fill)
+                        .clipped()
+                    
+                    HStack {
+                        Text("Logo")
+                            .font(.title)
                         
-                        HStack {
-                            Text("Logo")
-                                .font(.title)
-                            
-                            Spacer()
-                            
+                        Spacer()
+                        
+                        Button {
+                            Task { await AuthManager.shared.logout() }
+                        } label: {
                             ZStack {
                                 Circle()
                                     .frame(width: 45, height: 45)
@@ -40,34 +41,25 @@ struct HomePageView: View {
                                     .foregroundColor(.black)
                             }
                         }
-                        .padding()
-                        .padding(.top, 45)
                     }
-                    
-                    Text("Explore")
-                        .font(.title)
-                        .bold()
-                        .padding([.horizontal, .top])
-                    
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewModel.exploreItems) { place in
-                            PlaceListCell(place: place)
-                                .padding()
-                        }
+                    .padding()
+                    .padding(.top, 45)
+                }
+                
+                Text("Explore")
+                    .font(.title)
+                    .bold()
+                    .padding([.horizontal, .top])
+                
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.exploreItems) { place in
+                        PlaceListCell(place: place)
+                            .padding()
                     }
                 }
             }
-            .ignoresSafeArea()
-        } else {
-            VStack {
-                Button("Login", action: {
-                    Task {
-                        await AuthManager.shared.login()
-                    }
-                    viewModel.isAuthenticated = AuthManager.shared.isAuthenticated()
-                })
-            }
         }
+        .ignoresSafeArea()
     }
 }
 
