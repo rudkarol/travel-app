@@ -11,11 +11,12 @@ import CachedAsyncImage
 struct LocationDetailsView: View {
     
     let locationId: String
-    @State private var locationDetails: LocationDetails?
+    private let viewmodel = LocationDetailsViewModel()
+    
     
     var body: some View {
         VStack {
-            CachedAsyncImage(url: URL(string: locationDetails?.photos.first?.url ?? "")) {image in
+            CachedAsyncImage(url: URL(string: viewmodel.locationDetails?.photos.first?.url ?? "")) {image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -29,20 +30,20 @@ struct LocationDetailsView: View {
                     .cornerRadius(8)
             }
             
-            Text(locationDetails?.name ?? "Name")
-            Text(locationDetails?.description ?? "")
+            Text(viewmodel.locationDetails?.name ?? "Name")
+            Text(viewmodel.locationDetails?.description ?? "")
             
             Grid {
                 GridRow {
                     InfoLinkCell(
                         systemName: "1.circle",
                         name: "Safety",
-                        url: locationDetails?.safetyLevel.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
+                        url: viewmodel.locationDetails?.safetyLevel.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
                     )
                     InfoLinkCell(
                         systemName: "lightbulb.max",
                         name: "Nice To Know",
-                        url: "https://en.wikivoyage.org/wiki/\(locationDetails?.addressObj.country ?? "")"
+                        url: "https://en.wikivoyage.org/wiki/\(viewmodel.locationDetails?.addressObj.country ?? "")"
                     )
                 }
                 GridRow {
@@ -60,13 +61,13 @@ struct LocationDetailsView: View {
             }
             .padding()
             
-            Text(locationDetails?.addressObj.addressString ?? "")
+            Text(viewmodel.locationDetails?.addressObj.addressString ?? "")
             
 //            TODO: Map
         }
         .task {
             do {
-                locationDetails = try await getLocationDetails(locationId: locationId)
+                try await viewmodel.getLocationDetails(locationId: locationId)
             } catch {
                 print("error")
             }
