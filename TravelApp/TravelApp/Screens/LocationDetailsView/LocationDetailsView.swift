@@ -16,7 +16,7 @@ struct LocationDetailsView: View {
     
     var body: some View {
         VStack {
-            CachedAsyncImage(url: URL(string: viewmodel.locationDetails?.photos.first?.url ?? "")) {image in
+            CachedAsyncImage(url: URL(string: viewmodel.locationDetails?.photos?.first?.url ?? "")) {image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -38,7 +38,7 @@ struct LocationDetailsView: View {
                     InfoLinkCell(
                         systemName: "1.circle",
                         name: "Safety",
-                        url: viewmodel.locationDetails?.safetyLevel.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
+                        url: viewmodel.locationDetails?.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
                     )
                     InfoLinkCell(
                         systemName: "lightbulb.max",
