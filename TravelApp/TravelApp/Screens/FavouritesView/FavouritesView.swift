@@ -12,30 +12,52 @@ struct FavouritesView: View {
     var viewModel = FavouritesViewModel()
     
     var body: some View {
-        NavigationView{
-            ZStack {
-                List(viewModel.favouritePlaces) { place in
-                    PlaceListCell(place: place)
-                        .listRowSeparator(.hidden)
-                        .swipeActions(allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                //                          TODO: delete
-                                print("item deleted")
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+        ZStack {
+            NavigationView{
+                ZStack {
+                    List(viewModel.favouritePlaces) { place in
+                        PlaceListCell(
+                            id: place.locationId,
+                            name: place.name,
+                            address: place.addressObj.addressString,
+                            photos: place.photos
+                        )
+                            .listRowSeparator(.hidden)
+                            .swipeActions(allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    //                          TODO: delete
+                                    print("item deleted")
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
-                        }
+                    }
+                    .listStyle(.plain)
+                    
+                    if viewModel.favouritePlaces.isEmpty {
+                        EmptyState(
+                            systemName: "heart.slash",
+                            message: "Your favourite places list is empty"
+                        )
+                    }
                 }
-                .listStyle(.plain)
-                
-                if viewModel.favouritePlaces.isEmpty {
-                    EmptyState(
-                        systemName: "heart.slash",
-                        message: "Your favourite places list is empty"
-                    )
-                }
+                .navigationTitle("Favourite Places")
             }
-            .navigationTitle("Favourite Places")
+            if viewModel.isLoading {
+                LoadingView()
+            }
+        }
+        .alert(
+            viewModel.alertData?.title ?? "",
+            isPresented: .constant(viewModel.alertData != nil),
+            presenting: viewModel.alertData
+        ) { alertData in
+            Button(alertData.buttonText) {
+                viewModel.alertData = nil
+            }
+        }
+        .task {
+            viewModel.loadFavouritePlaces()
         }
     }
 }

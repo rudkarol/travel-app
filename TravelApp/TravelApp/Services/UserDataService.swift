@@ -10,11 +10,13 @@ import Foundation
 
 final class UserDataService {
     
+    var user: User?
+    
     static let shared = UserDataService()
     private init() {}
     
     
-    func getUserRequest() async throws -> User {
+    func getUserRequest() async throws {
         let endpointUrl = "/user/me/"
         
         let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
@@ -22,7 +24,7 @@ final class UserDataService {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode(User.self, from: data)
+            user = try decoder.decode(User.self, from: data)
         } catch {
             print("decoder error")
             throw AppError.invalidData

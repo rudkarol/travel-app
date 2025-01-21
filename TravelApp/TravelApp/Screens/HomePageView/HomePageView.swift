@@ -54,7 +54,12 @@ struct HomePageView: View {
                     
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.exploreItems) { place in
-                            PlaceListCell(place: place)
+                            PlaceListCell(
+                                id: place.id,
+                                name: place.name,
+                                address: place.addressObj.addressString,
+                                photos: place.photos
+                            )
                                 .padding()
                         }
                     }

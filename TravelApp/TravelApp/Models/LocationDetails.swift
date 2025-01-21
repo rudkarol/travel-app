@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LocationDetails: Decodable {
+struct LocationDetails: Decodable, Identifiable {
     let locationId: String
     let name: String
     let addressObj: AddressObj
@@ -18,6 +18,8 @@ struct LocationDetails: Decodable {
     let category: LocationCategory
     let subcategory: [LocationCategory]
     let safetyLevel: SafetyLevel?
+    
+    var id: String{locationId}
 }
 
 struct AddressObject: Decodable {

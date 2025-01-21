@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Plan: Decodable {
+struct Plan: Decodable, Identifiable {
+    var id = UUID()
     let name: String
     let startDate: String
     let days: [DailyPlan]?

@@ -36,7 +36,6 @@ import Observation
                 isLoading = false
             }
         }
-        
     }
 }
 

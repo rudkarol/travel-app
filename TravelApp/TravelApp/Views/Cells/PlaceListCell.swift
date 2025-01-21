@@ -10,13 +10,16 @@ import CachedAsyncImage
 
 struct PlaceListCell: View {
     
-    let place: LocationBasic
+    let id: String
+    let name: String
+    let address: String
+    let photos: [Photo]?
     var showingAddToFavButton: Bool = true
     
     var body: some View {
-        NavigationLink(destination: LocationDetailsView(locationId: place.id)) {
+        NavigationLink(destination: LocationDetailsView(locationId: id)) {
             VStack(alignment: .leading) {
-                CachedAsyncImage(url: URL(string: place.photos.first?.url ?? "")) {image in
+                CachedAsyncImage(url: URL(string: photos?.first?.url ?? "")) {image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -44,10 +47,10 @@ struct PlaceListCell: View {
                     }
                 }
 
-                Text(place.name)
+                Text(name)
                     .bold()
                     .padding(.leading)
-                Text(place.addressObj.addressString)
+                Text(address)
                     .padding(.leading)
             }
         }
@@ -55,5 +58,10 @@ struct PlaceListCell: View {
 }
 
 #Preview {
-    PlaceListCell(place: MockDataPlace.samplePlaceOne, showingAddToFavButton: false)
+    PlaceListCell(
+        id: "31243",
+        name: "Warsaw",
+        address: "Warsaw, Poland",
+        photos: [Photo(url: "https://picsum.photos/600/400")]
+    )
 }
