@@ -4,11 +4,11 @@ import math
 
 from services.openai import openai_request
 from services.locations import fetch_tripadvisor_nearby_search
-from schemas.openai import GenerateTripPlanRequest, AIResponseFormat
-from schemas.user import User
-from schemas.trip_plans import Trip
-from schemas.auth import TokenData
-from schemas.locations import NearbySearchRequest
+from models.openai import GenerateTripPlanRequest, AIResponseFormat
+from models.user import User
+from models.trip_plans import Trip
+from models.auth import TokenData
+from models.locations import NearbySearchRequest
 from dependencies import get_token_verification, get_database
 
 

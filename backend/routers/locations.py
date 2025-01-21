@@ -2,10 +2,10 @@ from fastapi import APIRouter, Query, Security
 from typing import Annotated
 
 from dependencies import get_database, get_token_verification
-from schemas.risks import CountryAdvisories
+from models.risks import CountryAdvisories
 from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details, fetch_tripadvisor_nearby_search, fetch_tripadvisor_location_photos
-from schemas.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse, NearbySearchRequest
-from schemas.auth import TokenData
+from models.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse, NearbySearchRequest
+from models.auth import TokenData
 
 database = get_database()
 router = APIRouter()

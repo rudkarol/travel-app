@@ -1,8 +1,8 @@
 from openai import AsyncOpenAI
 
 from dependencies import get_settings
-from schemas.openai import AIResponseFormat, AIInputFormat
-from schemas.locations import SearchResponse
+from models.openai import AIResponseFormat, AIInputFormat
+from models.locations import SearchResponse
 
 
 settings = get_settings()

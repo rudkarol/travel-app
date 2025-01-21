@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List
 
-from schemas.locations import Location, Place
+from models.locations import Location, Place
 
 
 class AIInputLocation(BaseModel):

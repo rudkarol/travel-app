@@ -1,8 +1,8 @@
 from odmantic import AIOEngine
 from odmantic.engine import AsyncIOMotorClient
 
-from schemas.user import DbUser, User
-from schemas.risks import DbCountryAdvisories, CountryItem
+from models.user import DbUser, User
+from models.risks import DbCountryAdvisories, CountryItem
 from dependencies import get_settings
 
 settings = get_settings()

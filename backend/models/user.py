@@ -2,15 +2,14 @@ from typing import Optional, List
 from odmantic import Model
 from pydantic import BaseModel
 
-from schemas.locations import Place
-from schemas.trip_plans import Trip
+from models.locations import Place
+from models.trip_plans import Trip
 
 
 class User(BaseModel):
     user_id: str
     email: str
-    name: Optional[str] = None
-    favourite_places: Optional[List[Place]] = None
+    favourite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
 
     # @validator('trips', whole=True)
@@ -25,11 +24,11 @@ class User(BaseModel):
 class DbUser(Model):
     user_id: str
     email: str
-    name: Optional[str] = None
-    favourite_places: Optional[List[Place]] = None
+    favourite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
 
 
 class UserDataUpdate(BaseModel):
     name: Optional[str] = None
-    favourite_places: Optional[List[Place]] = None
+    favourite_places: Optional[List[str]] = None
+    trips: Optional[List[Trip]] = None

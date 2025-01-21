@@ -2,8 +2,8 @@ from fastapi import APIRouter, Security, Depends
 from typing import Annotated
 
 from dependencies import get_database, get_token_verification
-from schemas.auth import TokenData
-from schemas.user import User, UserDataUpdate
+from models.auth import TokenData
+from models.user import User, UserDataUpdate
 
 
 database = get_database()

@@ -4,7 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional
 
 from dependencies import get_settings
-from schemas.auth import TokenData
+from models.auth import TokenData
 
 
 security = HTTPBearer()

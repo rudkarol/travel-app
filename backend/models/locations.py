@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Literal, List, Optional
 
 from dependencies import get_settings
-from schemas.risks import CountryAdvisories
+from models.risks import CountryAdvisories
 
 settings = get_settings()
 
@@ -64,7 +64,7 @@ class SearchResponse(BaseModel):
     data: List[Location]
 
     def to_ai_input_list(self):
-        from schemas.openai import AIInputLocation
+        from models.openai import AIInputLocation
         return [AIInputLocation.from_location(location) for location in self.data]
 
 

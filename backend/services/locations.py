@@ -2,7 +2,7 @@ import httpx
 from datetime import datetime
 from meteostat import Monthly, Point
 
-import schemas.locations as lm
+import models.locations as lm
 
 
 async def fetch_tripadvisor_find_search(search_params: lm.SearchRequest):
