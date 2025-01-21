@@ -13,53 +13,56 @@ struct HomePageView: View {
     
     var body: some View {
         
-        ScrollView {
-            VStack(alignment: .leading) {
-                ZStack(alignment: .top) {
-                    Image("ha-long-view")
-                        .resizable()
-                        .aspectRatio(0.62, contentMode: .fill)
-                        .clipped()
-                    
-                    HStack {
-                        Text("Logo")
-                            .font(.title)
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    ZStack(alignment: .top) {
+                        Image("ha-long-view")
+                            .resizable()
+                            .aspectRatio(0.62, contentMode: .fill)
+                            .clipped()
                         
-                        Spacer()
-                        
-                        Button {
-                            Task { await AuthManager.shared.logout() }
-                        } label: {
-                            ZStack {
-                                Circle()
-                                    .frame(width: 45, height: 45)
-                                    .foregroundColor(.white)
-                                
-                                Image(systemName: "person")
-                                    .imageScale(.large)
-                                    .frame(width: 60, height: 60)
-                                    .foregroundColor(.black)
+                        HStack {
+                            Text("Logo")
+                                .font(.title)
+                            
+                            Spacer()
+                            
+                            Button {
+                                Task { await AuthManager.shared.logout() }
+                            } label: {
+                                ZStack {
+                                    Circle()
+                                        .frame(width: 45, height: 45)
+                                        .foregroundColor(.white)
+                                    
+                                    Image(systemName: "person")
+                                        .imageScale(.large)
+                                        .frame(width: 60, height: 60)
+                                        .foregroundColor(.black)
+                                }
                             }
                         }
+                        .padding()
+                        .padding(.top, 45)
                     }
-                    .padding()
-                    .padding(.top, 45)
-                }
-                
-                Text("Explore")
-                    .font(.title)
-                    .bold()
-                    .padding([.horizontal, .top])
-                
-                LazyVStack(spacing: 0) {
-                    ForEach(viewModel.exploreItems) { place in
-                        PlaceListCell(place: place)
-                            .padding()
+                    
+                    Text("Explore")
+                        .font(.title)
+                        .bold()
+                        .padding([.horizontal, .top])
+                    
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.exploreItems) { place in
+                            PlaceListCell(place: place)
+                                .padding()
+                        }
                     }
                 }
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
+        .navigationTitle("Home Page")
     }
 }
 

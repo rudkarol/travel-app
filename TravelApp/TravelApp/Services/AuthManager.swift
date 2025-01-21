@@ -29,7 +29,7 @@ import Observation
             
             await MainActor.run { self.isLoggedIn = true }
             
-            print("Obtained credentials: \(credentials)")
+            print("Login successfull")
         } catch {
             await MainActor.run { self.isLoggedIn = false }
             print("Failed login with: \(error)")
@@ -74,7 +74,7 @@ import Observation
     
     func getAccessToken() async throws -> String {
         let credentials = try await credentialsManager.credentials()
-        print("AccessToken: \(credentials.accessToken)")
+        print(credentials.accessToken)
         return credentials.accessToken
     }
 }

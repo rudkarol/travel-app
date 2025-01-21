@@ -14,19 +14,23 @@ struct InfoLinkCell: View {
     let url: String
     
     var body: some View {
-        VStack {
-            Image(systemName: systemName)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 50)
-                .symbolRenderingMode(.hierarchical)
-            
-            Text(name)
-                .font(.body)
+        Link(destination: URL(string: url)!) {
+            VStack {
+                Image(systemName: systemName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 50)
+                    .symbolRenderingMode(.hierarchical)
+                
+                Text(name)
+                    .font(.body)
+            }
+            .padding()
         }
-        .padding()
     }
 }
+
+
 
 #Preview {
     InfoLinkCell(systemName: "lightbulb.max", name: "Nice To Know", url: "fake-url")
