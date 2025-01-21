@@ -10,8 +10,8 @@ import Foundation
 struct LocationBasic: Decodable, Identifiable {
     let locationId: String
     let name: String
-    let photos: [Photo]
     let addressObj: AddressObj
+    let photos: [Photo]?
     
     var id: String { locationId }
 }
@@ -29,40 +29,40 @@ struct MockDataPlace {
     static let samplePlaceOne = LocationBasic(
         locationId: "105127",
         name: "Central park",
-        photos: [
-            Photo(url: "https://picsum.photos/600/400"),
-            Photo(url: "https://picsum.photos/600/400")
-        ],
         addressObj: AddressObj (
             country: "USA",
             addressString: "NY, USA"
-        )
+        ),
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ]
     )
     
     static let samplePlaceTwo = LocationBasic(
         locationId: "276740",
         name: "Rynek gółwny",
-        photos: [
-            Photo(url: "https://picsum.photos/600/400"),
-            Photo(url: "https://picsum.photos/600/400")
-        ],
         addressObj: AddressObj (
             country: "Poland",
             addressString: "Kraków, Poland"
-        )
+        ),
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ]
     )
     
     static let samplePlaceThree = LocationBasic(
         locationId: "199909",
         name: "Museum of Contemportary Art Kiasma",
-        photos: [
-            Photo(url: "https://picsum.photos/600/400"),
-            Photo(url: "https://picsum.photos/600/400")
-        ],
         addressObj: AddressObj (
             country: "Finland",
             addressString: "Helsinki, Finland"
-        )
+        ),
+        photos: [
+            Photo(url: "https://picsum.photos/600/400"),
+            Photo(url: "https://picsum.photos/600/400")
+        ]
     )
     
     static let samplePlaces = [samplePlaceOne, samplePlaceTwo, samplePlaceThree]

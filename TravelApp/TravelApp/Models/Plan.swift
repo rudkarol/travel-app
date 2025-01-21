@@ -7,21 +7,28 @@
 
 import Foundation
 
-struct Plan: Decodable, Identifiable {
-    let id: Int
+struct Plan: Decodable {
     let name: String
     let startDate: String
-    let endDate: String
-    let places: [LocationBasic]
+    let days: [DailyPlan]?
 }
 
-struct MockDataPlan {
+struct DailyPlan: Codable {
+    let places: [String]?
+}
+
+
+
+
+struct MockDataPlan: Codable {
+
     static let samplePlanOne = Plan(
-        id: 001,
         name: "My first plan",
         startDate: "20.10.2025",
-        endDate: "18.11.2025",
-        places: [MockDataPlace.samplePlaceOne, MockDataPlace.samplePlaceTwo]
+        days: [
+            DailyPlan(places: ["199909", "276740"]),
+            DailyPlan(places: ["105127", "276740"])
+        ]
     )
     
     static let samplePlans = [samplePlanOne]
