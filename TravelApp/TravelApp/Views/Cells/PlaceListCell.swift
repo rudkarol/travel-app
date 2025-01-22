@@ -10,16 +10,24 @@ import CachedAsyncImage
 
 struct PlaceListCell: View {
     
-    let id: String
-    let name: String
-    let address: String
-    let photos: [Photo]?
+    var locationBasicData: LocationBasic? = nil
+    var locationDetailsData: LocationDetails? = nil
     var showingAddToFavButton: Bool = true
     
+    private let viewModel: PlaceListCellViewModel
+    
+    
+    init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil) {
+        self.locationBasicData = locationBasicData
+        self.locationDetailsData = locationDetailsData
+        
+        self.viewModel = PlaceListCellViewModel(locationBasicData: locationBasicData, locationDetailsData: locationDetailsData)
+    }
+    
     var body: some View {
-        NavigationLink(destination: LocationDetailsView(locationId: id)) {
+        NavigationLink(destination: LocationDetailsView(locationId: viewModel.locationId)) {
             VStack(alignment: .leading) {
-                CachedAsyncImage(url: URL(string: photos?.first?.url ?? "")) {image in
+                CachedAsyncImage(url: URL(string: viewModel.photos?.first?.url ?? "")) {image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -47,10 +55,10 @@ struct PlaceListCell: View {
                     }
                 }
 
-                Text(name)
+                Text(viewModel.name)
                     .bold()
                     .padding(.leading)
-                Text(address)
+                Text(viewModel.addressObj.addressString)
                     .padding(.leading)
             }
         }
@@ -58,10 +66,5 @@ struct PlaceListCell: View {
 }
 
 #Preview {
-    PlaceListCell(
-        id: "31243",
-        name: "Warsaw",
-        address: "Warsaw, Poland",
-        photos: [Photo(url: "https://picsum.photos/600/400")]
-    )
+    PlaceListCell(locationBasicData: MockDataPlace.samplePlaceOne)
 }

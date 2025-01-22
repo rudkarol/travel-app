@@ -16,12 +16,7 @@ struct FavouritesView: View {
             NavigationView{
                 ZStack {
                     List(viewModel.favouritePlaces) { place in
-                        PlaceListCell(
-                            id: place.locationId,
-                            name: place.name,
-                            address: place.addressObj.addressString,
-                            photos: place.photos
-                        )
+                        PlaceListCell(locationDetailsData: place)
                             .listRowSeparator(.hidden)
                             .swipeActions(allowsFullSwipe: false) {
                                 Button(role: .destructive) {
