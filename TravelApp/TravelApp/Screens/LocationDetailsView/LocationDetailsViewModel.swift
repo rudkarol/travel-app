@@ -10,30 +10,38 @@ import Observation
 
 @MainActor @Observable class LocationDetailsViewModel {
     
-    var locationDetails: LocationDetails?
+    let locationBasicData: LocationBasic?
+    var locationDetailsData: LocationDetails?
     var isLoading: Bool = false
     var alertData: AlertData?
     
-    let locationId: String
     
-    
-    init(locationId: String) {
-        self.locationId = locationId
+    init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil) {
+        guard locationBasicData != nil || locationDetailsData != nil else {
+            fatalError("LocationDetailsViewModel - two nil arguments")
+        }
+        
+        self.locationBasicData = locationBasicData
+        self.locationDetailsData = locationDetailsData
     }
     
     func getLocationDetails() {
         isLoading = true
         
-        Task {
-            do {
-                locationDetails = try await LocationsService.shared.locationDetailsRequest(locationId: locationId)
-                isLoading = false
-            } catch let error as AppError {
-                alertData = error.alertData
-                isLoading = false
-            } catch {
-                alertData = AppError.genericError(error).alertData
-                isLoading = false
+        if locationDetailsData != nil {
+            isLoading = false
+        } else {
+            Task {
+                do {
+                    locationDetailsData = try await LocationsService.shared.locationDetailsRequest(locationId: locationBasicData!.locationId)
+                    isLoading = false
+                } catch let error as AppError {
+                    alertData = error.alertData
+                    isLoading = false
+                } catch {
+                    alertData = AppError.genericError(error).alertData
+                    isLoading = false
+                }
             }
         }
     }

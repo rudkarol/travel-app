@@ -13,7 +13,6 @@ struct PlaceListCell: View {
     var locationBasicData: LocationBasic? = nil
     var locationDetailsData: LocationDetails? = nil
     var showingAddToFavButton: Bool = true
-    
     private let viewModel: PlaceListCellViewModel
     
     
@@ -25,7 +24,7 @@ struct PlaceListCell: View {
     }
     
     var body: some View {
-        NavigationLink(destination: LocationDetailsView(locationId: viewModel.locationId)) {
+        NavigationLink(destination: LocationDetailsView(locationBasicData: locationBasicData, locationDetailsData: locationDetailsData)) {
             VStack(alignment: .leading) {
                 CachedAsyncImage(url: URL(string: viewModel.photos?.first?.url ?? "")) {image in
                     image

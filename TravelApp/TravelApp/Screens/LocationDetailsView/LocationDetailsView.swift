@@ -10,20 +10,23 @@ import CachedAsyncImage
 
 struct LocationDetailsView: View {
     
-    let locationId: String
-    private let viewmodel: LocationDetailsViewModel
+    let locationBasicData: LocationBasic?
+    let locationDetailsData: LocationDetails?
+    private let viewModel: LocationDetailsViewModel
     
-    init(locationId: String) {
-        self.locationId = locationId
-        self.viewmodel = LocationDetailsViewModel(locationId: locationId)
+    
+    init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil) {
+        self.locationBasicData = locationBasicData
+        self.locationDetailsData = locationDetailsData
+        
+        self.viewModel = LocationDetailsViewModel(locationBasicData: locationBasicData, locationDetailsData: locationDetailsData)
     }
-    
     
     var body: some View {
         ZStack {
             NavigationView {
                 VStack {
-                    CachedAsyncImage(url: URL(string: viewmodel.locationDetails?.photos?.first?.url ?? "")) {image in
+                    CachedAsyncImage(url: URL(string: viewModel.locationDetailsData?.photos?.first?.url ?? "")) {image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -37,20 +40,20 @@ struct LocationDetailsView: View {
                             .cornerRadius(8)
                     }
                     
-                    Text(viewmodel.locationDetails?.name ?? "Name")
-                    Text(viewmodel.locationDetails?.description ?? "")
+                    Text(viewModel.locationDetailsData?.name ?? "Name")
+                    Text(viewModel.locationDetailsData?.description ?? "")
                     
                     Grid {
                         GridRow {
                             InfoLinkCell(
                                 systemName: "1.circle",
                                 name: "Safety",
-                                url: viewmodel.locationDetails?.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
+                                url: viewModel.locationDetailsData?.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
                             )
                             InfoLinkCell(
                                 systemName: "lightbulb.max",
                                 name: "Nice To Know",
-                                url: "https://en.wikivoyage.org/wiki/\(viewmodel.locationDetails?.addressObj.country ?? "https://google.com")"
+                                url: "https://en.wikivoyage.org/wiki/\(viewModel.locationDetailsData?.addressObj.country ?? "https://google.com")"
                             )
                         }
                         GridRow {
@@ -68,27 +71,27 @@ struct LocationDetailsView: View {
                     }
                     .padding()
                     
-                    Text(viewmodel.locationDetails?.addressObj.addressString ?? "")
+                    Text(viewModel.locationDetailsData?.addressObj.addressString ?? "")
                     
         //            TODO: Map
                 }
             }
-            .navigationTitle(viewmodel.locationDetails?.name ?? "Title")
+            .navigationTitle(viewModel.locationDetailsData?.name ?? "Title")
             .task {
-                viewmodel.getLocationDetails()
+                viewModel.getLocationDetails()
             }
             
-            if viewmodel.isLoading {
+            if viewModel.isLoading {
                 LoadingView()
             }
         }
         .alert(
-            viewmodel.alertData?.title ?? "",
-            isPresented: .constant(viewmodel.alertData != nil),
-            presenting: viewmodel.alertData
+            viewModel.alertData?.title ?? "",
+            isPresented: .constant(viewModel.alertData != nil),
+            presenting: viewModel.alertData
         ) { alertData in
             Button(alertData.buttonText) {
-                viewmodel.alertData = nil
+                viewModel.alertData = nil
             }
         }
     }
