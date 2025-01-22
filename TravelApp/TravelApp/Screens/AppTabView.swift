@@ -13,8 +13,8 @@ struct AppTabView: View {
             HomePageView()
                 .tabItem { Label("Home", systemImage: "house") }
             
-            FavouritesView()
-                .tabItem { Label("Favourites", systemImage: "heart") }
+            FavoritesView()
+                .tabItem { Label("Favorites", systemImage: "heart") }
             
             PlansView()
                 .tabItem { Label("Plans", systemImage: "book") }
