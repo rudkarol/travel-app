@@ -1,5 +1,5 @@
 //
-//  FavouritesViewModel.swift
+//  FavoritesViewModel.swift
 //  TravelApp
 //
 //  Created by osx on 17/01/2025.
@@ -7,24 +7,24 @@
 
 import Observation
 
-@Observable final class FavouritesViewModel {
+@Observable final class FavoritesViewModel {
     
-    var favouritePlaces: [LocationDetails] = []
+    var favoritePlaces: [LocationDetails] = []
     var isLoading: Bool = false
     var alertData: AlertData?
 
     
     @MainActor
-    func loadFavouritePlaces() async {
+    func loadFavoritePlaces() async {
         isLoading = true
 
-        if let favouriteIds = UserDataService.shared.user?.favouritePlaces {
-            for id in favouriteIds {
-                if !favouritePlaces.contains(where: { $0.locationId == id}) {
+        if let favoriteIds = UserDataService.shared.user?.favoritePlaces {
+            for id in favoriteIds {
+                if !favoritePlaces.contains(where: { $0.locationId == id}) {
                     Task {
                         do {
                             let details = try await LocationsService.shared.locationDetailsRequest(locationId: id)
-                            favouritePlaces.append(details)
+                            favoritePlaces.append(details)
                         } catch let error as AppError {
                             alertData = error.alertData
                         } catch {

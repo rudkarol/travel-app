@@ -54,7 +54,7 @@ async def update_current_user_data(
     data: UserDataUpdate,
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Updates current user data (name and favourite places)"""
+    """Updates current user data (name and favorite places)"""
 
     await database.update_user(user_id=auth_result.user_id, new_user_data=data)
     return {"message": "User data updated successfully"}

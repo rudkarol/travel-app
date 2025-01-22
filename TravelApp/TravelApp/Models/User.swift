@@ -10,6 +10,6 @@ import JWTDecode
 struct User: Decodable {
     let userId: String
     let email: String
-    let favouritePlaces: [String]?
+    let favoritePlaces: [String]?
     let trips: [Plan]?
 }

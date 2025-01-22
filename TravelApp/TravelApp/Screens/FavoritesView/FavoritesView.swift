@@ -1,5 +1,5 @@
 //
-//  FavouritesView.swift
+//  FavoritesView.swift
 //  TravelApp
 //
 //  Created by osx on 17/01/2025.
@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct FavouritesView: View {
+struct FavoritesView: View {
     
-    var viewModel = FavouritesViewModel()
+    var viewModel = FavoritesViewModel()
     
     var body: some View {
         ZStack {
             NavigationView{
                 ZStack {
-                    List(viewModel.favouritePlaces) { place in
+                    List(viewModel.favoritePlaces) { place in
                         PlaceListCell(locationDetailsData: place)
                             .listRowSeparator(.hidden)
                             .swipeActions(allowsFullSwipe: false) {
@@ -29,14 +29,14 @@ struct FavouritesView: View {
                     }
                     .listStyle(.plain)
                     
-                    if viewModel.favouritePlaces.isEmpty {
+                    if viewModel.favoritePlaces.isEmpty {
                         EmptyState(
                             systemName: "heart.slash",
-                            message: "Your favourite places list is empty"
+                            message: "Your favorite places list is empty"
                         )
                     }
                 }
-                .navigationTitle("Favourite Places")
+                .navigationTitle("Favorite Places")
             }
             if viewModel.isLoading {
                 LoadingView()
@@ -52,12 +52,12 @@ struct FavouritesView: View {
             }
         }
         .task {
-            await viewModel.loadFavouritePlaces()
-            dump(UserDataService.shared.user?.favouritePlaces)
+            await viewModel.loadFavoritePlaces()
+            dump(UserDataService.shared.user?.favoritePlaces)
         }
     }
 }
 
 #Preview {
-    FavouritesView()
+    FavoritesView()
 }

@@ -9,7 +9,7 @@ from models.trip_plans import Trip
 class User(BaseModel):
     user_id: str
     email: str
-    favourite_places: Optional[List[str]] = None
+    favorite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
 
     # @validator('trips', whole=True)
@@ -24,11 +24,11 @@ class User(BaseModel):
 class DbUser(Model):
     user_id: str
     email: str
-    favourite_places: Optional[List[str]] = None
+    favorite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
 
 
 class UserDataUpdate(BaseModel):
     name: Optional[str] = None
-    favourite_places: Optional[List[str]] = None
+    favorite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
