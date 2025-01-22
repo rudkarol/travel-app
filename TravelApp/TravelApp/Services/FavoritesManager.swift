@@ -8,32 +8,36 @@
 import Foundation
 import Observation
 
-@Observable
+
 class FavoritesManager {
-    var favorites: [String] = []
     
+    private let userData = UserDataService.shared
+    
+    func getFavorites() -> [String] {
+        return userData.user?.favoritePlaces ?? []
+    }
     
     func isFavorite(locationId: String) -> Bool {
-        return favorites.contains(locationId)
+        return userData.user?.favoritePlaces?.contains(locationId) ?? false
     }
     
     func remove(locationId: String) async throws {
-        favorites.removeAll { $0 == locationId }
-        try await updateUserFavorites()
+        userData.user?.favoritePlaces?.removeAll { $0 == locationId }
+        try await updateUserFavoritesRequest()
     }
     
     func toggle(locationId: String) async throws {
         if isFavorite(locationId: locationId) {
             try await remove(locationId: locationId)
         } else {
-            favorites.append(locationId)
-            try await updateUserFavorites()
+            userData.user?.favoritePlaces?.append(locationId)
+            try await updateUserFavoritesRequest()
         }
     }
     
-    private func updateUserFavorites() async throws {
+    private func updateUserFavoritesRequest() async throws {
         let endpointUrl = "/user/me/favorites"
         
-        try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: favorites)
+        try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: userData.user?.favoritePlaces)
     }
 }

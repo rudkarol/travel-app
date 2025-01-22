@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FavoritesView: View {
     
-    @Environment(FavoritesManager.self) private var favoritesManager
+    private let favoritesManager = FavoritesManager()
     private var viewModel = FavoritesViewModel()
     
     
@@ -26,7 +26,6 @@ struct FavoritesView: View {
                                         try await favoritesManager.remove(locationId: place.locationId)
                                     }
                                     viewModel.favoritePlaces.removeAll { $0.locationId == place.locationId }
-                                    UserDataService.shared.user?.favoritePlaces = favoritesManager.favorites
                                     
                                     print("item deleted")
                                 } label: {
@@ -60,15 +59,9 @@ struct FavoritesView: View {
             }
         }
         .task {
-            await refreshFavoritePlaces()
+            dump(favoritesManager.getFavorites())
+            await viewModel.loadFavoritePlaces(ids: favoritesManager.getFavorites())
         }
-    }
-    
-    @MainActor
-    private func refreshFavoritePlaces() async {
-        favoritesManager.favorites = UserDataService.shared.user?.favoritePlaces ?? []
-        dump(favoritesManager.favorites)
-        await viewModel.loadFavoritePlaces(ids: favoritesManager.favorites)
     }
 }
 

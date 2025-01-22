@@ -10,12 +10,9 @@ import SwiftUI
 @main
 struct TravelAppApp: App {
     
-    @State private var favoritesManager = FavoritesManager()
-    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(favoritesManager)
         }
     }
 }

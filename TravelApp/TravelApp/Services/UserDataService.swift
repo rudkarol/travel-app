@@ -8,7 +8,7 @@
 import Foundation
 
 
-final class UserDataService {
+@Observable final class UserDataService {
     
     var user: User?
     

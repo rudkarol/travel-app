@@ -14,7 +14,7 @@ struct PlaceListCell: View {
     var locationDetailsData: LocationDetails? = nil
     var showingAddToFavButton: Bool = true
     
-    @Environment(FavoritesManager.self) private var favoritesManager
+    private let favoritesManager = FavoritesManager()
     private let viewModel: PlaceListCellViewModel
     
     
@@ -49,8 +49,6 @@ struct PlaceListCell: View {
                             Task {
                                 try await favoritesManager.toggle(locationId: viewModel.locationId)
                             }
-                            
-                            UserDataService.shared.user?.favoritePlaces = favoritesManager.favorites
                         } label: {
                             Image(systemName: favoritesManager.isFavorite(locationId: viewModel.locationId) ? "heart.fill" : "heart")
                                 .imageScale(.large)
