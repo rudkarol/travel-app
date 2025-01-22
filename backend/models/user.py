@@ -29,6 +29,5 @@ class DbUser(Model):
 
 
 class UserDataUpdate(BaseModel):
-    name: Optional[str] = None
     favorite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None

@@ -1,5 +1,6 @@
 from odmantic import AIOEngine
 from odmantic.engine import AsyncIOMotorClient
+from typing import List
 
 from models.user import DbUser, User
 from models.risks import DbCountryAdvisories, CountryItem
@@ -29,6 +30,11 @@ class Database:
     async def update_user(self, user_id: str, new_user_data: User):
         user_data = await self.get_user(user_id)
         user_data.model_update(new_user_data)
+        await self.engine.save(user_data)
+
+    async def update_user_favorites(self, user_id: str, favorites_list: List[str]):
+        user_data = await self.get_user(user_id)
+        user_data.favorite_places = favorites_list
         await self.engine.save(user_data)
 
     async def get_country_advisories(self, country_name: str):

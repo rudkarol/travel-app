@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Security, Depends
-from typing import Annotated
+from typing import Annotated, List
 
 from dependencies import get_database, get_token_verification
 from models.auth import TokenData
@@ -49,12 +49,23 @@ async def read_users_me(
 #     return Token(access_token=access_token, token_type="bearer")
 
 
-@router.patch("/user/me/update-data")
-async def update_current_user_data(
-    data: UserDataUpdate,
+# @router.patch("/user/me/update-data")
+# async def update_current_user_data(
+#     data: UserDataUpdate,
+#     auth_result: Annotated[TokenData, Security(verify_user.verify)]
+# ):
+#     """Updates current user data (name and favorite places)"""
+#
+#     await database.update_user(user_id=auth_result.user_id, new_user_data=data)
+#     return {"message": "User data updated successfully"}
+
+
+@router.put("/user/me/favorites")
+async def update_current_user_favorites(
+    data: List[str],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Updates current user data (name and favorite places)"""
+    """Updates current user favorite places list"""
 
-    await database.update_user(user_id=auth_result.user_id, new_user_data=data)
-    return {"message": "User data updated successfully"}
+    await database.update_user_favorites(user_id=auth_result.user_id, favorites_list=data)
+    return {"message": "User's favorites list successfully updated"}
