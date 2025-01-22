@@ -18,7 +18,7 @@ struct FavoritesView: View {
             NavigationView {
                 ZStack {
                     List(viewModel.favoritePlaces) { place in
-                        PlaceListCell(locationDetailsData: place)
+                        PlaceListCell(locationDetailsData: place, showingAddToFavButton: false)
                             .listRowSeparator(.hidden)
                             .swipeActions(allowsFullSwipe: false) {
                                 Button(role: .destructive) {
@@ -59,8 +59,11 @@ struct FavoritesView: View {
             }
         }
         .task {
-            dump(favoritesManager.getFavorites())
-            await viewModel.loadFavoritePlaces(ids: favoritesManager.getFavorites())
+            let favorites = favoritesManager.getFavorites()
+            
+            dump(favorites)
+            await viewModel.loadFavoritePlaces(ids: favorites)
+            viewModel.deleteUnliked(ids: favorites)
         }
     }
 }

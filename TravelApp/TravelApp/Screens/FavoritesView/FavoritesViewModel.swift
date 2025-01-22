@@ -35,4 +35,13 @@ import Observation
         
         isLoading = false
     }
+    
+    @MainActor
+    func deleteUnliked(ids: [String]) {
+        for place in favoritePlaces {
+            if !ids.contains(where: { $0 == place.locationId }) {
+                favoritePlaces.removeAll { $0.locationId == place.locationId }
+            }
+        }
+    }
 }

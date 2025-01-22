@@ -12,15 +12,16 @@ struct PlaceListCell: View {
     
     var locationBasicData: LocationBasic? = nil
     var locationDetailsData: LocationDetails? = nil
-    var showingAddToFavButton: Bool = true
+    var showingAddToFavButton: Bool
     
     private let favoritesManager = FavoritesManager()
     private let viewModel: PlaceListCellViewModel
     
     
-    init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil) {
+    init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil, showingAddToFavButton: Bool = true) {
         self.locationBasicData = locationBasicData
         self.locationDetailsData = locationDetailsData
+        self.showingAddToFavButton = showingAddToFavButton
         
         self.viewModel = PlaceListCellViewModel(locationBasicData: locationBasicData, locationDetailsData: locationDetailsData)
     }
