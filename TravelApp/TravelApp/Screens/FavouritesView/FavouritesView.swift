@@ -57,7 +57,8 @@ struct FavouritesView: View {
             }
         }
         .task {
-            viewModel.loadFavouritePlaces()
+            await viewModel.loadFavouritePlaces()
+            dump(UserDataService.shared.user?.favouritePlaces)
         }
     }
 }

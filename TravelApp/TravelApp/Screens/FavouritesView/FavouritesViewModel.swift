@@ -12,23 +12,29 @@ import Observation
     var favouritePlaces: [LocationDetails] = []
     var isLoading: Bool = false
     var alertData: AlertData?
-    private var favouriteIds = UserDataService.shared.user?.favouritePlaces
+
     
-    func loadFavouritePlaces() {
+    @MainActor
+    func loadFavouritePlaces() async {
         isLoading = true
-        
-        favouriteIds?.forEach { id in
-            Task {
-                do {
-                    let details = try await LocationsService.shared.locationDetailsRequest(locationId: id)
-                    favouritePlaces.append(details)
-                } catch let error as AppError {
-                    alertData = error.alertData
-                } catch {
-                    alertData = AppError.genericError(error).alertData
+
+        if let favouriteIds = UserDataService.shared.user?.favouritePlaces {
+            for id in favouriteIds {
+                if !favouritePlaces.contains(where: { $0.locationId == id}) {
+                    Task {
+                        do {
+                            let details = try await LocationsService.shared.locationDetailsRequest(locationId: id)
+                            favouritePlaces.append(details)
+                        } catch let error as AppError {
+                            alertData = error.alertData
+                        } catch {
+                            alertData = AppError.genericError(error).alertData
+                        }
+                    }
                 }
             }
         }
+        
         isLoading = false
     }
 }
