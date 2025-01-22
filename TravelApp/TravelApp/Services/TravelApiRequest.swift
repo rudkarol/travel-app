@@ -33,8 +33,37 @@ class TravelApiRequest {
         
         let (data, _) = try await URLSession.shared.data(for: request)
 
-        print("request successfull")
+        print("request successful")
         
         return data
+    }
+    
+    func putData(endpointUrl: String, body: Encodable) async throws {
+        guard let url = URL(string: self.baseUrl + endpointUrl) else {
+            throw AppError.invalidURL
+        }
+        
+        do {
+            self.accessToken = try await AuthManager.shared.getAccessToken()
+        } catch {
+            throw AppError.invalidCredentials
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "accept")
+        request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(body)
+            request.httpBody = jsonData
+        } catch {
+            print("encoder error")
+            throw AppError.invalidData
+        }
+        
+        let (_, _) = try await URLSession.shared.data(for: request)
+
+        print("request successful")
     }
 }
