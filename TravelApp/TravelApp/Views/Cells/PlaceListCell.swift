@@ -13,6 +13,8 @@ struct PlaceListCell: View {
     var locationBasicData: LocationBasic? = nil
     var locationDetailsData: LocationDetails? = nil
     var showingAddToFavButton: Bool = true
+    
+    @Environment(FavoritesManager.self) private var favoritesManager
     private let viewModel: PlaceListCellViewModel
     
     
@@ -44,9 +46,13 @@ struct PlaceListCell: View {
                 .overlay(alignment: .topTrailing) {
                     if showingAddToFavButton {
                         Button {
+                            Task {
+                                try await favoritesManager.toggle(locationId: viewModel.locationId)
+                            }
                             
+                            UserDataService.shared.user?.favoritePlaces = favoritesManager.favorites
                         } label: {
-                            Image(systemName: "heart.fill")
+                            Image(systemName: favoritesManager.isFavorite(locationId: viewModel.locationId) ? "heart.fill" : "heart")
                                 .imageScale(.large)
                                 .foregroundStyle(Color.red)
                         }

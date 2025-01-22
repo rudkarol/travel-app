@@ -9,18 +9,25 @@ import SwiftUI
 
 struct FavoritesView: View {
     
-    var viewModel = FavoritesViewModel()
+    @Environment(FavoritesManager.self) private var favoritesManager
+    private var viewModel = FavoritesViewModel()
+    
     
     var body: some View {
         ZStack {
-            NavigationView{
+            NavigationView {
                 ZStack {
                     List(viewModel.favoritePlaces) { place in
                         PlaceListCell(locationDetailsData: place)
                             .listRowSeparator(.hidden)
                             .swipeActions(allowsFullSwipe: false) {
                                 Button(role: .destructive) {
-                                    //                          TODO: delete
+                                    Task {
+                                        try await favoritesManager.remove(locationId: place.locationId)
+                                    }
+                                    viewModel.favoritePlaces.removeAll { $0.locationId == place.locationId }
+                                    UserDataService.shared.user?.favoritePlaces = favoritesManager.favorites
+                                    
                                     print("item deleted")
                                 } label: {
                                     Label("Delete", systemImage: "trash")
@@ -38,6 +45,7 @@ struct FavoritesView: View {
                 }
                 .navigationTitle("Favorite Places")
             }
+            
             if viewModel.isLoading {
                 LoadingView()
             }
@@ -52,9 +60,15 @@ struct FavoritesView: View {
             }
         }
         .task {
-            await viewModel.loadFavoritePlaces()
-            dump(UserDataService.shared.user?.favoritePlaces)
+            await refreshFavoritePlaces()
         }
+    }
+    
+    @MainActor
+    private func refreshFavoritePlaces() async {
+        favoritesManager.favorites = UserDataService.shared.user?.favoritePlaces ?? []
+        dump(favoritesManager.favorites)
+        await viewModel.loadFavoritePlaces(ids: favoritesManager.favorites)
     }
 }
 
