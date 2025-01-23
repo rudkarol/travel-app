@@ -12,12 +12,18 @@ import Observation
     
     let locationBasicData: LocationBasic?
     var locationDetailsData: LocationDetails?
+    let locationId: String
     var isLoading: Bool = false
     var alertData: AlertData?
     
     
     init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil) {
-        guard locationBasicData != nil || locationDetailsData != nil else {
+
+        if let details = locationDetailsData {
+            self.locationId = details.locationId
+        } else if let basic = locationBasicData {
+            self.locationId = basic.locationId
+        } else {
             fatalError("LocationDetailsViewModel - two nil arguments")
         }
         

@@ -12,6 +12,8 @@ struct LocationDetailsView: View {
     
     let locationBasicData: LocationBasic?
     let locationDetailsData: LocationDetails?
+    
+    private let favoritesManager = FavoritesManager()
     private let viewModel: LocationDetailsViewModel
     
     
@@ -77,6 +79,26 @@ struct LocationDetailsView: View {
                 }
             }
             .navigationTitle(viewModel.locationDetailsData?.name ?? "Title")
+            .toolbar {
+                ToolbarItemGroup {
+                    Button {
+                        //                        TODO
+                    } label: {
+                        Image(systemName: "book")
+                            .imageScale(.large)
+                    }
+                    
+                    Button {
+                        Task {
+                            try await favoritesManager.toggle(locationId: viewModel.locationId)
+                        }
+                    } label: {
+                        Image(systemName: favoritesManager.isFavorite(locationId: viewModel.locationId) ? "heart.fill" : "heart")
+                            .imageScale(.large)
+                            .foregroundStyle(Color.red)
+                    }
+                }
+            }
             .task {
                 viewModel.getLocationDetails()
             }

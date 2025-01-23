@@ -62,8 +62,8 @@ struct FavoritesView: View {
             let favorites = favoritesManager.getFavorites()
             
             dump(favorites)
-            await viewModel.loadFavoritePlaces(ids: favorites)
             viewModel.deleteUnliked(ids: favorites)
+            await viewModel.loadFavoritePlaces(ids: favorites)
         }
     }
 }
