@@ -10,14 +10,25 @@ import Foundation
 struct Plan: Decodable, Identifiable {
     var id = UUID()
     let name: String
-    let startDate: String
-    let days: [DailyPlan]?
+    let description: String?
+    let startDate: String?
+    let days: [DailyPlan]
 }
 
-struct DailyPlan: Codable {
-    let places: [String]?
+struct DailyPlan: Decodable {
+    let places: [Location]?
 }
 
+struct PlanUpdateModel: Encodable {
+    let name: String
+    let description: String?
+    let startDate: String?
+    var days: [DailyPlanUpdateModel]
+}
+
+struct DailyPlanUpdateModel: Encodable {
+    var places: [String]
+}
 
 
 
@@ -25,10 +36,11 @@ struct MockDataPlan: Codable {
 
     static let samplePlanOne = Plan(
         name: "My first plan",
+        description: "Plan description",
         startDate: "20.10.2025",
         days: [
-            DailyPlan(places: ["199909", "276740"]),
-            DailyPlan(places: ["105127", "276740"])
+            DailyPlan(places: [MockDataLocationDetails.sampleLocationDetails, MockDataLocationDetails.sampleLocationDetails]),
+            DailyPlan(places: [MockDataLocationDetails.sampleLocationDetails])
         ]
     )
     
