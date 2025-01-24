@@ -12,6 +12,7 @@ struct TravelAppApp: App {
     
     @State var favoritesService = FavoritesService()
     
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

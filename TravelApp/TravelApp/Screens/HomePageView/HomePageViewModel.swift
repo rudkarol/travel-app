@@ -19,17 +19,19 @@ import Observation
     
     
     func loadRecommendedLocations() async {
-        isLoading = true
-        
-        do {
-            recommendedLocations = try await locationsService.getRecommendedLocations()
-        } catch let error as AppError {
-            alertData = error.alertData
-        } catch {
-            alertData = AppError.genericError(error).alertData
+        if recommendedLocations.isEmpty {
+            isLoading = true
+            
+            do {
+                recommendedLocations = try await locationsService.getRecommendedLocations()
+            } catch let error as AppError {
+                alertData = error.alertData
+            } catch {
+                alertData = AppError.genericError(error).alertData
+            }
+            
+            isLoading = false
         }
-        
-        isLoading = false
     }
 }
 

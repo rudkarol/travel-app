@@ -57,19 +57,6 @@ struct FavoritesView: View {
                 viewModel.alertData = nil
             }
         }
-        .task {
-            viewModel.isLoading = true
-            
-            do {
-                try await favoritesService.getUserFavorites()
-            } catch let error as AppError {
-                viewModel.alertData = error.alertData
-            } catch {
-                viewModel.alertData = AppError.genericError(error).alertData
-            }
-            
-            viewModel.isLoading = false
-        }
     }
 }
 
