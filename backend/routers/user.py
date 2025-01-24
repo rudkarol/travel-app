@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Security, Depends
+from fastapi import APIRouter, Security, Depends, Query
 from typing import Annotated, List
 
 from dependencies import get_database, get_token_verification
 from models.auth import TokenData
-from models.user import User, UserDataUpdate
+from models.user import User
+from models.locations import LocationDetails, Currency, DetailsRequest
+from services.locations import get_location_all_details
 
 
 database = get_database()
@@ -60,7 +62,25 @@ async def read_users_me(
 #     return {"message": "User data updated successfully"}
 
 
-@router.put("/user/me/favorites")
+@router.get("/user/me/favorites/", response_model=List[LocationDetails])
+async def get_current_user_favorites(
+    currency: Annotated[Currency, Query()],
+    auth_result: Annotated[TokenData, Security(verify_user.verify)]
+):
+    """Returns current user favorite places list"""
+
+    user = await database.get_user(auth_result.user_id)
+    locations = []
+
+    for location_id in user.favorite_places:
+        details = await get_location_all_details(
+            DetailsRequest(location_id=location_id, currency=currency)
+        )
+        locations.append(details)
+
+    return locations
+
+@router.put("/user/me/favorites/")
 async def update_current_user_favorites(
     data: List[str],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
