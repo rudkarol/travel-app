@@ -1,15 +1,35 @@
 from fastapi import APIRouter, Query, Security
-from typing import Annotated
+from typing import Annotated, List
 
-from dependencies import get_database, get_token_verification
-from models.risks import CountryAdvisories
-from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_location_details, fetch_tripadvisor_nearby_search, fetch_tripadvisor_location_photos
-from models.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse, NearbySearchRequest
+from dependencies import get_token_verification
+from services.locations import fetch_tripadvisor_find_search, fetch_tripadvisor_nearby_search, fetch_tripadvisor_location_photos, get_location_all_details
+from models.locations import SearchRequest, DetailsRequest, LocationDetails, SearchResponse, NearbySearchRequest, Currency
 from models.auth import TokenData
 
-database = get_database()
+
 router = APIRouter()
 verify_user = get_token_verification()
+
+
+@router.get("/home/", response_model=List[LocationDetails])
+async def get_recommended_locations(
+    currency: Annotated[Currency, Query()],
+    auth_result: Annotated[TokenData, Security(verify_user.verify)]
+):
+    """Endpoint do pobrania rekomendowanych lokalizacji"""
+
+    RECOMMENDED_IDS = ["199909", "276740", "105127"]
+    locations = []
+
+    for location_id in RECOMMENDED_IDS:
+        details = await get_location_all_details(
+            DetailsRequest(location_id=location_id, currency=currency)
+        )
+        locations.append(details)
+
+    return locations
+
+
 
 @router.get("/locations/search/", response_model=SearchResponse)
 async def search_locations(
@@ -51,21 +71,5 @@ async def get_location_details(
     poziom bezpieczenstwa, dane o klimacie, poziom cen
     lotow i zakwaterowania"""
 
-    location_details = await fetch_tripadvisor_location_details(query_params)
-
-    if location_details.category.name == "geographic":
-        if location_details.address_obj.country:
-            safety_level = await database.get_country_advisories(location_details.address_obj.country)
-            safety_level = CountryAdvisories(**safety_level.model_dump())
-        elif location_details.subcategory[0].name == "country":
-            safety_level = await database.get_country_advisories(location_details.name)
-            safety_level = CountryAdvisories(**safety_level.model_dump())
-        else:
-            safety_level = None
-
-        location_details.safety_level = safety_level
-
-    photos = await fetch_tripadvisor_location_photos(location_details.location_id)
-    location_details.photos = photos.photos
-
-    return location_details
+    details = await get_location_all_details(query_params)
+    return details

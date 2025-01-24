@@ -68,13 +68,17 @@ class SearchResponse(BaseModel):
         return [AIInputLocation.from_location(location) for location in self.data]
 
 
-class TripadvisorLocationDetailsRequest(TripadvisorRequest):
+class Currency(BaseModel):
     currency: str = Field(..., description="ISO 4217 currency code")
+
+
+class TripadvisorLocationDetailsRequest(TripadvisorRequest):
+    currency: Currency
 
 
 class DetailsRequest(BaseModel):
     location_id: str
-    currency: str = Field(..., description="ISO 4217 currency code")
+    currency: Currency
 
 
 # class Ancestor(BaseModel):

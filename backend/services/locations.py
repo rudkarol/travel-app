@@ -3,6 +3,11 @@ from datetime import datetime
 from meteostat import Monthly, Point
 
 import models.locations as lm
+from dependencies import get_database
+from models.risks import CountryAdvisories
+
+
+database = get_database()
 
 
 async def fetch_tripadvisor_find_search(search_params: lm.SearchRequest):
@@ -25,6 +30,30 @@ async def fetch_tripadvisor_location_details(query_params: lm.DetailsRequest):
         r = await client.get(url, params=params.model_dump(), headers=headers)
         r.raise_for_status()
         return lm.LocationDetails(**r.json())
+
+
+async def get_location_all_details(query_params: lm.DetailsRequest):
+    location_details = await fetch_tripadvisor_location_details(query_params)
+
+    try:
+        # if location_details.category.name == "geographic":
+        if location_details.address_obj.country:
+            safety_level = await database.get_country_advisories(location_details.address_obj.country)
+            safety_level = CountryAdvisories(**safety_level.model_dump())
+        elif location_details.subcategory[0].name == "country":
+            safety_level = await database.get_country_advisories(location_details.name)
+            safety_level = CountryAdvisories(**safety_level.model_dump())
+        else:
+            safety_level = None
+    except:
+        safety_level = None
+
+    location_details.safety_level = safety_level
+
+    photos = await fetch_tripadvisor_location_photos(location_details.location_id)
+    location_details.photos = photos.photos
+
+    return location_details
 
 
 async def fetch_tripadvisor_location_photos(location_id: str):
