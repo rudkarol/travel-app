@@ -1,5 +1,5 @@
 //
-//  LocationDetails.swift
+//  Location.swift
 //  TravelApp
 //
 //  Created by osx on 18/01/2025.
@@ -7,10 +7,11 @@
 
 import Foundation
 
-struct LocationDetails: Decodable, Identifiable {
+
+struct Location: Decodable, Identifiable {
     let locationId: String
     let name: String
-    let addressObj: AddressObj
+    let addressObj: AddressObject
     let photos: [Photo]?
     let description: String?
     let latitude: Float
@@ -37,14 +38,18 @@ struct SafetyLevel: Decodable {
     let link: String
 }
 
+struct Photo: Decodable {
+    let url: String
+}
+
 
 
 
 struct MockDataLocationDetails {
-    static let sampleLocationDetails = LocationDetails(
+    static let sampleLocationDetails = Location(
         locationId: "274856",
         name: "Warsaw",
-        addressObj: AddressObj(
+        addressObj: AddressObject(
             country: "Poland",
             addressString: "Warsaw Poland"
         ),

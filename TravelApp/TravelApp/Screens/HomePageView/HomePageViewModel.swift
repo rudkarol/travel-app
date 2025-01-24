@@ -10,8 +10,26 @@ import Observation
 
 
 @Observable final class HomePageViewModel {
-    //    TODO: exploreItems: [Place] = []
-    //    TODO: exploreItems: [Place]?
-    var exploreItems: [LocationBasic] = MockDataPlace.samplePlaces
+    
+    var recommendedLocations: [Location] = []
+    var isLoading: Bool = false
+    var alertData: AlertData?
+    
+    private let locationsService = LocationsService()
+    
+    
+    func loadRecommendedLocations() async {
+        isLoading = true
+        
+        do {
+            recommendedLocations = try await locationsService.getRecommendedLocations()
+        } catch let error as AppError {
+            alertData = error.alertData
+        } catch {
+            alertData = AppError.genericError(error).alertData
+        }
+        
+        isLoading = false
+    }
 }
 

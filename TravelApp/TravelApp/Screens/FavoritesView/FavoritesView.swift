@@ -9,24 +9,23 @@ import SwiftUI
 
 struct FavoritesView: View {
     
-    private let favoritesManager = FavoritesManager()
     private var viewModel = FavoritesViewModel()
+    
+    @Environment(FavoritesService.self) private var favoritesService
     
     
     var body: some View {
         ZStack {
             NavigationView {
                 ZStack {
-                    List(viewModel.favoritePlaces) { place in
-                        PlaceListCell(locationDetailsData: place, showingAddToFavButton: false)
+                    List(favoritesService.favorites) { place in
+                        PlaceListCell(location: place, showingAddToFavButton: false)
                             .listRowSeparator(.hidden)
                             .swipeActions(allowsFullSwipe: false) {
                                 Button(role: .destructive) {
                                     Task {
-                                        try await favoritesManager.remove(locationId: place.locationId)
+                                        try await favoritesService.remove(id: place.id)
                                     }
-                                    viewModel.favoritePlaces.removeAll { $0.locationId == place.locationId }
-                                    
                                     print("item deleted")
                                 } label: {
                                     Label("Delete", systemImage: "trash")
@@ -35,7 +34,7 @@ struct FavoritesView: View {
                     }
                     .listStyle(.plain)
                     
-                    if viewModel.favoritePlaces.isEmpty {
+                    if favoritesService.favorites.isEmpty {
                         EmptyState(
                             systemName: "heart.slash",
                             message: "Your favorite places list is empty"
@@ -59,11 +58,17 @@ struct FavoritesView: View {
             }
         }
         .task {
-            let favorites = favoritesManager.getFavorites()
+            viewModel.isLoading = true
             
-            dump(favorites)
-            viewModel.deleteUnliked(ids: favorites)
-            await viewModel.loadFavoritePlaces(ids: favorites)
+            do {
+                try await favoritesService.getUserFavorites()
+            } catch let error as AppError {
+                viewModel.alertData = error.alertData
+            } catch {
+                viewModel.alertData = AppError.genericError(error).alertData
+            }
+            
+            viewModel.isLoading = false
         }
     }
 }

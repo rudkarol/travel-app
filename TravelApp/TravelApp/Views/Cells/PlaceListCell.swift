@@ -10,26 +10,21 @@ import CachedAsyncImage
 
 struct PlaceListCell: View {
     
-    var locationBasicData: LocationBasic? = nil
-    var locationDetailsData: LocationDetails? = nil
+    var location: Location
     var showingAddToFavButton: Bool
     
-    private let favoritesManager = FavoritesManager()
-    private let viewModel: PlaceListCellViewModel
+    @Environment(FavoritesService.self) private var favoritesService
     
     
-    init(locationBasicData: LocationBasic? = nil, locationDetailsData: LocationDetails? = nil, showingAddToFavButton: Bool = true) {
-        self.locationBasicData = locationBasicData
-        self.locationDetailsData = locationDetailsData
+    init(location: Location, showingAddToFavButton: Bool = true) {
+        self.location = location
         self.showingAddToFavButton = showingAddToFavButton
-        
-        self.viewModel = PlaceListCellViewModel(locationBasicData: locationBasicData, locationDetailsData: locationDetailsData)
     }
     
     var body: some View {
-        NavigationLink(destination: LocationDetailsView(locationBasicData: locationBasicData, locationDetailsData: locationDetailsData)) {
+        NavigationLink(destination: LocationDetailsView(location: location)) {
             VStack(alignment: .leading) {
-                CachedAsyncImage(url: URL(string: viewModel.photos?.first?.url ?? "")) {image in
+                CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) {image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -48,10 +43,10 @@ struct PlaceListCell: View {
                     if showingAddToFavButton {
                         Button {
                             Task {
-                                try await favoritesManager.toggle(locationId: viewModel.locationId)
+                                try await favoritesService.toggle(location: location)
                             }
                         } label: {
-                            Image(systemName: favoritesManager.isFavorite(locationId: viewModel.locationId) ? "heart.fill" : "heart")
+                            Image(systemName: favoritesService.isFavorite(id: location.id) ? "heart.fill" : "heart")
                                 .imageScale(.large)
                                 .foregroundStyle(Color.red)
                         }
@@ -59,10 +54,10 @@ struct PlaceListCell: View {
                     }
                 }
 
-                Text(viewModel.name)
+                Text(location.name)
                     .bold()
                     .padding(.leading)
-                Text(viewModel.addressObj.addressString)
+                Text(location.addressObj.addressString)
                     .padding(.leading)
             }
         }
@@ -70,5 +65,5 @@ struct PlaceListCell: View {
 }
 
 #Preview {
-    PlaceListCell(locationBasicData: MockDataPlace.samplePlaceOne)
+    PlaceListCell(location: MockDataLocationDetails.sampleLocationDetails)
 }

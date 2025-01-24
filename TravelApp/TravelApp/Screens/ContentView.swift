@@ -20,12 +20,6 @@ struct ContentView: View {
         }
         .task {
             await authManager.checkLoginStatus()
-            
-            if authManager.isLoggedIn {
-                do {
-                    try await UserDataService.shared.getUserRequest()
-                } catch { }
-            }
         }
     }
 }
