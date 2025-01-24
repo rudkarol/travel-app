@@ -24,20 +24,20 @@ struct PlaceListCell: View {
     var body: some View {
         NavigationLink(destination: LocationDetailsView(location: location)) {
             VStack(alignment: .leading) {
-                CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) {image in
+                CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 200)
                         .clipped()
-                        .cornerRadius(8)
+                        .frame(height: 200)
+                        .cornerRadius(12)
                 } placeholder: {
                     Image("place-placehoilder")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 200)
                         .clipped()
-                        .cornerRadius(8)
+                        .frame(height: 200)
+                        .cornerRadius(12)
                 }
                 .overlay(alignment: .topTrailing) {
                     if showingAddToFavButton {
@@ -57,10 +57,11 @@ struct PlaceListCell: View {
                 Text(location.name)
                     .bold()
                     .padding(.leading)
-                Text(location.addressObj.addressString)
+                Text(location.addressObj.country ?? location.addressObj.addressString)
                     .padding(.leading)
             }
         }
+        .buttonStyle(.plain)
     }
 }
 

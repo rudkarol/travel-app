@@ -59,6 +59,9 @@ struct HomePageView: View {
                                     .padding()
                             }
                         }
+                        
+                        Spacer()
+                            .frame(height: 80)
                     }
                 }
                 .ignoresSafeArea()

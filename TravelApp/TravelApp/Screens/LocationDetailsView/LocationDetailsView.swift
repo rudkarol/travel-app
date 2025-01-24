@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CachedAsyncImage
+import MapKit
+
 
 struct LocationDetailsView: View {
     
@@ -21,76 +23,93 @@ struct LocationDetailsView: View {
     
     var body: some View {
         ZStack {
-            NavigationView {
-                VStack {
-                    CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) {image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                            .cornerRadius(8)
-                    } placeholder: {
-                        Image("place-placehoilder")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                            .cornerRadius(8)
-                    }
+            NavigationStack {
+                ScrollView {
+                    VStack {
+                        CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) {image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .clipped()
+                                .cornerRadius(8)
+                        } placeholder: {
+                            Image("place-placehoilder")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .clipped()
+                                .cornerRadius(8)
+                        }
+                        .padding()
                     
-                    Text(location.name)
-                    Text(location.description ?? "")
-                    
-                    Grid {
-                        GridRow {
-                            InfoLinkCell(
-                                systemName: "1.circle",
-                                name: "Safety",
-                                url: location.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
-                            )
-                            InfoLinkCell(
-                                systemName: "lightbulb.max",
-                                name: "Nice To Know",
-                                url: "https://en.wikivoyage.org/wiki/\(location.addressObj.country ?? "https://google.com")"
+                        Text(location.description ?? "")
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        
+                        Grid {
+                            GridRow {
+                                InfoLinkCell(
+                                    systemName: "1.circle",
+                                    name: "Safety",
+                                    url: location.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
+                                )
+                                InfoLinkCell(
+                                    systemName: "lightbulb.max",
+                                    name: "Nice To Know",
+                                    url: "https://en.wikivoyage.org/wiki/\(location.addressObj.country ?? "https://google.com")"
+                                )
+                            }
+                            GridRow {
+                                InfoLinkCell(
+                                    systemName: "airplane.departure",
+                                    name: "Flights",
+                                    url: "https://google.com"
+                                )
+                                InfoLinkCell(
+                                    systemName: "building",
+                                    name: "Hotels",
+                                    url: "https://google.com"
+                                )
+                            }
+                        }
+                        .padding()
+                        
+                        Text(location.addressObj.addressString)
+                        
+                        Map {
+                            Marker(
+                                location.name,
+                                coordinate: CLLocationCoordinate2D(
+                                    latitude: CLLocationDegrees(location.latitude),
+                                    longitude: CLLocationDegrees(location.longitude)
+                                )
                             )
                         }
-                        GridRow {
-                            InfoLinkCell(
-                                systemName: "airplane.departure",
-                                name: "Flights",
-                                url: "https://google.com"
-                            )
-                            InfoLinkCell(
-                                systemName: "building",
-                                name: "Hotels",
-                                url: "https://google.com"
-                            )
-                        }
+                        .mapControlVisibility(.hidden)
+                        .frame(height: 200)
+                        .cornerRadius(12)
+                        .padding()
                     }
-                    .padding()
-                    
-                    Text(location.addressObj.addressString)
-                    
-        //            TODO: Map
                 }
-            }
-            .navigationTitle(location.name)
-            .toolbar {
-                ToolbarItemGroup {
-                    Button {
-                        //                        TODO
-                    } label: {
-                        Image(systemName: "book")
-                            .imageScale(.large)
-                    }
-                    
-                    Button {
-                        Task {
-                            try await favoritesService.toggle(location: location)
+                .navigationTitle(location.name)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItemGroup {
+                        Button {
+                            //                        TODO
+                        } label: {
+                            Image(systemName: "book")
+                                .imageScale(.large)
                         }
-                    } label: {
-                        Image(systemName: favoritesService.isFavorite(id: location.id) ? "heart.fill" : "heart")
-                            .imageScale(.large)
-                            .foregroundStyle(Color.red)
+                        
+                        Button {
+                            Task {
+                                try await favoritesService.toggle(location: location)
+                            }
+                        } label: {
+                            Image(systemName: favoritesService.isFavorite(id: location.id) ? "heart.fill" : "heart")
+                                .imageScale(.large)
+                                .foregroundStyle(Color.red)
+                        }
                     }
                 }
             }
