@@ -12,7 +12,7 @@ struct PlansView: View {
     @State private var path = NavigationPath()
     
     @Environment(PlansService.self) private var plansService
-    private var viewModel = PlansViewModel()
+    @Bindable private var viewModel = PlansViewModel()
     
     
     var body: some View {
@@ -46,7 +46,7 @@ struct PlansView: View {
                     .listStyle(.plain)
                     
                     Button {
-                        viewModel.addPlanSheetVisible = true
+                        viewModel.sheetVisible = true
                     } label: {
                         Image(systemName: "plus")
                             .font(.title)
@@ -71,7 +71,6 @@ struct PlansView: View {
                 LoadingView()
             }
         }
-        
         .task {
             if plansService.plans.isEmpty {
                 viewModel.isLoading = true

@@ -27,13 +27,11 @@ struct LocationDetailsView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .clipped()
-                            .cornerRadius(8)
+                            .cornerRadius(12)
                     } placeholder: {
-                        Image("place-placehoilder")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                            .cornerRadius(8)
+                        ImagePlaceholder()
+                            .frame(height: 400)
+                            .cornerRadius(12)
                     }
                     .padding()
                     

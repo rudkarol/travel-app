@@ -31,10 +31,7 @@ struct PlaceListCell: View {
                     .frame(height: 200)
                     .cornerRadius(12)
             } placeholder: {
-                Image("place-placehoilder")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .clipped()
+                ImagePlaceholder()
                     .frame(height: 200)
                     .cornerRadius(12)
             }

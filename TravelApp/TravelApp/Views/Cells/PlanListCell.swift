@@ -22,10 +22,7 @@ struct PlanListCell: View {
                     .frame(height: 200)
                     .cornerRadius(12)
             } placeholder: {
-                Image("plan-placeholder")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .clipped()
+                ImagePlaceholder()
                     .frame(height: 200)
                     .cornerRadius(12)
             }
