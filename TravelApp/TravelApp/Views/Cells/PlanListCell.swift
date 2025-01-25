@@ -14,28 +14,27 @@ struct PlanListCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-//            CachedAsyncImage(url: URL(string: plan.places[0].photos[0].url)!) {image in
-//                image
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fill)
-//                    .frame(height: 200)
-//                    .clipped()
-//                    .cornerRadius(8)
-//            } placeholder: {
-//                Image("plan-placeholder")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fill)
-//                    .frame(height: 200)
-//                    .clipped()
-//                    .cornerRadius(8)
-//            }
-//
-//            Text(plan.name)
-//                .bold()
-//                .padding(.leading)
-////            TODO: DatePicker range
-//            Text("\(plan.startDate) to \(plan.endDate)")
-//                .padding(.leading)
+            CachedAsyncImage(url: URL(string: plan.days[0].places?[0].photos?[0].url ?? "")) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipped()
+                    .frame(height: 200)
+                    .cornerRadius(12)
+            } placeholder: {
+                Image("plan-placeholder")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipped()
+                    .frame(height: 200)
+                    .cornerRadius(12)
+            }
+
+            Text(plan.name)
+                .bold()
+                .padding(.leading)
+            Text(plan.startDate ?? "")
+                .padding(.leading)
         }
     }
 }

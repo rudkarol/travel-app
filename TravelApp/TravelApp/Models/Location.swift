@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Location: Decodable, Identifiable {
+struct Location: Decodable, Identifiable, Hashable {
     let locationId: String
     let name: String
     let addressObj: AddressObject
@@ -23,22 +23,22 @@ struct Location: Decodable, Identifiable {
     var id: String{locationId}
 }
 
-struct AddressObject: Decodable {
+struct AddressObject: Decodable, Hashable {
     let country: String?
     let addressString: String
 }
 
-struct LocationCategory: Decodable {
+struct LocationCategory: Decodable, Hashable {
     let name: String
 }
 
-struct SafetyLevel: Decodable {
+struct SafetyLevel: Decodable, Hashable {
     let level: Int
     let pubDate: String
     let link: String
 }
 
-struct Photo: Decodable {
+struct Photo: Decodable, Hashable {
     let url: String
 }
 

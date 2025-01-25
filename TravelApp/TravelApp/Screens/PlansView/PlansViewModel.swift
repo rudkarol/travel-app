@@ -6,8 +6,15 @@
 //
 
 import Foundation
+import SwiftUI
+
 
 @Observable final class PlansViewModel {
-//    TODO: var userPlans: [Plan] = []
-    var userPlans: [Plan] = MockDataPlan.samplePlans
+    
+    var addPlanSheetVisible: Bool = false
+    var path = NavigationPath()
+    
+    var isLoading: Bool = false
+    var alertData: AlertData?
+
 }

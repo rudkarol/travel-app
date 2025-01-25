@@ -7,15 +7,16 @@
 
 import Foundation
 
-struct Plan: Decodable, Identifiable {
-    var id = UUID()
+struct Plan: Decodable, Identifiable, Hashable {
     let name: String
     let description: String?
     let startDate: String?
     let days: [DailyPlan]
+    
+    var id: String{name}
 }
 
-struct DailyPlan: Decodable {
+struct DailyPlan: Decodable, Hashable {
     let places: [Location]?
 }
 
@@ -29,6 +30,7 @@ struct PlanUpdateModel: Encodable {
 struct DailyPlanUpdateModel: Encodable {
     var places: [String]
 }
+
 
 
 

@@ -11,12 +11,14 @@ import SwiftUI
 struct TravelAppApp: App {
     
     @State var favoritesService = FavoritesService()
+    @State var plansService = PlansService()
     
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(favoritesService)
+                .environment(plansService)
         }
     }
 }

@@ -14,6 +14,10 @@ class PlansService {
     var plans: [Plan] = []
     
     
+    func addPlan(name: String) {
+        plans.append(Plan(name: name, description: nil, startDate: nil, days: []))
+    }
+    
     func getUserPlans() async throws {
         let locale = NSLocale.current
         let currencyCode = locale.currency?.identifier
@@ -31,7 +35,7 @@ class PlansService {
         }
     }
     
-    private func updateUserPlans() async throws {
+    func updateUserPlans() async throws {
         let endpointUrl = "/user/me/favorites/"
         var plansToUpdate: [PlanUpdateModel] = []
         
@@ -42,14 +46,14 @@ class PlansService {
                 startDate: plan.startDate,
                 days: [])
             
-            var day = DailyPlanUpdateModel(places: [])
-            
             for planDay in plan.days {
                 let ids = planDay.places?.map { $0.id }
-                day.places = ids ?? []
+                let day = DailyPlanUpdateModel(places: ids ?? [])
+//                ??
+                plan_data.days.append(day)
             }
-            
-            plan_data.days.append(day)
+//            ??
+            plansToUpdate.append(plan_data)
         }
         
         try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: plansToUpdate)

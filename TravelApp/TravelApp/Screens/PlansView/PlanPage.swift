@@ -13,23 +13,23 @@ struct PlanPage: View {
     
     var body: some View {
         NavigationView {
-//            VStack {
-//                HStack {
-//                    //            TODO: DatePicker range
-//                    Button(action: { }) {
-//                        Label(plan.startDate, systemImage: "calendar")
-//                    }
-//                    .modifier(SmallButtonStyle())
-//                    
-//                    Button(action: { }) {
-//                        Label("Map view", systemImage: "map")
-//                    }
-//                    .modifier(SmallButtonStyle())
-//                }
-//                .padding()
-//                
-//                ZStack {
-//                    List(plan.places) { place in
+            VStack {
+                HStack {
+                    //            TODO: DatePicker range
+                    Button(action: { }) {
+                        Label(plan.startDate ?? "", systemImage: "calendar")
+                    }
+                    .modifier(SmallButtonStyle())
+                    
+                    Button(action: { }) {
+                        Label("Map view", systemImage: "map")
+                    }
+                    .modifier(SmallButtonStyle())
+                }
+                .padding()
+                
+                ZStack {
+//                    List(plan.) { place in
 //                        PlaceListCell(place: place, showingAddToFavButton: false)
 //                            .listRowSeparator(.hidden)
 //                            .onTapGesture {
@@ -46,16 +46,16 @@ struct PlanPage: View {
 //                            }
 //                    }
 //                    .listStyle(.plain)
-//                    
-//                    if plan.places.isEmpty {
-//                        EmptyState(
-//                            systemName: "bookmark.slash",
-//                            message: "There are no places added to your trip plan"
-//                        )
-//                    }
-//                }
-//            }
-//            .navigationTitle(plan.name)
+                    
+                    if plan.days.isEmpty {
+                        EmptyState(
+                            systemName: "bookmark.slash",
+                            message: "There are no days and locations added to your trip plan"
+                        )
+                    }
+                }
+            }
+            .navigationTitle(plan.name)
         }
     }
 }
