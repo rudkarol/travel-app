@@ -14,10 +14,11 @@ async def openai_request(attractions: list[SearchResponse], restaurants: list[Se
     prompt = f"""
     You are a travel assistant tasked with creating a multi-day trip plan for a traveler. Here is a list of places they want to visit:
     {places}
-    Create a {days}-day itinerary that groups places logically to minimize travel time and maximize the travel experience. 
+    Create a {days}-day itinerary, choose places logically to minimize travel time and maximize the travel experience. 
     Distribute visits evenly across each day and suggest a lunch option for each day. 
     For each location, provide a short description of what the traveler will experience there, including key highlights or unique features. 
     If relevant, suggest the best time of day to visit specific locations.
+    Provide a name and brief description of the itinerary.
     """
 
     completion = await client.beta.chat.completions.parse (

@@ -3,12 +3,12 @@ from typing import Annotated, List, Optional
 import math
 
 from services.openai import openai_request
-from services.locations import fetch_tripadvisor_nearby_search
-from models.openai import GenerateTripPlanRequest, AIResponseFormat
+from services.locations import fetch_tripadvisor_nearby_search, get_location_all_details
+from models.openai import GenerateTripPlanRequest
 from models.user import User
-from models.trip_plans import Trip
+from models.trip_plans import Trip, TripResponse, TripDayResponse
 from models.auth import TokenData
-from models.locations import NearbySearchRequest
+from models.locations import NearbySearchRequest, DetailsRequest
 from dependencies import get_token_verification, get_database
 
 
@@ -21,7 +21,7 @@ verify_user = get_token_verification()
 async def generate_trip_plan(
         query_params: GenerateTripPlanRequest,
         auth_result: Annotated[TokenData, Security(verify_user.verify)]
-) -> AIResponseFormat:
+) -> TripResponse:
     """Endpoint do generowania kilkudniowego planu podróży.
     Dostępne generowanie planu dla 1 do 7 dni."""
 
@@ -38,7 +38,26 @@ async def generate_trip_plan(
         restaurants.extend(r)
 
     trip_plan = await openai_request(attractions=attractions, restaurants=restaurants, days=query_params.days)
-    return trip_plan
+
+    trip_data = TripResponse(
+        name=trip_plan.name,
+        description=trip_plan.description,
+        start_date=None,
+        days=[]
+    )
+
+    for trip_day in trip_plan.days:
+        locations = TripDayResponse(places=[])
+
+        for place in trip_day.places:
+            details = await get_location_all_details(
+                DetailsRequest(location_id=place.location_id, currency=query_params.currency)
+            )
+            locations.places.append(details)
+
+        trip_data.days.append(locations)
+
+    return trip_data
 
 
 @router.get("/trip/plans")
