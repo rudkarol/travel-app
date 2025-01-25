@@ -74,7 +74,6 @@ import Observation
     
     func getAccessToken() async throws -> String {
         let credentials = try await credentialsManager.credentials()
-        print(credentials.accessToken)
         return credentials.accessToken
     }
 }

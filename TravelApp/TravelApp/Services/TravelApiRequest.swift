@@ -11,7 +11,7 @@ class TravelApiRequest {
     static let shared = TravelApiRequest()
     private init() {}
     
-    private let baseUrl = "http://192.168.18.12:8000"
+    private let baseUrl = "http://192.168.122.1:8000"
     private var accessToken: String = ""
     
     

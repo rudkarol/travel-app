@@ -9,12 +9,15 @@ import SwiftUI
 
 struct PlansView: View {
     
+    @State private var path = NavigationPath()
+    
     @Environment(PlansService.self) private var plansService
-    @Bindable private var viewModel = PlansViewModel()
+    private var viewModel = PlansViewModel()
+    
     
     var body: some View {
         ZStack {
-            NavigationStack(path: $viewModel.path) {
+            NavigationStack(path: $path) {
                 ZStack(alignment: .bottomTrailing) {
                     List(plansService.plans) { plan in
                         NavigationLink(value: plan) {
@@ -22,8 +25,13 @@ struct PlansView: View {
                                 .swipeActions(allowsFullSwipe: false) {
                                     Button(role: .destructive) {
                                         Task {
-                                            try await plansService.updateUserPlans()
-                                            //                                    TODO: catch
+                                            do {
+                                                try await plansService.updateUserPlans()
+                                            } catch let error as AppError {
+                                                viewModel.alertData = error.alertData
+                                            } catch {
+                                                viewModel.alertData = AppError.genericError(error).alertData
+                                            }
                                         }
                                         print("plan item deleted")
                                     } label: {
@@ -32,11 +40,10 @@ struct PlansView: View {
                                 }
                         }
                     }
-                    .listRowSeparator(.hidden)
-                    .listStyle(.plain)
                     .navigationDestination(for: Plan.self) { plan in
-                        PlanPage(plan: plan)
+                        PlanPage(plan: plan, path: $path)
                     }
+                    .listStyle(.plain)
                     
                     Button {
                         viewModel.addPlanSheetVisible = true
@@ -46,7 +53,7 @@ struct PlansView: View {
                             .padding()
                             .background(.accent)
                             .foregroundStyle(.white)
-                            .clipShape(Circle())
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     .padding()
                     
@@ -57,25 +64,28 @@ struct PlansView: View {
                         )
                     }
                 }
+                .navigationTitle("Trip Plans")
             }
             
             if viewModel.isLoading {
                 LoadingView()
             }
         }
-        .navigationTitle("Trip Plans")
+        
         .task {
-            viewModel.isLoading = true
-            
-            do {
-                try await plansService.getUserPlans()
-            } catch let error as AppError {
-                viewModel.alertData = error.alertData
-            } catch {
-                viewModel.alertData = AppError.genericError(error).alertData
+            if plansService.plans.isEmpty {
+                viewModel.isLoading = true
+                
+                do {
+                    try await plansService.getUserPlans()
+                } catch let error as AppError {
+                    viewModel.alertData = error.alertData
+                } catch {
+                    viewModel.alertData = AppError.genericError(error).alertData
+                }
+                
+                viewModel.isLoading = false
             }
-            
-            viewModel.isLoading = false
         }
         .alert(
             viewModel.alertData?.title ?? "",

@@ -22,48 +22,46 @@ struct PlaceListCell: View {
     }
     
     var body: some View {
-        NavigationLink(destination: LocationDetailsView(location: location)) {
-            VStack(alignment: .leading) {
-                CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipped()
-                        .frame(height: 200)
-                        .cornerRadius(12)
-                } placeholder: {
-                    Image("place-placehoilder")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipped()
-                        .frame(height: 200)
-                        .cornerRadius(12)
-                }
-                .overlay(alignment: .topTrailing) {
-                    if showingAddToFavButton {
-                        Button {
-                            Task {
-                                try await favoritesService.toggle(location: location)
-                            }
-                        } label: {
-                            Image(systemName: favoritesService.isFavorite(id: location.id) ? "heart.fill" : "heart")
-                                .imageScale(.large)
-                                .foregroundStyle(Color.red)
-                        }
-                        .padding()
-                    }
-                }
-
-                Text(location.name)
-                    .bold()
-                    .padding(.leading)
-                Text(location.addressObj.country ?? location.addressObj.addressString)
-                    .padding(.leading)
+        VStack(alignment: .leading) {
+            CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipped()
+                    .frame(height: 200)
+                    .cornerRadius(12)
+            } placeholder: {
+                Image("place-placehoilder")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipped()
+                    .frame(height: 200)
+                    .cornerRadius(12)
             }
+            .overlay(alignment: .topTrailing) {
+                if showingAddToFavButton {
+                    Button {
+                        Task {
+                            try await favoritesService.toggle(location: location)
+                        }
+                    } label: {
+                        Image(systemName: favoritesService.isFavorite(id: location.id) ? "heart.fill" : "heart")
+                            .imageScale(.large)
+                            .foregroundStyle(Color.red)
+                    }
+                    .padding()
+                }
+            }
+            
+            Text(location.name)
+                .bold()
+                .padding(.leading)
+            Text(location.addressObj.country ?? location.addressObj.addressString)
+                .padding(.leading)
         }
-        .buttonStyle(.plain)
     }
 }
+
 
 #Preview {
     PlaceListCell(location: MockDataLocationDetails.sampleLocationDetails)

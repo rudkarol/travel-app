@@ -9,28 +9,33 @@ import SwiftUI
 
 struct FavoritesView: View {
     
-    private var viewModel = FavoritesViewModel()
+    @State private var path = NavigationPath()
     
     @Environment(FavoritesService.self) private var favoritesService
+    private var viewModel = FavoritesViewModel()
     
     
     var body: some View {
         ZStack {
-            NavigationView {
+            NavigationStack(path: $path) {
                 ZStack {
-                    List(favoritesService.favorites) { place in
-                        PlaceListCell(location: place, showingAddToFavButton: false)
-                            .listRowSeparator(.hidden)
-                            .swipeActions(allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    Task {
-                                        try await favoritesService.remove(id: place.id)
+                    List(favoritesService.favorites) { location in
+                        NavigationLink(value: location) {
+                            PlaceListCell(location: location, showingAddToFavButton: false)
+                                .swipeActions(allowsFullSwipe: false) {
+                                    Button(role: .destructive) {
+                                        Task {
+                                            try await favoritesService.remove(id: location.id)
+                                        }
+                                        print("item deleted")
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
                                     }
-                                    print("item deleted")
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
                                 }
-                            }
+                        }
+                    }
+                    .navigationDestination(for: Location.self) { location in
+                        LocationDetailsView(location: location, path: $path)
                     }
                     .listStyle(.plain)
                     

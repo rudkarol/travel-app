@@ -12,8 +12,6 @@ import SwiftUI
 @Observable final class PlansViewModel {
     
     var addPlanSheetVisible: Bool = false
-    var path = NavigationPath()
-    
     var isLoading: Bool = false
     var alertData: AlertData?
 

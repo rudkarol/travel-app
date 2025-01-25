@@ -10,56 +10,44 @@ import SwiftUI
 struct PlanPage: View {
     
     let plan: Plan
+    @Binding var path: NavigationPath
+    
     
     var body: some View {
-        NavigationView {
-            VStack {
-                HStack {
-                    //            TODO: DatePicker range
-                    Button(action: { }) {
-                        Label(plan.startDate ?? "", systemImage: "calendar")
+        VStack {
+            //                    TODO: Date picker
+            Button(action: { }) {
+                Label(plan.startDate ?? "", systemImage: "calendar")
+            }
+            .modifier(SmallButtonStyle())
+            .padding()
+            
+            ZStack {
+                List(plan.days) { day in
+                    Section("Day") {
+                        ForEach(day.places ?? []) { place in
+                            NavigationLink(value: place) {
+                                PlaceListCell(location: place, showingAddToFavButton: false)
+                            }
+                        }
                     }
-                    .modifier(SmallButtonStyle())
-                    
-                    Button(action: { }) {
-                        Label("Map view", systemImage: "map")
-                    }
-                    .modifier(SmallButtonStyle())
                 }
-                .padding()
+                .navigationDestination(for: Location.self) { location in
+                    LocationDetailsView(location: location, path: $path)
+                }
                 
-                ZStack {
-//                    List(plan.) { place in
-//                        PlaceListCell(place: place, showingAddToFavButton: false)
-//                            .listRowSeparator(.hidden)
-//                            .onTapGesture {
-//                                //                      TODO: go to placePage, może przenieść onTapGesture do PlaceListCell
-//                                print("item clicked")
-//                            }
-//                            .swipeActions(allowsFullSwipe: false) {
-//                                Button(role: .destructive) {
-//                                    //                          TODO: delete
-//                                    print("item deleted")
-//                                } label: {
-//                                    Label("Delete", systemImage: "trash")
-//                                }
-//                            }
-//                    }
-//                    .listStyle(.plain)
-                    
-                    if plan.days.isEmpty {
-                        EmptyState(
-                            systemName: "bookmark.slash",
-                            message: "There are no days and locations added to your trip plan"
-                        )
-                    }
+                if plan.days.isEmpty {
+                    EmptyState(
+                        systemName: "bookmark.slash",
+                        message: "There are no days and locations added to your trip plan"
+                    )
                 }
             }
-            .navigationTitle(plan.name)
         }
+        .navigationTitle(plan.name)
     }
 }
 
-#Preview {
-    PlanPage(plan: MockDataPlan.samplePlanOne)
-}
+//#Preview {
+//    PlanPage(plan: MockDataPlan.samplePlanOne)
+//}

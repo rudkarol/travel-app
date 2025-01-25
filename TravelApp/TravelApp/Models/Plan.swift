@@ -16,8 +16,14 @@ struct Plan: Decodable, Identifiable, Hashable {
     var id: String{name}
 }
 
-struct DailyPlan: Decodable, Hashable {
+struct DailyPlan: Decodable, Identifiable, Hashable {
     let places: [Location]?
+    
+    var id = UUID()
+    
+    enum CodingKeys: String, CodingKey {
+        case places
+    }
 }
 
 struct PlanUpdateModel: Encodable {

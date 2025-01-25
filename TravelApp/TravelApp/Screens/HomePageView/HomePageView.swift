@@ -9,12 +9,14 @@ import SwiftUI
 
 struct HomePageView: View {
 
+    @State private var path = NavigationPath()
+    
     private let viewModel = HomePageViewModel()
     
     
     var body: some View {
         ZStack {
-            NavigationView {
+            NavigationStack(path: $path) {
                 ScrollView {
                     VStack(alignment: .leading) {
                         ZStack(alignment: .top) {
@@ -55,9 +57,15 @@ struct HomePageView: View {
                         
                         LazyVStack(spacing: 0) {
                             ForEach(viewModel.recommendedLocations) { location in
-                                PlaceListCell(location: location)
-                                    .padding()
+                                NavigationLink(value: location) {
+                                    PlaceListCell(location: location)
+                                        .padding()
+                                }
+                                .buttonStyle(.plain)
                             }
+                        }
+                        .navigationDestination(for: Location.self) { location in
+                            LocationDetailsView(location: location, path: $path)
                         }
                         
                         Spacer()
