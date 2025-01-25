@@ -14,8 +14,9 @@ class PlansService {
     var plans: [Plan] = []
     
     
-    func addPlan(name: String) {
-        plans.append(Plan(name: name, description: nil, startDate: nil, days: []))
+    func addPlan(plan: Plan) {
+        plans.append(plan)
+//        TODO save
     }
     
     func getUserPlans() async throws {

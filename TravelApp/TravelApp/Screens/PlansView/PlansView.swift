@@ -65,6 +65,9 @@ struct PlansView: View {
                     }
                 }
                 .navigationTitle("Trip Plans")
+                .sheet(isPresented: $viewModel.sheetVisible) {
+                    AddPlanForm(isVisible: $viewModel.sheetVisible)
+                }
             }
             
             if viewModel.isLoading {
