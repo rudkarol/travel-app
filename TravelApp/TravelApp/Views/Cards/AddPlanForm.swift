@@ -9,14 +9,23 @@ import SwiftUI
 
 struct AddPlanForm: View {
     
-    @State private var name: String = ""
-    @State private var description: String = ""
-    @State private var startDate: Date = Date()
-    @State private var toggleState: Bool = false
+    @State var name: String
+    @State var description: String
+    @State var startDate: Date
+    @State var toggleState: Bool
+    var toUpdate: Bool
     
     @Environment(PlansService.self) private var plansService
     @Environment(\.dismiss) var dismiss
     
+    
+    init(name: String = "", description: String = "", startDate: Date = Date(), toggleState: Bool = false, toUpdate: Bool = false) {
+        self.name = name
+        self.description = description
+        self.startDate = startDate
+        self.toggleState = toggleState
+        self.toUpdate = toUpdate
+    }
     
     var body: some View {
         NavigationView {
@@ -55,7 +64,7 @@ struct AddPlanForm: View {
         let plan = Plan(
             name: (name == "") ? "My trip plan \(plansService.plans.count + 1)": name ,
             description: description,
-            startDate:  toggleState ? "\(startDate)" : nil,
+            startDate:  toggleState ? startDate : nil,
             days: []
         )
         

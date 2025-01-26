@@ -17,8 +17,7 @@ final class LocationsService {
         let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
             return try decoder.decode(Location.self, from: data)
         } catch {
             print("decoder error")
@@ -34,8 +33,7 @@ final class LocationsService {
         let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
             return try decoder.decode([Location].self, from: data)
         } catch {
             print("decoder error")

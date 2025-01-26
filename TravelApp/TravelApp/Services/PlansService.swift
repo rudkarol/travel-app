@@ -28,8 +28,7 @@ class PlansService {
             let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
             
             do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
                 plans = try decoder.decode([Plan].self, from: data)
             } catch {
                 print("get plans decoder error")
@@ -60,5 +59,27 @@ class PlansService {
         }
         
         try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: plansToUpdate)
+    }
+    
+    func getAIGeneratedPlan(latitude: Float, longitude: Float, days: Int) async throws {
+        let locale = NSLocale.current
+        let currencyCode = locale.currency?.identifier
+        let endpointUrl = "/trip/generate/"
+        var planResponse: Plan
+        
+        let body = AIPlanRequestBody(lat: latitude, lon: longitude, currency: "\(currencyCode ?? "usd")", days: days)
+        
+        let data = try await TravelApiRequest.shared.postData(endpointUrl: endpointUrl, body: body)
+
+        do {
+            let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
+            planResponse = try decoder.decode(Plan.self, from: data)
+        } catch {
+            print("get plan decoder error")
+            throw AppError.invalidData
+        }
+        
+//        TODO: try catch
+        addPlan(plan: planResponse)
     }
 }

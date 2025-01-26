@@ -30,8 +30,10 @@ struct PlanListCell: View {
             Text(plan.name)
                 .bold()
                 .padding(.leading)
-            Text(plan.startDate ?? "")
-                .padding(.leading)
+            
+            if (plan.startDate != nil) {
+                Text(plan.startDate!.formatted())
+            }
         }
     }
 }

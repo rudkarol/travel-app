@@ -34,7 +34,7 @@ struct LocationCategory: Decodable, Hashable {
 
 struct SafetyLevel: Decodable, Hashable {
     let level: Int
-    let pubDate: String
+    let pubDate: Date
     let link: String
 }
 
@@ -66,7 +66,7 @@ struct MockDataLocationDetails {
         ],
         safetyLevel: SafetyLevel(
             level: 1,
-            pubDate: "2024-05-01T00:00:00",
+            pubDate: Date(),
             link: "http://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/poland-travel-advisory.html"
         )
     )

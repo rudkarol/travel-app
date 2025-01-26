@@ -42,8 +42,7 @@ class FavoritesService {
         let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
             favorites = try decoder.decode([Location].self, from: data)
         } catch {
             print("get favorites decoder error")

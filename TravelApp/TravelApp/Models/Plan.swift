@@ -10,7 +10,7 @@ import Foundation
 struct Plan: Decodable, Identifiable, Hashable {
     var name: String
     var description: String?
-    var startDate: String?
+    var startDate: Date?
     var days: [DailyPlan]
     
     var id: String{name}
@@ -29,7 +29,7 @@ struct DailyPlan: Decodable, Identifiable, Hashable {
 struct PlanUpdateModel: Encodable {
     let name: String
     let description: String?
-    let startDate: String?
+    let startDate: Date?
     var days: [DailyPlanUpdateModel]
 }
 
@@ -37,7 +37,12 @@ struct DailyPlanUpdateModel: Encodable {
     var places: [String]
 }
 
-
+struct AIPlanRequestBody: Encodable {
+    let lat: Float
+    let lon: Float
+    let currency: String
+    let days: Int
+}
 
 
 struct MockDataPlan: Codable {
@@ -45,7 +50,7 @@ struct MockDataPlan: Codable {
     static let samplePlanOne = Plan(
         name: "My first plan",
         description: "Plan description",
-        startDate: "20.10.2025",
+        startDate: Date(),
         days: [
             DailyPlan(places: [MockDataLocationDetails.sampleLocationDetails, MockDataLocationDetails.sampleLocationDetails]),
             DailyPlan(places: [MockDataLocationDetails.sampleLocationDetails])
