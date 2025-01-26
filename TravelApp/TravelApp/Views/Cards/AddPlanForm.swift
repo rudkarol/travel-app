@@ -62,7 +62,7 @@ struct AddPlanForm: View {
         let plan = Plan(
             name: (name == "") ? "My trip plan \(plansService.plans.count + 1)": name ,
             description: description,
-            startDate: "\(startDate)",
+            startDate:  toggleState ? "\(startDate)" : nil,
             days: []
         )
         

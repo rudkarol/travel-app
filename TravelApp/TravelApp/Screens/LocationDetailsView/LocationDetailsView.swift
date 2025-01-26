@@ -13,6 +13,7 @@ import MapKit
 struct LocationDetailsView: View {
     
     let location: Location
+    @State var sheetVisible: Bool = false
     @Binding var path: NavigationPath
     
     @Environment(FavoritesService.self) private var favoritesService
@@ -89,7 +90,7 @@ struct LocationDetailsView: View {
             .toolbar {
                 ToolbarItemGroup {
                     Button {
-                        //                        TODO
+                        sheetVisible = true
                     } label: {
                         Image(systemName: "book")
                             .imageScale(.large)
@@ -105,6 +106,9 @@ struct LocationDetailsView: View {
                             .foregroundStyle(Color.red)
                     }
                 }
+            }
+            .sheet(isPresented: $sheetVisible) {
+                AddLocationToPlanMainCard(location: location, isVisible: $sheetVisible)
             }
         }
     }

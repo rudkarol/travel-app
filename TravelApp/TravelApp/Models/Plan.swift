@@ -8,16 +8,16 @@
 import Foundation
 
 struct Plan: Decodable, Identifiable, Hashable {
-    let name: String
-    let description: String?
-    let startDate: String?
-    let days: [DailyPlan]
+    var name: String
+    var description: String?
+    var startDate: String?
+    var days: [DailyPlan]
     
     var id: String{name}
 }
 
 struct DailyPlan: Decodable, Identifiable, Hashable {
-    let places: [Location]?
+    var places: [Location]?
     
     var id = UUID()
     
