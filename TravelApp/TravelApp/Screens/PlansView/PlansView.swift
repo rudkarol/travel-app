@@ -66,7 +66,7 @@ struct PlansView: View {
                 }
                 .navigationTitle("Trip Plans")
                 .sheet(isPresented: $viewModel.sheetVisible) {
-                    AddPlanForm(isVisible: $viewModel.sheetVisible)
+                    AddPlanForm()
                 }
             }
             
@@ -75,19 +75,17 @@ struct PlansView: View {
             }
         }
         .task {
-            if plansService.plans.isEmpty {
-                viewModel.isLoading = true
-                
-                do {
-                    try await plansService.getUserPlans()
-                } catch let error as AppError {
-                    viewModel.alertData = error.alertData
-                } catch {
-                    viewModel.alertData = AppError.genericError(error).alertData
-                }
-                
-                viewModel.isLoading = false
+            viewModel.isLoading = true
+            
+            do {
+                try await plansService.getUserPlans()
+            } catch let error as AppError {
+                viewModel.alertData = error.alertData
+            } catch {
+                viewModel.alertData = AppError.genericError(error).alertData
             }
+                
+            viewModel.isLoading = false
         }
         .alert(
             viewModel.alertData?.title ?? "",

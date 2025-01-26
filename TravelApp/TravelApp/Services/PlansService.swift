@@ -20,19 +20,21 @@ class PlansService {
     }
     
     func getUserPlans() async throws {
-        let locale = NSLocale.current
-        let currencyCode = locale.currency?.identifier
-        let endpointUrl = "/user/me/trips/?currency=\(currencyCode ?? "usd")"
-        
-        let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
-        
-        do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            plans = try decoder.decode([Plan].self, from: data)
-        } catch {
-            print("get plans decoder error")
-            throw AppError.invalidData
+        if plans.isEmpty {
+            let locale = NSLocale.current
+            let currencyCode = locale.currency?.identifier
+            let endpointUrl = "/user/me/trips/?currency=\(currencyCode ?? "usd")"
+            
+            let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                plans = try decoder.decode([Plan].self, from: data)
+            } catch {
+                print("get plans decoder error")
+                throw AppError.invalidData
+            }
         }
     }
     

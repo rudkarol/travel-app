@@ -13,10 +13,11 @@ import MapKit
 struct LocationDetailsView: View {
     
     let location: Location
-    @State var sheetVisible: Bool = false
     @Binding var path: NavigationPath
     
     @Environment(FavoritesService.self) private var favoritesService
+    @Environment(PlansService.self) private var plansService
+    @Bindable private var viewModel = LocationDetailsViewModel()
 
     
     var body: some View {
@@ -90,7 +91,20 @@ struct LocationDetailsView: View {
             .toolbar {
                 ToolbarItemGroup {
                     Button {
-                        sheetVisible = true
+                        viewModel.sheetVisible = true
+                        viewModel.isSheetLoading = true
+                        
+                        Task {
+                            do {
+                                try await plansService.getUserPlans()
+                            } catch let error as AppError {
+                                viewModel.alertData = error.alertData
+                            } catch {
+                                viewModel.alertData = AppError.genericError(error).alertData
+                            }
+                            
+                            viewModel.isSheetLoading = false
+                        }
                     } label: {
                         Image(systemName: "book")
                             .imageScale(.large)
@@ -107,8 +121,8 @@ struct LocationDetailsView: View {
                     }
                 }
             }
-            .sheet(isPresented: $sheetVisible) {
-                AddLocationToPlanMainCard(location: location, isVisible: $sheetVisible)
+            .sheet(isPresented: $viewModel.sheetVisible) {
+                AddLocationToPlanMainCard(location: location, isLoading: $viewModel.isSheetLoading)
             }
         }
     }

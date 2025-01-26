@@ -9,13 +9,13 @@ import SwiftUI
 
 struct AddPlanForm: View {
     
-    @Binding var isVisible: Bool
     @State private var name: String = ""
     @State private var description: String = ""
     @State private var startDate: Date = Date()
     @State private var toggleState: Bool = false
     
     @Environment(PlansService.self) private var plansService
+    @Environment(\.dismiss) var dismiss
     
     
     var body: some View {
@@ -37,25 +37,18 @@ struct AddPlanForm: View {
                     }
                 }
                 
-                NavigationLink(destination: SearchView()) {
-                    Button {
-                        saveNewPlan()
-                    } label: {
-                        Text("Add locations to plan")
-                    }
+                Button {
+                    saveNewPlan()
+                    dismiss()
+                } label: {
+                    Text("Save the plan")
                 }
             }
-            .navigationTitle("Add new trip plan")
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    isVisible = false
-                },
-                trailing: Button("Save") {
-                    saveNewPlan()
-                    isVisible = false
-                }
-            )
+            .navigationTitle("Add a new plan")
+            .navigationBarTitleDisplayMode(.inline)
         }
+        .presentationDetents([.medium, .large])
+        .presentationBackgroundInteraction(.disabled)
     }
     
     private func saveNewPlan() {
@@ -69,6 +62,8 @@ struct AddPlanForm: View {
         plansService.addPlan(plan: plan)
     }
 }
+
+struct AddPlanFormScreenDestination: Hashable { }
 
 //#Preview {
 //    AddPlanForm()

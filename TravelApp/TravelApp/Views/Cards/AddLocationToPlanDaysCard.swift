@@ -10,38 +10,53 @@ import SwiftUI
 struct AddLocationToPlanDaysCard: View {
     
     let location: Location
-    let plan: Plan
-    @Binding var isVisible: Bool
+    @State var plan: Plan
     @Binding var path: NavigationPath
     
     @Environment(PlansService.self) private var plansService
+    @Environment(\.dismiss) var dismiss
     
     
     var body: some View {
         Form {
             List(plan.days.indices, id: \.self) { dayIndex in
-                Button {
+                Button("Day \(dayIndex + 1)") {
                     if let planIndex = plansService.plans.firstIndex(where: { $0.id == plan.id }) {
-                        plansService.plans[planIndex].days[dayIndex].places?.append(location)
+                        if plansService.plans[planIndex].days[dayIndex].places != nil {
+                            plansService.plans[planIndex].days[dayIndex].places!.append(location)
+                        } else {
+                            plansService.plans[planIndex].days[dayIndex].places = [location]
+                        }
+                    } else {
+                        print("pplan index error")
                     }
                     
                     Task {
                         try await plansService.updateUserPlans()
                     }
-                } label: {
-                    Text("Day \(dayIndex + 1)")
+                    
+                    dismiss()
+//                    TODO dismiss all sheets (może dodać func dismissSheet { dismiss() } do path items)
                 }
+                .buttonStyle(.plain)
+            }
+            
+            Button {
+                if let planIndex = plansService.plans.firstIndex(where: { $0.id == plan.id }) {
+                    plansService.plans[planIndex].days.append(DailyPlan())
+                    self.plan.days = plansService.plans[planIndex].days
+                } else {
+                    print("pplan index error")
+                }
+            } label: {
+                Text("Add day")
             }
         }
-        .navigationTitle("Select plan")
-        .navigationBarItems(
-            leading: Button("Cancel") {
-                isVisible = false
-            },
-            trailing: Button("Save") {
-                isVisible = false
-            }
-        )
+        .navigationTitle("Select day")
+        .navigationBarTitleDisplayMode(.inline)
+        .presentationDetents([.medium, .large])
+        .presentationBackgroundInteraction(.disabled)
+        //        .presentationContentInteraction(.scrolls)
     }
 }
 

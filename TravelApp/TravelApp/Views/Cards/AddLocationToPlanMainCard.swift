@@ -10,35 +10,47 @@ import SwiftUI
 struct AddLocationToPlanMainCard: View {
     
     let location: Location
-    @Binding var isVisible: Bool
+    @Binding var isLoading: Bool
     @State private var path = NavigationPath()
     
     @Environment(PlansService.self) private var plansService
+    @Environment(\.dismiss) var dismiss
     
     
     var body: some View {
         NavigationStack(path: $path) {
-            Form {
-                List(plansService.plans) { plan in
-                    NavigationLink(value: plan) {
-                        Text(plan.name)
+            ZStack {
+                Form {
+//                    Section(header: Text("Existing plans")) {
+                    List(plansService.plans) { plan in
+                        NavigationLink(value: plan) {
+                            Text(plan.name)
+                        }
+                    }
+                    
+                    Button {
+                        path.append(AddPlanFormScreenDestination())
+                    } label: {
+                        Text("Add a new plan")
                     }
                 }
+                .navigationDestination(for: Plan.self) { plan in
+                    AddLocationToPlanDaysCard(location: location, plan: plan, path: $path)
+                }
+                .navigationDestination(for: AddPlanFormScreenDestination.self) { planForm in
+                    AddPlanForm()
+                }
                 
-            }
-            .navigationDestination(for: Plan.self) { plan in
-                AddLocationToPlanDaysCard(location: location, plan: plan, isVisible: $isVisible, path: $path)
+                if isLoading {
+                    LoadingView()
+                }
             }
             .navigationTitle("Select plan")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationBarItems(
-            leading: Button("Cancel") {
-                isVisible = false
-            },
-            trailing: Button("Save") {
-                isVisible = false
-            }
-        )
+        .presentationDetents([.medium, .large])
+        .presentationBackgroundInteraction(.disabled)
+//        .presentationContentInteraction(.scrolls)
     }
 }
 
