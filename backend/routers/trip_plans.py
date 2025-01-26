@@ -8,7 +8,7 @@ from models.openai import GenerateTripPlanRequest
 from models.user import User
 from models.trip_plans import Trip, TripResponse, TripDayResponse
 from models.auth import TokenData
-from models.locations import NearbySearchRequest, DetailsRequest
+from models.locations import NearbySearchRequest, DetailsRequest, Currency
 from dependencies import get_token_verification, get_database
 
 
@@ -51,7 +51,7 @@ async def generate_trip_plan(
 
         for place in trip_day.places:
             details = await get_location_all_details(
-                DetailsRequest(location_id=place.location_id, currency=query_params.currency)
+                DetailsRequest(location_id=place.location_id, currency=Currency(currency=query_params.currency))
             )
             locations.places.append(details)
 
