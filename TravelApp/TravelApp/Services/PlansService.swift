@@ -61,7 +61,7 @@ class PlansService {
         try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: plansToUpdate)
     }
     
-    func getAIGeneratedPlan(latitude: Float, longitude: Float, days: Int) async throws {
+    func generateAIPlan(latitude: Float, longitude: Float, days: Int) async throws {
         let locale = NSLocale.current
         let currencyCode = locale.currency?.identifier
         let endpointUrl = "/trip/generate/"

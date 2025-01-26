@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List
 
-from models.locations import Location, Place, Currency
+from models.locations import Location, Place
 
 
 class AIInputLocation(BaseModel):
@@ -36,5 +36,5 @@ class AIResponseFormat(BaseModel):
 class GenerateTripPlanRequest(BaseModel):
     lat: float
     lon: float
-    currency: Currency
+    currency: str
     days: int = Field(gt=0, le=7)
