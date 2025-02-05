@@ -66,7 +66,8 @@ struct SearchView: View {
     private var resultsList: some View {
         List(viewModel.searchResult) { location in
             NavigationLink(value: location) {
-                PlaceListCell(location: location, showingAddToFavButton: false)
+//                PlaceListCell(location: location, showingAddToFavButton: false)
+                Text(location.name)
             }
         }
         .navigationDestination(for: Location.self) { location in

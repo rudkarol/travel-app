@@ -45,6 +45,22 @@ struct Photo: Decodable, Hashable {
 
 
 
+struct LocationBasic: Decodable, Identifiable, Hashable {
+    let locationId: String
+    let name: String
+    let addressObj: AddressObject
+    let photos: [Photo]?
+    
+    var id: String{locationId}
+}
+
+struct SearchLocationResponseModel: Decodable {
+    let data: [LocationBasic]
+}
+
+
+
+
 struct MockDataLocationDetails {
     static let sampleLocationDetails = Location(
         locationId: "274856",

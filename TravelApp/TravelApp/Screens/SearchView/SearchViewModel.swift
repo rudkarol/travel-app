@@ -11,7 +11,7 @@ import Foundation
     
     var searchText: String = ""
     var selectedCategory: SearchCategory? = nil
-    var searchResult: [Location] = []
+    var searchResult: [LocationBasic] = []
     var isLoading: Bool = false
     var alertData: AlertData?
     
@@ -23,7 +23,8 @@ import Foundation
             isLoading = true
             
             do {
-                searchResult = try await locationsService.searchLocations(query: searchText, category: selectedCategory)
+                let r = try await locationsService.searchLocations(query: searchText, category: selectedCategory)
+                searchResult = r.data
             } catch let error as AppError {
                 alertData = error.alertData
             } catch {

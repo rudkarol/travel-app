@@ -41,8 +41,8 @@ final class LocationsService {
         }
     }
     
-    func searchLocations(query: String, category: SearchCategory?) async throws -> [Location] {
-        var endpointUrl = "/locations/search/?query=\(query)"
+    func searchLocations(query: String, category: SearchCategory?) async throws -> SearchLocationResponseModel {
+        var endpointUrl = "/locations/search/?searchQuery=\(query)"
         if category != nil {
             endpointUrl += "&category=\(category!.rawValue)"
         }
@@ -51,7 +51,7 @@ final class LocationsService {
         
         do {
             let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
-            return try decoder.decode([Location].self, from: data)
+            return try decoder.decode(SearchLocationResponseModel.self, from: data)
         } catch {
             print("decoder error")
             throw AppError.invalidData
