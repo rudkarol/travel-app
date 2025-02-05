@@ -6,4 +6,6 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
+**/__pycache__/
+
 .env

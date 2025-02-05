@@ -12,9 +12,14 @@ class Image(BaseModel):
 
     @classmethod
     def from_response(cls, data: dict) -> "Image":
-        return cls(
-            url=data["images"]["large"]["url"]
-        )
+        url: str
+
+        try:
+            url = data["images"]["large"]["url"]
+        except:
+            url = data["images"]["original"]["url"]
+
+        return cls(url = url)
 
 
 class Place(BaseModel):
@@ -44,13 +49,8 @@ class TripadvisorRequest(BaseModel):
     key: str = settings.tripadvisor_api_key
 
 
-class TripadvisorFindSearchRequest(TripadvisorRequest):
-    query: str = Field(..., alias="searchQuery")
-    category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
-
-
 class SearchRequest(BaseModel):
-    query: str
+    searchQuery: str
     category: Optional[Literal["hotels", "attractions", "restaurants", "geos"]] = None
 
 

@@ -4,6 +4,7 @@ from meteostat import Monthly, Point
 
 import models.locations as lm
 from dependencies import get_database
+from models.locations import Currency
 from models.risks import CountryAdvisories
 
 
@@ -12,13 +13,26 @@ database = get_database()
 
 async def fetch_tripadvisor_find_search(search_params: lm.SearchRequest):
     url = "https://api.content.tripadvisor.com/api/v1/location/search"
-    params = lm.TripadvisorFindSearchRequest(searchQuery=search_params.query, category=search_params.category)
+    params = lm.TripadvisorRequest().model_dump()
+    params.update(search_params)
     headers = {"accept": "application/json"}
 
+    search_response = None
+
     async with httpx.AsyncClient() as client:
-        r = await client.get(url, params=params.model_dump(by_alias=True), headers=headers)
+        r = await client.get(url, params=params, headers=headers)
         r.raise_for_status()
-        return lm.SearchResponse(**r.json())
+        search_response = lm.SearchResponse(**r.json())
+
+    locations = []
+
+    for location in search_response.data:
+        details = await get_location_all_details(
+            lm.DetailsRequest(location_id=location.location_id, currency=Currency(currency="usd"))
+        )
+        locations.append(details)
+
+    return locations
 
 
 async def fetch_tripadvisor_location_details(query_params: lm.DetailsRequest):

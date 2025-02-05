@@ -31,7 +31,7 @@ async def get_recommended_locations(
 
 
 
-@router.get("/locations/search/", response_model=SearchResponse)
+@router.get("/locations/search/", response_model=List[LocationDetails])
 async def search_locations(
         search_params: Annotated[SearchRequest, Query()],
         auth_result: Annotated[TokenData, Security(verify_user.verify)]
@@ -39,11 +39,6 @@ async def search_locations(
     """Endpoint do wyszukiwania lokacji"""
 
     locations = await fetch_tripadvisor_find_search(search_params)
-
-    for location in locations.data:
-        photos = await fetch_tripadvisor_location_photos(location.location_id)
-        location.photos = photos.photos
-
     return locations
 
 @router.get("/locations/nearby_search/", response_model=SearchResponse)
