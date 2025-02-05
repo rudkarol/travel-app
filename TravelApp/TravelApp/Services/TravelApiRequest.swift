@@ -81,6 +81,7 @@ class TravelApiRequest {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
         
         do {

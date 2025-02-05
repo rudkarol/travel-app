@@ -64,10 +64,12 @@ class PlansService {
     func generateAIPlan(latitude: Float, longitude: Float, days: Int) async throws {
         let locale = NSLocale.current
         let currencyCode = locale.currency?.identifier
-        let endpointUrl = "/trip/generate/"
+        let endpointUrl = "/trip/generate"
         var planResponse: Plan
         
+        
         let body = AIPlanRequestBody(lat: latitude, lon: longitude, currency: "\(currencyCode ?? "usd")", days: days)
+        dump(body)
         
         let data = try await TravelApiRequest.shared.postData(endpointUrl: endpointUrl, body: body)
 

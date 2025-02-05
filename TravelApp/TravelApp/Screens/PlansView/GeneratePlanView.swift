@@ -46,24 +46,27 @@ struct GeneratePlanView: View {
                 Spacer()
                 
                 Button {
-                    print("days: \(selectedDays)")
-                    print("lat: \(position.region?.center.latitude ?? 0.0), lon: \(position.region?.center.latitude ?? 1.1)")
-                    
                     isLoading = true
                     
                     Task {
                         do {
                             try await plansService.generateAIPlan(
-                                latitude: Float(position.region?.center.latitude ?? 0.0),
-                                longitude: Float(position.region?.center.latitude ?? 0.0),
+                                latitude: Float(position.region?.center.latitude ?? 52.232972),
+                                longitude: Float(position.region?.center.longitude ?? 21.000659),
                                 days: selectedDays
                             )
                             
-                            path.removeLast()
-                            path.append(plansService.plans.last)
+                            if let lastPlan = plansService.plans.last {
+                                path.append(lastPlan)
+                            } else {
+                                print("No plan was generated")
+                            }
                         } catch {
                             print("generating error")
-                            path.removeLast()
+                            if !path.isEmpty {
+                                path.removeLast()
+                            }
+
                         }
                     }
                 } label: {
