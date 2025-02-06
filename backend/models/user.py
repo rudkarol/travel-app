@@ -1,6 +1,6 @@
 from typing import Optional, List
 from odmantic import Model
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from models.locations import Place
 from models.trip_plans import Trip
@@ -26,6 +26,20 @@ class DbUser(Model):
     email: str
     favorite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
+
+
+class UserProfileUpdate(BaseModel):
+    email: EmailStr
+    name: str
+
+    def model_dump(self, **kwargs):
+        return {
+            "email": self.email,
+            "name": self.name,
+            "user_metadata": {
+                "name": self.name
+            }
+        }
 
 
 class UserDataUpdate(BaseModel):

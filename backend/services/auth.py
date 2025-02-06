@@ -2,11 +2,13 @@ import jwt
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional
+from auth0.authentication import GetToken
 
 from dependencies import get_settings
 from models.auth import TokenData
 
 
+settings = get_settings()
 security = HTTPBearer()
 
 
@@ -31,16 +33,14 @@ class VerifyToken:
     """Auth0 token verification"""
 
     def __init__(self):
-        self.settings = get_settings()
-
-        jwks_url = f"https://{self.settings.auth0_domain}/.well-known/jwks.json"
+        jwks_url = f"https://{settings.auth0_domain}/.well-known/jwks.json"
         self.jwks_client = jwt.PyJWKClient(jwks_url)
 
     async def verify(self, token: Optional[HTTPAuthorizationCredentials] = Depends(security)):
         if token is None:
             raise UnauthenticatedException
 
-        # This gets the 'kid' from the passed token
+        # Get 'kid' from token
         try:
             signing_key = self.jwks_client.get_signing_key_from_jwt(token.credentials).key
         except jwt.exceptions.PyJWKClientError as error:
@@ -52,11 +52,21 @@ class VerifyToken:
             payload = jwt.decode(
                 token.credentials,
                 signing_key,
-                algorithms=self.settings.auth0_algorithms,
-                audience=self.settings.auth0_api_audience,
-                issuer=self.settings.auth0_issuer,
+                algorithms=settings.auth0_algorithms,
+                audience=settings.auth0_api_audience,
+                issuer=settings.auth0_issuer,
             )
         except Exception as error:
             raise UnauthorizedException(str(error))
 
         return TokenData(**payload)
+
+
+async def get_m2m_auth0_token():
+    try:
+        get_token = GetToken(settings.auth0_domain, settings.auth0_m2m_client_id, client_secret=settings.auth0_m2m_client_secret)
+        token = get_token.client_credentials(settings.auth0_management_api_audience)
+
+        return token['access_token']
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Unable to obtain Auth0 M2M token")

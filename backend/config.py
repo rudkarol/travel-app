@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     auth0_issuer: str
     auth0_algorithms: str
 
+    auth0_m2m_client_id: str
+    auth0_m2m_client_secret: str
+    auth0_management_api_audience: str
+
     tripadvisor_api_key: str
     openai_api_key: str
 
