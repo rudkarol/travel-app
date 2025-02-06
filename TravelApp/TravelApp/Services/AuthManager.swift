@@ -7,7 +7,6 @@
 
 import Foundation
 import Auth0
-import Observation
 
 @Observable final class AuthManager {
     var isLoggedIn: Bool = false
@@ -75,5 +74,24 @@ import Observation
     func getAccessToken() async throws -> String {
         let credentials = try await credentialsManager.credentials()
         return credentials.accessToken
+    }
+    
+    func fetchUserProfile() async -> User {
+        do {
+            let accessToken = try await getAccessToken()
+            
+            let userInfo = try await Auth0.authentication()
+                .userInfo(withAccessToken: accessToken)
+                .start()
+
+            let name = userInfo.name ?? "Name"
+            let email = userInfo.email ?? "Email"
+
+            return User(name: name, email: email)
+        } catch {
+            print("Failed to fetch user profile: \(error)")
+        }
+        
+        return User(name: "Name", email: "Email")
     }
 }

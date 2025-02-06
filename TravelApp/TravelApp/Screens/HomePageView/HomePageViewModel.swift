@@ -12,6 +12,7 @@ import Observation
 @Observable final class HomePageViewModel {
     
     var recommendedLocations: [Location] = []
+    var userSettingsSheetVisible = false
     var isLoading: Bool = false
     var alertData: AlertData?
     

@@ -11,7 +11,7 @@ struct HomePageView: View {
 
     @State private var path = NavigationPath()
     
-    private let viewModel = HomePageViewModel()
+    @Bindable private var viewModel = HomePageViewModel()
     
     
     var body: some View {
@@ -32,7 +32,7 @@ struct HomePageView: View {
                                 Spacer()
                                 
                                 Button {
-                                    Task { await AuthManager.shared.logout() }
+                                    viewModel.userSettingsSheetVisible = true
                                 } label: {
                                     ZStack {
                                         Circle()
@@ -80,6 +80,9 @@ struct HomePageView: View {
             }
         }
         .navigationTitle("Home Page")
+        .sheet(isPresented: $viewModel.userSettingsSheetVisible) {
+            UserProfileCard()
+        }
         .task {
             await viewModel.loadRecommendedLocations()
         }
