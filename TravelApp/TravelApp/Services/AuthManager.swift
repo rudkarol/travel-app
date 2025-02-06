@@ -9,6 +9,7 @@ import Foundation
 import Auth0
 
 @Observable final class AuthManager {
+    var user: User? = nil
     var isLoggedIn: Bool = false
     
     static let shared = AuthManager() //Singleton - dostępne w całej aplikaacji
@@ -76,7 +77,7 @@ import Auth0
         return credentials.accessToken
     }
     
-    func fetchUserProfile() async -> User {
+    func fetchUserProfile() async {
         do {
             let accessToken = try await getAccessToken()
             
@@ -84,14 +85,20 @@ import Auth0
                 .userInfo(withAccessToken: accessToken)
                 .start()
 
-            let name = userInfo.name ?? "Name"
-            let email = userInfo.email ?? "Email"
+            let name = userInfo.name
+            let email = userInfo.email
 
-            return User(name: name, email: email)
+            user = User(name: name!, email: email!)
         } catch {
             print("Failed to fetch user profile: \(error)")
         }
+    }
+    
+    func changeEmail(newEmail: String) async throws {
+        await logout()
         
-        return User(name: "Name", email: "Email")
+        let endpointUrl = "/user/me/change-email?new_email=\(newEmail)"
+        
+        let _ = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
     }
 }

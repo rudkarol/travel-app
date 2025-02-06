@@ -9,33 +9,30 @@ import SwiftUI
 
 struct UserProfileCard: View {
     
-    @State private var user: User?
     @State private var changeEmailSheetVisible = false
-    @State private var path = NavigationPath()
     
+    @State private var authManager = AuthManager.shared
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack() {
             Form {
                 Section() {
                     VStack {
-                        Text(user?.name ?? "Name")
+                        Text(authManager.user?.name ?? "Name")
                             .bold()
                         
-                        Text(user?.email ?? "Email")
+                        Text(authManager.user?.email ?? "Email")
                     }
                 }
                 
                 Section() {
-                    Button("Change email") {
-                        
-                    }
+                    NavigationLink("Change email", destination: ChangeEmailCard())
                 }
                 
                 Section(header: Text("Account management")) {
                     Button("Logout") {
-                        Task { await AuthManager.shared.logout() }
+                        Task { await authManager.logout() }
                     }
                     
                     Button("Delete account") {
@@ -54,10 +51,7 @@ struct UserProfileCard: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task {
-            let userData = await AuthManager.shared.fetchUserProfile()
-            await MainActor.run {
-                user = userData
-            }
+            await authManager.fetchUserProfile()
         }
 
         .presentationDetents([.medium, .large])

@@ -98,4 +98,25 @@ class TravelApiRequest {
         
         return data
     }
+    
+    func patchData(endpointUrl: String, body: Encodable) async throws {
+        guard let url = URL(string: self.baseUrl + endpointUrl) else {
+            throw AppError.invalidURL
+        }
+        
+        do {
+            self.accessToken = try await AuthManager.shared.getAccessToken()
+        } catch {
+            throw AppError.invalidCredentials
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "accept")
+        request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
+        
+        let (_ , _) = try await URLSession.shared.data(for: request)
+
+        print("request successful")
+    }
 }
