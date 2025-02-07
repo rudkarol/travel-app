@@ -33,6 +33,7 @@ struct UserProfileCard: View {
                 Section(header: Text("Account management")) {
                     Button("Logout") {
                         Task { await authManager.logout() }
+                        dismiss()
                     }
                     
                     Button("Delete account") {

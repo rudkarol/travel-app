@@ -8,26 +8,19 @@
 import SwiftUI
 
 struct LoginView: View {
-
+    
     var body: some View {
-        VStack {
-            Text("Travel Planner App")
-                .font(.largeTitle)
-                .padding()
+        ZStack {
+            EmptyState(systemName: "person", message: "Please login to use the app")
             
-            Button {
-                Task { await AuthManager.shared.login() }
-            } label: {
-                Text("Log In")
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+            Button("Login") {
+                Task {
+                    await AuthManager.shared.login()
+                }
             }
             .padding()
-
+            .foregroundStyle(Color.accentColor)
+            .clipShape(Capsule())
         }
     }
 }
