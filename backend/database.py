@@ -23,9 +23,9 @@ class Database:
     # async def create_user(self, user_id: str):
     #     new_user = DbUser(user_id=user_id)
     #     await self.engine.save(new_user)
-    #
-    # async def delete_user(self, user_id: str):
-    #     await self.engine.remove(DbUser, DbUser.user_id == user_id)
+
+    async def delete_user(self, user_id: str):
+        await self.engine.remove(DbUser, DbUser.user_id == user_id)
 
     async def update_user(self, user_id: str, new_user_data: User):
         user_data = await self.get_user(user_id)
