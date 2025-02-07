@@ -37,7 +37,8 @@ struct UserProfileCard: View {
                     }
                     
                     Button("Delete account") {
-                        
+                        deleteAccountWithBiometrics()
+                        dismiss()
                     }
                 }
             }
@@ -57,6 +58,22 @@ struct UserProfileCard: View {
 
         .presentationDetents([.medium, .large])
         .presentationBackgroundInteraction(.disabled)
+    }
+}
+
+extension UserProfileCard {
+    func deleteAccountWithBiometrics() {
+        authenticateWithBiometrics { isAuthenticated in
+            guard isAuthenticated else {
+//                TODO alert with button to open email app
+                UIApplication.shared.openEmailApp()
+                return
+            }
+            
+            Task {
+                try await authManager.deleteUser()
+            }
+        }
     }
 }
 

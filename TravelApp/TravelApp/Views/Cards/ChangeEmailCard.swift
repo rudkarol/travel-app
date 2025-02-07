@@ -44,22 +44,12 @@ extension ChangeEmailCard {
         authenticateWithBiometrics { isAuthenticated in
             guard isAuthenticated else {
 //                TODO alert with button to open email app
-                openEmailApp()
+                UIApplication.shared.openEmailApp()
                 return
             }
             
             Task {
                 try await authManager.changeEmail(newEmail: newEmail)
-            }
-        }
-    }
-    
-    func openEmailApp() {
-        if let emailURL = URL(string: "UL0265682@edu.uni.lodz.pl") {
-            if UIApplication.shared.canOpenURL(emailURL) {
-                UIApplication.shared.open(emailURL, options: [:], completionHandler: nil)
-            } else {
-                print("cannot open email app")
             }
         }
     }

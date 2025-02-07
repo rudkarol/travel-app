@@ -95,10 +95,16 @@ import Auth0
     }
     
     func changeEmail(newEmail: String) async throws {
-        await logout()
-        
         let endpointUrl = "/user/me/change-email?new_email=\(newEmail)"
         
         let _ = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+    }
+    
+    func deleteUser() async throws {
+        let endpointUrl = "/user/me/delete"
+        
+        let _ = try await TravelApiRequest.shared.deleteData(endpointUrl: endpointUrl)
+        
+        await logout()
     }
 }
