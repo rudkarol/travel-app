@@ -23,7 +23,7 @@ class PlansService {
         if plans.isEmpty {
             let locale = NSLocale.current
             let currencyCode = locale.currency?.identifier
-            let endpointUrl = "/user/me/trips/?currency=\(currencyCode ?? "usd")"
+            let endpointUrl = "/trip/plans?currency=\(currencyCode ?? "usd")"
             
             let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
             
@@ -38,11 +38,12 @@ class PlansService {
     }
     
     func updateUserPlans() async throws {
-        let endpointUrl = "/user/me/favorites/"
+        let endpointUrl = "/user/me/favorites"
         var plansToUpdate: [PlanUpdateModel] = []
         
         for plan in plans {
             var plan_data = PlanUpdateModel(
+                id: plan.id,
                 name: plan.name,
                 description: plan.description,
                 startDate: plan.startDate,

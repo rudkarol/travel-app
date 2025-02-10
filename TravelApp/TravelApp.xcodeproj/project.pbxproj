@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		1056FDAD2D3A8FD8005033B5 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 1056FDAC2D3A8FD8005033B5 /* Auth0 */; };
-		1056FDAF2D3A910A005033B5 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1056FDAE2D3A90F7005033B5 /* Auth0.plist */; };
 		108BB88F2D3C11C6002C2A30 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 108BB88E2D3C11C6002C2A30 /* CachedAsyncImage */; };
+		EC3790DA2D58F72B00CA9D24 /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = EC3790D92D58F72B00CA9D24 /* Auth0.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1056FD882D3A7D7E005033B5 /* TravelApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1056FDAE2D3A90F7005033B5 /* Auth0.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Auth0.plist; sourceTree = "<group>"; };
+		EC3790D92D58F72B00CA9D24 /* Auth0.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,7 +54,7 @@
 		1056FD7F2D3A7D7E005033B5 = {
 			isa = PBXGroup;
 			children = (
-				1056FDAE2D3A90F7005033B5 /* Auth0.plist */,
+				EC3790D92D58F72B00CA9D24 /* Auth0.plist */,
 				1056FD8A2D3A7D7E005033B5 /* TravelApp */,
 				1056FD892D3A7D7E005033B5 /* Products */,
 			);
@@ -138,7 +138,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1056FDAF2D3A910A005033B5 /* Auth0.plist in Resources */,
+				EC3790DA2D58F72B00CA9D24 /* Auth0.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

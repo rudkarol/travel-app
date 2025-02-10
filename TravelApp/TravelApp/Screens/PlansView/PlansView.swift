@@ -87,17 +87,20 @@ struct PlansView: View {
             }
         }
         .task {
-            viewModel.isLoading = true
-            
-            do {
-                try await plansService.getUserPlans()
-            } catch let error as AppError {
-                viewModel.alertData = error.alertData
-            } catch {
-                viewModel.alertData = AppError.genericError(error).alertData
-            }
+//            TODO dodac zmienna do sprawdzenia czy plan zostal pobrany tylko raz
+            if plansService.plans.isEmpty {
+                viewModel.isLoading = true
                 
-            viewModel.isLoading = false
+                do {
+                    try await plansService.getUserPlans()
+                } catch let error as AppError {
+                    viewModel.alertData = error.alertData
+                } catch {
+                    viewModel.alertData = AppError.genericError(error).alertData
+                }
+                    
+                viewModel.isLoading = false
+            }
         }
         .alert(
             viewModel.alertData?.title ?? "",

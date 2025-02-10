@@ -62,6 +62,7 @@ struct AddPlanForm: View {
     
     private func saveNewPlan() {
         let plan = Plan(
+            id: UUID(),
             name: (name == "") ? "My trip plan \(plansService.plans.count + 1)": name ,
             description: description,
             startDate:  toggleState ? startDate : nil,

@@ -37,7 +37,7 @@ class FavoritesService {
     func getUserFavorites() async throws {
         let locale = NSLocale.current
         let currencyCode = locale.currency?.identifier
-        let endpointUrl = "/user/me/favorites/?currency=\(currencyCode ?? "usd")"
+        let endpointUrl = "/user/me/favorites?currency=\(currencyCode ?? "usd")"
         
         let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
         
@@ -51,7 +51,7 @@ class FavoritesService {
     }
     
     private func updateUserFavorites() async throws {
-        let endpointUrl = "/user/me/favorites/"
+        let endpointUrl = "/user/me/favorites"
         let ids = favorites.map { $0.id }
         
         try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: ids)

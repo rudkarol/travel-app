@@ -8,13 +8,15 @@
 import Foundation
 
 struct Plan: Decodable, Identifiable, Hashable {
+    var id: UUID
     var name: String
     var description: String?
     var startDate: Date?
     var days: [DailyPlan]
-    
-    var id: String{name}
 }
+
+
+
 
 struct DailyPlan: Decodable, Identifiable, Hashable {
     var places: [Location]?
@@ -27,6 +29,7 @@ struct DailyPlan: Decodable, Identifiable, Hashable {
 }
 
 struct PlanUpdateModel: Encodable {
+    var id: UUID
     let name: String
     let description: String?
     let startDate: Date?
@@ -48,6 +51,7 @@ struct AIPlanRequestBody: Encodable {
 struct MockDataPlan: Codable {
 
     static let samplePlanOne = Plan(
+        id: UUID(),
         name: "My first plan",
         description: "Plan description",
         startDate: Date(),
