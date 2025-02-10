@@ -55,7 +55,8 @@ class TravelApiRequest {
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
         
         do {
-            let jsonData = try JSONEncoder().encode(body)
+            let encoder = JSONEncoder.withFastApiDateEncodingStrategy()
+            let jsonData = try encoder.encode(body)
             request.httpBody = jsonData
         } catch {
             print("encoder error")
@@ -85,7 +86,8 @@ class TravelApiRequest {
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
         
         do {
-            let jsonData = try JSONEncoder().encode(body)
+            let encoder = JSONEncoder.withFastApiDateEncodingStrategy()
+            let jsonData = try encoder.encode(body)
             request.httpBody = jsonData
         } catch {
             print("encoder error")
@@ -114,6 +116,15 @@ class TravelApiRequest {
         request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "accept")
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let encoder = JSONEncoder.withFastApiDateEncodingStrategy()
+            let jsonData = try encoder.encode(body)
+            request.httpBody = jsonData
+        } catch {
+            print("encoder error")
+            throw AppError.invalidData
+        }
         
         let (_ , _) = try await URLSession.shared.data(for: request)
 
