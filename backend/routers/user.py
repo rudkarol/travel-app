@@ -5,9 +5,7 @@ from pydantic import EmailStr
 
 from dependencies import get_database, get_token_verification
 from models.auth import TokenData
-from models.trip_plans import TripResponse, TripDayResponse
 from models.locations import LocationDetails, Currency, DetailsRequest, settings
-from models.user import UserDataUpdate, UserProfileUpdate
 from services.locations import get_location_all_details
 from services.auth import get_m2m_auth0_token
 
@@ -15,14 +13,6 @@ from services.auth import get_m2m_auth0_token
 database = get_database()
 router = APIRouter()
 verify_user = get_token_verification()
-
-
-# @router.get("/user/me/", response_model=User)
-# async def read_users_me(
-#     auth_result: Annotated[TokenData, Depends(verify_user.verify)]
-# ):
-#     user = await database.get_user(auth_result.user_id)
-#     return user
 
 
 @router.delete("/user/me/delete")
@@ -88,7 +78,7 @@ async def update_current_user_email(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/user/me/favorites/", response_model=List[LocationDetails])
+@router.get("/user/me/favorites", response_model=List[LocationDetails])
 async def get_current_user_favorites(
     currency: Annotated[Currency, Query()],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
@@ -107,7 +97,7 @@ async def get_current_user_favorites(
     return locations
 
 
-@router.put("/user/me/favorites/")
+@router.put("/user/me/favorites")
 async def update_current_user_favorites(
     data: List[str],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
@@ -116,37 +106,3 @@ async def update_current_user_favorites(
 
     await database.update_user_favorites(user_id=auth_result.user_id, favorites_list=data)
     return {"message": "User's favorites list successfully updated"}
-
-
-@router.get("/user/me/trips/", response_model=List[TripResponse])
-async def get_current_user_trip_plans(
-    currency: Annotated[Currency, Query()],
-    auth_result: Annotated[TokenData, Security(verify_user.verify)]
-):
-    """Returns list of current user's trip plans"""
-
-    user = await database.get_user(auth_result.user_id)
-    trips = []
-
-    for trip_plan in user.trips:
-        trip_data = TripResponse(
-            name=trip_plan.name,
-            description=trip_plan.description,
-            start_date=trip_plan.start_date,
-            days=[]
-        )
-
-        for trip_day in trip_plan.days:
-            locations = TripDayResponse(places=[])
-
-            for location_id in trip_day.places:
-                details = await get_location_all_details(
-                    DetailsRequest(location_id=location_id, currency=currency)
-                )
-                locations.places.append(details)
-
-            trip_data.days.append(locations)
-
-        trips.append(trip_data)
-
-    return trips

@@ -1,12 +1,14 @@
-from fastapi import APIRouter, Security
-from typing import Annotated, List, Optional
+from fastapi import APIRouter, Security, Query
+from typing import Annotated, List
 import math
+import uuid
 
 from services.openai import openai_request
 from services.locations import fetch_tripadvisor_nearby_search, get_location_all_details
+from services.trip_plans import create_trip_plan
 from models.openai import GenerateTripPlanRequest
 from models.user import User
-from models.trip_plans import Trip, TripResponse, TripDayResponse
+from models.trip_plans import Trip, TripDay, TripResponse, TripDayResponse
 from models.auth import TokenData
 from models.locations import NearbySearchRequest, DetailsRequest, Currency
 from dependencies import get_token_verification, get_database
@@ -23,7 +25,8 @@ async def generate_trip_plan(
         auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ) -> TripResponse:
     """Endpoint do generowania kilkudniowego planu podróży.
-    Dostępne generowanie planu dla 1 do 7 dni."""
+    Dostępne generowanie planu dla 1 do 7 dni.
+    Zwraca wygenerowany plan i zapusije go w bazie danych."""
 
     attractions=[]
     for day in range(math.ceil(query_params.days / 2)):
@@ -42,45 +45,75 @@ async def generate_trip_plan(
     trip_data = TripResponse(
         name=trip_plan.name,
         description=trip_plan.description,
-        start_date=None,
+        days=[]
+    )
+
+    trip_to_save = Trip(
+        id=trip_data.id,
+        name=trip_data.name,
+        description=trip_data.description,
         days=[]
     )
 
     for trip_day in trip_plan.days:
         locations = TripDayResponse(places=[])
+        locations_to_save = TripDay(places=[])
 
         for place in trip_day.places:
             details = await get_location_all_details(
                 DetailsRequest(location_id=place.location_id, currency=Currency(currency=query_params.currency))
             )
             locations.places.append(details)
+            locations_to_save.places.append(place.location_id)
 
         trip_data.days.append(locations)
+        trip_to_save.days.append(locations_to_save)
+
+    await create_trip_plan(auth_result.user_id, trip_to_save)
 
     return trip_data
 
 
-@router.get("/trip/plans")
+@router.get("/trip/plans", response_model=List[TripResponse])
 async def get_current_user_trip_plans(
+    currency: Annotated[Currency, Query()],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
-) -> Optional[List[Trip]]:
-    """Returns a list of the current user's trip plans"""
-    user = await database.get_user(auth_result.user_id)
-    return user.trips
+):
+    """Returns list of current user's trip plans"""
 
+    user = await database.get_user(auth_result.user_id)
+    trips = []
+
+    for trip_plan in user.trips:
+        trip_data = TripResponse(
+            id=trip_plan.id,
+            name=trip_plan.name,
+            description=trip_plan.description,
+            start_date=trip_plan.start_date,
+            days=[]
+        )
+
+        for trip_day in trip_plan.days:
+            locations = TripDayResponse(places=[])
+
+            for location_id in trip_day.places:
+                details = await get_location_all_details(
+                    DetailsRequest(location_id=location_id, currency=currency)
+                )
+                locations.places.append(details)
+
+            trip_data.days.append(locations)
+
+        trips.append(trip_data)
+
+    return trips
 
 @router.put("/trip/create")
-async def create_users_trip_plan(
+async def create_new_trip_plan(
     trip_plan: Trip,
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
     """Creates a new trip plan of the current user's"""
-    user = await database.get_user(auth_result.user_id)
-    new_user_data = User(**user.model_dump())
 
-    if not new_user_data.trips:
-        new_user_data.trips = [trip_plan]
-    else:
-        new_user_data.trips.append(trip_plan)
-    await database.update_user(user_id=auth_result.user_id, new_user_data=new_user_data)
+    await  create_trip_plan(auth_result.user_id, trip_plan)
     return {"message": "Trip plan created successfully"}
