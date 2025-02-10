@@ -34,7 +34,7 @@ struct PlansView: View {
                                         Button(role: .destructive) {
                                             Task {
                                                 do {
-                                                    try await plansService.updateUserPlans()
+                                                    try await plansService.deletePlan(id: plan.id)
                                                 } catch let error as AppError {
                                                     viewModel.alertData = error.alertData
                                                 } catch {

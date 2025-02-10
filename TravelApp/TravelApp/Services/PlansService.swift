@@ -37,29 +37,34 @@ class PlansService {
         }
     }
     
-    func updateUserPlans() async throws {
-        let endpointUrl = "/user/me/favorites"
-        var plansToUpdate: [PlanUpdateModel] = []
+    func updatePlan(planId: UUID) async throws {
+        let endpointUrl = "/trip/update"
         
-        for plan in plans {
-            var plan_data = PlanUpdateModel(
-                id: plan.id,
-                name: plan.name,
-                description: plan.description,
-                startDate: plan.startDate,
-                days: [])
-            
-            for planDay in plan.days {
-                let ids = planDay.places?.map { $0.id }
-                let day = DailyPlanUpdateModel(places: ids ?? [])
-//                ??
-                plan_data.days.append(day)
-            }
-//            ??
-            plansToUpdate.append(plan_data)
+        guard let planIndex = plans.firstIndex(where: { $0.id == planId }) else { return }
+        let plan = plans[planIndex]
+        
+        var planData = PlanUpdateModel(
+            id: plan.id,
+            name: plan.name,
+            description: plan.description,
+            startDate: plan.startDate,
+            days: [])
+        
+        for planDay in plan.days {
+            let ids = planDay.places?.map { $0.id }
+            let day = DailyPlanUpdateModel(places: ids ?? [])
+            planData.days.append(day)
         }
         
-        try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: plansToUpdate)
+        dump(planData)
+        
+        try await TravelApiRequest.shared.patchData(endpointUrl: endpointUrl, body: planData)
+    }
+    
+    func deletePlan(id: UUID) async throws {
+        let endpointUrl = "/trip/delete?trip_id=\(id)"
+        
+        let _ = try await TravelApiRequest.shared.deleteData(endpointUrl: endpointUrl)
     }
     
     func generateAIPlan(latitude: Float, longitude: Float, days: Int) async throws {

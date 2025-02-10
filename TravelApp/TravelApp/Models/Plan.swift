@@ -15,9 +15,6 @@ struct Plan: Decodable, Identifiable, Hashable {
     var days: [DailyPlan]
 }
 
-
-
-
 struct DailyPlan: Decodable, Identifiable, Hashable {
     var places: [Location]?
     

@@ -27,14 +27,14 @@ struct AddLocationToPlanDaysCard: View {
                         } else {
                             plansService.plans[planIndex].days[dayIndex].places = [location]
                         }
+                        
+                        Task {
+                            try await plansService.updatePlan(planId: plan.id)
+                        }
                     } else {
                         print("pplan index error")
                     }
-                    
-                    Task {
-                        try await plansService.updateUserPlans()
-                    }
-                    
+
                     dismiss()
 //                    TODO dismiss all sheets (może dodać func dismissSheet { dismiss() } do path items)
                 }
@@ -45,12 +45,17 @@ struct AddLocationToPlanDaysCard: View {
                 if let planIndex = plansService.plans.firstIndex(where: { $0.id == plan.id }) {
                     plansService.plans[planIndex].days.append(DailyPlan())
                     self.plan.days = plansService.plans[planIndex].days
+                    
+                    Task {
+                        try await plansService.updatePlan(planId: plan.id)
+                    }
                 } else {
                     print("pplan index error")
                 }
             } label: {
                 Text("Add day")
             }
+            .disabled(plan.days.count >= 7)
         }
         .navigationTitle("Select day")
         .navigationBarTitleDisplayMode(.inline)
