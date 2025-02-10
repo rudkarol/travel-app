@@ -1,13 +1,11 @@
 from fastapi import APIRouter, Security, Query
 from typing import Annotated, List
 import math
-import uuid
 
 from services.openai import openai_request
 from services.locations import fetch_tripadvisor_nearby_search, get_location_all_details
 from services.trip_plans import create_trip_plan
 from models.openai import GenerateTripPlanRequest
-from models.user import User
 from models.trip_plans import Trip, TripDay, TripResponse, TripDayResponse
 from models.auth import TokenData
 from models.locations import NearbySearchRequest, DetailsRequest, Currency
@@ -79,7 +77,7 @@ async def get_current_user_trip_plans(
     currency: Annotated[Currency, Query()],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Returns list of current user's trip plans"""
+    """Zwraca listę planów podróży aktualnego użytkownika"""
 
     user = await database.get_user(auth_result.user_id)
     trips = []
@@ -113,7 +111,17 @@ async def create_new_trip_plan(
     trip_plan: Trip,
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Creates a new trip plan of the current user's"""
+    """Zapisuje nowy plan podróży aktualnego użytkownika"""
 
     await  create_trip_plan(auth_result.user_id, trip_plan)
     return {"message": "Trip plan created successfully"}
+
+@router.delete("/trip/delete")
+async def delete_current_user_trip_plan(
+    trip_id: Annotated[str, Query()],
+    auth_result: Annotated[TokenData, Security(verify_user.verify)]
+):
+    """Usuwa plan podróży o danym id z konta aktualnego użytkownika"""
+
+    await database.remove_trip(auth_result.user_id, trip_id)
+    return {"message": "Trip plan removed successfully"}
