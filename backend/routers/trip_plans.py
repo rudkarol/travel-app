@@ -116,6 +116,16 @@ async def create_new_trip_plan(
     await  create_trip_plan(auth_result.user_id, trip_plan)
     return {"message": "Trip plan created successfully"}
 
+@router.patch("/trip/update")
+async def update_trip_plan(
+    trip_plan: Trip,
+    auth_result: Annotated[TokenData, Security(verify_user.verify)]
+):
+    """Aktualizuje plan podróży aktualnego użytkownika"""
+
+    await database.update_trip(auth_result.user_id, trip_plan)
+    return {"message": "Trip plan updated successfully"}
+
 @router.delete("/trip/delete")
 async def delete_current_user_trip_plan(
     trip_id: Annotated[str, Query()],

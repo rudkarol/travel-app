@@ -2,6 +2,7 @@ from odmantic import AIOEngine
 from odmantic.engine import AsyncIOMotorClient
 from typing import List
 
+from models.trip_plans import Trip
 from models.user import DbUser, User
 from models.risks import DbCountryAdvisories, CountryItem
 from dependencies import get_settings
@@ -33,21 +34,30 @@ class Database:
         user_data.favorite_places = favorites_list
         await self.engine.save(user_data)
 
-    async def remove_trip(self, user_id: str, trip_id: str):
+    async def update_trip(self, user_id: str, trip_update: Trip):
         user = await self.get_user(user_id)
-        if not user:
-            print("no user")
+
+        if not user or not user.trips:
             return
 
-        if not user.trips:
-            print("no trips")
+        for index, trip in enumerate(user.trips):
+            if trip.id == trip_update.id:
+                updated_trip = trip.model_copy(
+                    update=trip_update.model_dump(exclude_unset=True)
+                )
+                user.trips[index] = updated_trip
+                await self.engine.save(user)
+
+    async def remove_trip(self, user_id: str, trip_id: str):
+        user = await self.get_user(user_id)
+
+        if not user or not user.trips:
             return
 
         original_len = len(user.trips)
         user.trips = [trip for trip in user.trips if trip.id.lower() != trip_id.lower()]
 
         if len(user.trips) == original_len:
-            print("same len")
             return
 
         await self.engine.save(user)

@@ -17,8 +17,3 @@ class DbUser(Model):
     email: str
     favorite_places: Optional[List[str]] = None
     trips: Optional[List[Trip]] = None
-
-
-class UserDataUpdate(BaseModel):
-    favorite_places: Optional[List[str]] = None
-    trips: Optional[List[Trip]] = None
