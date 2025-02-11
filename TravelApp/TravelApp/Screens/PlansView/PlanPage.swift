@@ -9,18 +9,59 @@ import SwiftUI
 
 struct PlanPage: View {
     
-    let plan: Plan
+    @State var plan: Plan
     @State var sheetVisible: Bool = false
     @Binding var path: NavigationPath
+    @State var alertData: AlertData?
+    
+    @Environment(PlansService.self) private var plansService
     
     
     var body: some View {
         ZStack {
-            List(plan.days) { day in
-                Section("Day") {
-                    ForEach(day.places ?? []) { place in
-                        NavigationLink(value: place) {
-                            PlaceListCell(location: place, showingAddToFavButton: false)
+            List(plan.days.indices, id: \.self) { dayIndex in
+                Section("Day \(dayIndex + 1)") {
+                    ForEach((plan.days[dayIndex].places ?? []).indices, id: \.self) { placeIndex in
+                        let currentPlace = plan.days[dayIndex].places![placeIndex]
+                        
+                        NavigationLink(value: currentPlace) {
+                            PlaceListCell(location: currentPlace, showingAddToFavButton: false)
+                                .swipeActions(allowsFullSwipe: false) {
+                                    Button(role: .destructive) {
+                                        guard let planIndex = plansService.plans.firstIndex(where: { $0.id == plan.id }) else {
+                                            print("Plan index error")
+                                            return
+                                        }
+                                        
+                                        plan.days[dayIndex].places!.remove(at: placeIndex)
+                                        
+                                        var updatedPlan = plansService.plans[planIndex]
+                                        
+                                        if var places = updatedPlan.days[dayIndex].places {
+                                            places.remove(at: placeIndex)
+                                            updatedPlan.days[dayIndex].places = places
+                                            
+                                            plansService.plans[planIndex] = updatedPlan
+                                            
+                                            Task {
+                                                do {
+                                                    try await plansService.updatePlan(planId: plan.id)
+                                                } catch let error as AppError {
+                                                    alertData = error.alertData
+                                                } catch {
+                                                    alertData = AppError.genericError(error).alertData
+                                                }
+                                            }
+                                        } else {
+                                            print("Błąd przy aktualizacji dnia lub miejsca")
+                                        }
+                                        
+                                        print("Plan item deleted")
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
+                            
                         }
                     }
                 }
@@ -48,7 +89,7 @@ struct PlanPage: View {
             }
         }
         .sheet(isPresented: $sheetVisible) {
-//            AddPlanForm(name: plan.name, description: plan.description ?? "", startDate: plan.startDate ?? Date(), toggleState: (plan.startDate != nil) ? true : false, toUpdate: true)
+            //            AddPlanForm(name: plan.name, description: plan.description ?? "", startDate: plan.startDate ?? Date(), toggleState: (plan.startDate != nil) ? true : false, toUpdate: true)
         }
     }
 }

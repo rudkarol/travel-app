@@ -19,6 +19,14 @@ class PlansService {
 //        TODO save
     }
     
+    func removePlace(from planId: UUID, dayIndex: Int, placeIndex: Int) {
+        guard let planIndex = plans.firstIndex(where: { $0.id == planId }) else { return }
+        guard plans[planIndex].days.indices.contains(dayIndex),
+              plans[planIndex].days[dayIndex].places!.indices.contains(placeIndex) else { return }
+        
+        plans[planIndex].days[dayIndex].places!.remove(at: placeIndex)
+    }
+    
     func getUserPlans() async throws {
         if plans.isEmpty {
             let locale = NSLocale.current
