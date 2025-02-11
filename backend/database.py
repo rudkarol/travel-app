@@ -41,12 +41,15 @@ class Database:
             return
 
         for index, trip in enumerate(user.trips):
-            if trip.id == trip_update.id:
-                updated_trip = trip.model_copy(
-                    update=trip_update.model_dump(exclude_unset=True)
-                )
+            if trip.id.lower() == trip_update.id.lower():
+                trip_data = trip.model_dump()
+                new_data = trip_update.model_dump()
+                trip_data.update(new_data)
+                updated_trip = Trip.model_validate(trip_data)
+
                 user.trips[index] = updated_trip
                 await self.engine.save(user)
+                return
 
     async def remove_trip(self, user_id: str, trip_id: str):
         user = await self.get_user(user_id)
