@@ -111,8 +111,7 @@ struct PlanPage: View {
             }
         }
         .sheet(isPresented: $sheetVisible) {
-            // TODO
-            //            AddPlanForm(name: plan.name, description: plan.description ?? "", startDate: plan.startDate ?? Date(), toggleState: (plan.startDate != nil) ? true : false, toUpdate: true)
+            PlanSettingsForm(name: plan.name, description: plan.description ?? "", startDate: plan.startDate ?? Date(), toggleState: (plan.startDate != nil) ? true : false, toUpdate: true)
         }
         .alert("Delete the day", isPresented: $isShowingDeleteAlert) {
                     Button("Delete", role: .destructive) {

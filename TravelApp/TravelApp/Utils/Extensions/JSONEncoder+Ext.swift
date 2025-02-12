@@ -12,6 +12,8 @@ extension JSONEncoder {
     static func withFastApiDateEncodingStrategy() -> JSONEncoder {
         let encoder = JSONEncoder()
         
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)

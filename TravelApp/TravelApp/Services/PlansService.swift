@@ -2,7 +2,7 @@
 //  PlansService.swift
 //  TravelApp
 //
-//  Created by osx on 24/01/2025.
+//  Created by Karol Rudkowski on 24/01/2025.
 //
 
 import Foundation
@@ -14,9 +14,19 @@ class PlansService {
     var plans: [Plan] = []
     
     
-    func addPlan(plan: Plan) {
+    func addPlan(plan: Plan) async throws {
         plans.append(plan)
-//        TODO save
+        
+        let endpointUrl = "/trip/create"
+
+        let planData = PlanRequestBodyModel(
+            id: plan.id,
+            name: plan.name,
+            description: plan.description,
+            startDate: plan.startDate,
+            days: [])
+        
+        try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: planData)
     }
     
     func removePlace(from planId: UUID, dayIndex: Int, placeIndex: Int) {
@@ -51,7 +61,7 @@ class PlansService {
         guard let planIndex = plans.firstIndex(where: { $0.id == planId }) else { return }
         let plan = plans[planIndex]
         
-        var planData = PlanUpdateModel(
+        var planData = PlanRequestBodyModel(
             id: plan.id,
             name: plan.name,
             description: plan.description,
@@ -63,8 +73,6 @@ class PlansService {
             let day = DailyPlanUpdateModel(places: ids ?? [])
             planData.days.append(day)
         }
-        
-        dump(planData)
         
         try await TravelApiRequest.shared.patchData(endpointUrl: endpointUrl, body: planData)
     }
@@ -83,7 +91,6 @@ class PlansService {
         
         
         let body = AIPlanRequestBody(lat: latitude, lon: longitude, currency: "\(currencyCode ?? "usd")", days: days)
-        dump(body)
         
         let data = try await TravelApiRequest.shared.postData(endpointUrl: endpointUrl, body: body)
 
@@ -95,7 +102,6 @@ class PlansService {
             throw AppError.invalidData
         }
         
-//        TODO: try catch
-        addPlan(plan: planResponse)
+        self.plans.append(planResponse)
     }
 }

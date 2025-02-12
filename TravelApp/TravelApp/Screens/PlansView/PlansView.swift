@@ -2,7 +2,7 @@
 //  PlansView.swift
 //  TravelApp
 //
-//  Created by osx on 17/01/2025.
+//  Created by Karol Rudkowski on 17/01/2025.
 //
 
 import SwiftUI
@@ -25,7 +25,6 @@ struct PlansView: View {
                         } label: {
                             Label("Generate plan with AI", systemImage: "wand.and.sparkles")
                         }
-                        
                         
                         List(plansService.plans) { plan in
                             NavigationLink(value: plan) {
@@ -78,7 +77,7 @@ struct PlansView: View {
                 }
                 .navigationTitle("Trip Plans")
                 .sheet(isPresented: $viewModel.sheetVisible) {
-                    AddPlanForm()
+                    PlanSettingsForm()
                 }
             }
             
@@ -87,7 +86,6 @@ struct PlansView: View {
             }
         }
         .task {
-//            TODO dodac zmienna do sprawdzenia czy plan zostal pobrany tylko raz
             if plansService.plans.isEmpty {
                 viewModel.isLoading = true
                 

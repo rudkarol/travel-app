@@ -25,7 +25,7 @@ struct DailyPlan: Decodable, Identifiable, Hashable {
     }
 }
 
-struct PlanUpdateModel: Encodable {
+struct PlanRequestBodyModel: Encodable {
     var id: UUID
     let name: String
     let description: String?

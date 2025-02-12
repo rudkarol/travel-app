@@ -2,12 +2,12 @@
 //  AddPlanForm.swift
 //  TravelApp
 //
-//  Created by osx on 25/01/2025.
+//  Created by Karol Rudkowski on 25/01/2025.
 //
 
 import SwiftUI
 
-struct AddPlanForm: View {
+struct PlanSettingsForm: View {
     
     @State var name: String
     @State var description: String
@@ -69,7 +69,13 @@ struct AddPlanForm: View {
             days: []
         )
         
-        plansService.addPlan(plan: plan)
+        Task {
+            do {
+                try await plansService.addPlan(plan: plan)
+            } catch {
+//                TODO
+            }
+        }
     }
 }
 

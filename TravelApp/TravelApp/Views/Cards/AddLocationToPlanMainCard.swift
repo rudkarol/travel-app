@@ -2,7 +2,7 @@
 //  AddLocationToPlanMainCard.swift
 //  TravelApp
 //
-//  Created by osx on 26/01/2025.
+//  Created by Karol Rudkowski on 26/01/2025.
 //
 
 import SwiftUI
@@ -38,7 +38,7 @@ struct AddLocationToPlanMainCard: View {
                     AddLocationToPlanDaysCard(location: location, plan: plan, path: $path)
                 }
                 .navigationDestination(for: AddPlanFormScreenDestination.self) { planForm in
-                    AddPlanForm()
+                    PlanSettingsForm()
                 }
                 
                 if isLoading {
