@@ -9,22 +9,23 @@ import SwiftUI
 
 struct PlanSettingsForm: View {
     
+    let plan: Plan?
     @State var name: String
     @State var description: String
     @State var startDate: Date
     @State var toggleState: Bool
-    var toUpdate: Bool
     
     @Environment(PlansService.self) private var plansService
     @Environment(\.dismiss) var dismiss
+    @State private var alertData: AlertData?
     
     
-    init(name: String = "", description: String = "", startDate: Date = Date(), toggleState: Bool = false, toUpdate: Bool = false) {
-        self.name = name
-        self.description = description
-        self.startDate = startDate
-        self.toggleState = toggleState
-        self.toUpdate = toUpdate
+    init(plan: Plan? = nil) {
+        self.plan = plan
+        self._name = State(initialValue: plan?.name ?? "")
+        self._description = State(initialValue: plan?.description ?? "")
+        self._startDate = State(initialValue: plan?.startDate ?? Date())
+        self._toggleState = State(initialValue: plan?.startDate != nil)
     }
     
     var body: some View {
@@ -47,40 +48,78 @@ struct PlanSettingsForm: View {
                 }
                 
                 Button {
-                    saveNewPlan()
+                    if let existingPlan = plan {
+                        updatePlan(existingPlan)
+                    } else {
+                        saveNewPlan()
+                    }
                     dismiss()
                 } label: {
-                    Text("Save the plan")
+                    Text(plan != nil ? "Update plan" : "Save plan")
                 }
             }
-            .navigationTitle("Add a new plan")
+            .navigationTitle(plan != nil ? "Edit plan" : "Add a new plan")
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium, .large])
         .presentationBackgroundInteraction(.disabled)
+        .alert(
+            alertData?.title ?? "",
+            isPresented: .constant(alertData != nil),
+            presenting: alertData
+        ) { alertData in
+            Button(alertData.buttonText) {
+                self.alertData = nil
+            }
+        }
     }
     
     private func saveNewPlan() {
-        let plan = Plan(
+        let newPlan = Plan(
             id: UUID(),
-            name: (name == "") ? "My trip plan \(plansService.plans.count + 1)": name ,
+            name: (name == "") ? "My trip plan \(plansService.plans.count + 1)" : name,
             description: description,
-            startDate:  toggleState ? startDate : nil,
+            startDate: toggleState ? startDate : nil,
             days: []
         )
         
         Task {
             do {
-                try await plansService.addPlan(plan: plan)
+                try await plansService.addPlan(plan: newPlan)
+            } catch let error as AppError {
+                alertData = error.alertData
             } catch {
-//                TODO
+                alertData = AppError.genericError(error).alertData
+            }
+        }
+    }
+    
+    private func updatePlan(_ existingPlan: Plan) {
+        guard let planIndex = plansService.plans.firstIndex(where: { $0.id == existingPlan.id }) else {
+            return
+        }
+        
+        var updatedPlan = plansService.plans[planIndex]
+        updatedPlan.name = name
+        updatedPlan.description = description
+        updatedPlan.startDate = toggleState ? startDate : nil
+        
+        plansService.plans[planIndex] = updatedPlan
+        
+        Task {
+            do {
+                try await plansService.updatePlan(planId: existingPlan.id)
+            } catch let error as AppError {
+                alertData = error.alertData
+            } catch {
+                alertData = AppError.genericError(error).alertData
             }
         }
     }
 }
 
-struct AddPlanFormScreenDestination: Hashable { }
+struct PlanSettingsFormScreenDestination: Hashable { }
 
-//#Preview {
-//    AddPlanForm()
-//}
+#Preview {
+    PlanSettingsForm()
+}

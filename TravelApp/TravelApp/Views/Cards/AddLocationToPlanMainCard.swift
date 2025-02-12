@@ -29,7 +29,7 @@ struct AddLocationToPlanMainCard: View {
                     }
                     
                     Button {
-                        path.append(AddPlanFormScreenDestination())
+                        path.append(PlanSettingsFormScreenDestination())
                     } label: {
                         Text("Add a new plan")
                     }
@@ -37,7 +37,7 @@ struct AddLocationToPlanMainCard: View {
                 .navigationDestination(for: Plan.self) { plan in
                     AddLocationToPlanDaysCard(location: location, plan: plan, path: $path)
                 }
-                .navigationDestination(for: AddPlanFormScreenDestination.self) { planForm in
+                .navigationDestination(for: PlanSettingsFormScreenDestination.self) { planForm in
                     PlanSettingsForm()
                 }
                 

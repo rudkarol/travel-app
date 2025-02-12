@@ -48,7 +48,7 @@ struct PlansView: View {
                             }
                         }
                         .navigationDestination(for: Plan.self) { plan in
-                            PlanPage(plan: plan, path: $path)
+                            PlanPage(planId: plan.id, path: $path)
                         }
                         .navigationDestination(for: GeneratePlanViewDestination.self) { _ in
                             GeneratePlanView(path: $path)
