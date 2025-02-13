@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Literal, List, Optional
+from datetime import datetime
+import math
 
 from dependencies import get_settings
 from models.risks import CountryAdvisories
@@ -91,6 +93,19 @@ class LocationCategory(BaseModel):
     name: str
 
 
+class ClimateMonth(BaseModel):
+    time: datetime
+    tavg: Optional[float] = None
+
+    @field_validator("tavg", mode="before")
+    def convert_nan(cls, value):
+        if isinstance(value, float) and math.isnan(value):
+            return None
+        return value
+
+    class Config:
+        from_attributes = True
+
 class LocationDetails(Location):
     description: Optional[str] = None
     # ancestors: List[Ancestor]
@@ -100,6 +115,7 @@ class LocationDetails(Location):
     subcategory: List[LocationCategory]
     safety_level: Optional[CountryAdvisories] = None
     photos: Optional[List[Image]] = None
+    climate: Optional[List[ClimateMonth]] = None
 
 
 class Photos(BaseModel):
@@ -109,11 +125,3 @@ class Photos(BaseModel):
     def from_response(cls, response: dict) -> "Photos":
         data = [Image.from_response(item) for item in response["data"]]
         return cls(data=data)
-
-
-class ClimateMonth(BaseModel):
-    tavg: Optional[float] = None
-    tsun: Optional[int] = None
-
-    class Config:
-        from_attributes = True
