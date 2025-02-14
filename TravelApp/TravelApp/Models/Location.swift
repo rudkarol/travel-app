@@ -19,6 +19,7 @@ struct Location: Decodable, Identifiable, Hashable {
     let category: LocationCategory
     let subcategory: [LocationCategory]
     let safetyLevel: SafetyLevel?
+    let climate: [ClimateMonth]?
     
     var id: String{locationId}
 }
@@ -40,6 +41,11 @@ struct SafetyLevel: Decodable, Hashable {
 
 struct Photo: Decodable, Hashable {
     let url: String
+}
+
+struct ClimateMonth: Decodable, Hashable {
+    let time: Date
+    let tavg: Float?
 }
 
 
@@ -68,6 +74,13 @@ struct MockDataLocationDetails {
             level: 1,
             pubDate: Date(),
             link: "http://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/poland-travel-advisory.html"
-        )
+        ), climate: [
+            ClimateMonth(time: Date(), tavg: 10.0),
+            ClimateMonth(time: Date(), tavg: 11.1),
+            ClimateMonth(time: Date(), tavg: nil),
+            ClimateMonth(time: Date(), tavg: 13.3),
+            ClimateMonth(time: Date(), tavg: 14.4),
+            ClimateMonth(time: Date(), tavg: 15.5)
+        ]
     )
 }

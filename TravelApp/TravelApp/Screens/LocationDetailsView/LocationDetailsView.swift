@@ -41,6 +41,10 @@ struct LocationDetailsView: View {
                         .multilineTextAlignment(.center)
                         .padding()
                     
+                    if location.climate != nil {
+                        ClimateDataView(climateData: location.climate!)
+                    }
+                    
                     Grid {
                         GridRow {
                             InfoLinkCell(
