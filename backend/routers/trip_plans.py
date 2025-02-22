@@ -24,7 +24,7 @@ async def generate_trip_plan(
 ) -> TripResponse:
     """Endpoint do generowania kilkudniowego planu podróży.
     Dostępne generowanie planu dla 1 do 7 dni.
-    Zwraca wygenerowany plan i zapusije go w bazie danych."""
+    Zwraca wygenerowany plan i zapusuje go w bazie danych."""
 
     attractions=[]
     for day in range(math.ceil(query_params.days / 2)):
