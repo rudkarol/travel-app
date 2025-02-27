@@ -1,5 +1,6 @@
 from odmantic import AIOEngine
 from odmantic.engine import AsyncIOMotorClient
+from odmantic.bson import ObjectId
 from typing import List
 
 from models.trip_plans import Trip
@@ -17,24 +18,24 @@ class Database:
             database="travel_app"
         )
 
-    async def get_user(self, user_id: str):
-        user_data = await self.engine.find_one(DbUser, DbUser.user_id == user_id)
+    async def get_user(self, user_id: ObjectId):
+        user_data = await self.engine.find_one(DbUser, DbUser.id == user_id)
         return user_data
 
-    async def delete_user(self, user_id: str):
-        await self.engine.remove(DbUser, DbUser.user_id == user_id)
+    async def delete_user(self, user_id: ObjectId):
+        await self.engine.remove(DbUser, DbUser.id == user_id)
 
-    async def update_user(self, user_id: str, new_user_data: User):
+    async def update_user(self, user_id: ObjectId, new_user_data: User):
         user_data = await self.get_user(user_id)
         user_data.model_update(new_user_data)
         await self.engine.save(user_data)
 
-    async def update_user_favorites(self, user_id: str, favorites_list: List[str]):
+    async def update_user_favorites(self, user_id: ObjectId, favorites_list: List[str]):
         user_data = await self.get_user(user_id)
         user_data.favorite_places = favorites_list
         await self.engine.save(user_data)
 
-    async def update_trip(self, user_id: str, trip_update: Trip):
+    async def update_trip(self, user_id: ObjectId, trip_update: Trip):
         user = await self.get_user(user_id)
 
         if not user or not user.trips:
@@ -51,7 +52,7 @@ class Database:
                 await self.engine.save(user)
                 return
 
-    async def remove_trip(self, user_id: str, trip_id: str):
+    async def remove_trip(self, user_id: ObjectId, trip_id: str):
         user = await self.get_user(user_id)
 
         if not user or not user.trips:

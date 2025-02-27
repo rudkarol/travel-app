@@ -67,7 +67,7 @@ async def generate_trip_plan(
         trip_data.days.append(locations)
         trip_to_save.days.append(locations_to_save)
 
-    await create_trip_plan(auth_result.user_id, trip_to_save)
+    await create_trip_plan(auth_result.id, trip_to_save)
 
     return trip_data
 
@@ -79,30 +79,31 @@ async def get_current_user_trip_plans(
 ):
     """Zwraca listę planów podróży aktualnego użytkownika"""
 
-    user = await database.get_user(auth_result.user_id)
+    user = await database.get_user(auth_result.id)
     trips = []
 
-    for trip_plan in user.trips:
-        trip_data = TripResponse(
-            id=trip_plan.id,
-            name=trip_plan.name,
-            description=trip_plan.description,
-            start_date=trip_plan.start_date,
-            days=[]
-        )
+    if user.trips:
+        for trip_plan in user.trips:
+            trip_data = TripResponse(
+                id=trip_plan.id,
+                name=trip_plan.name,
+                description=trip_plan.description,
+                start_date=trip_plan.start_date,
+                days=[]
+            )
 
-        for trip_day in trip_plan.days:
-            locations = TripDayResponse(places=[])
+            for trip_day in trip_plan.days:
+                locations = TripDayResponse(places=[])
 
-            for location_id in trip_day.places:
-                details = await get_location_all_details(
-                    DetailsRequest(location_id=location_id, currency=currency)
-                )
-                locations.places.append(details)
+                for location_id in trip_day.places:
+                    details = await get_location_all_details(
+                        DetailsRequest(location_id=location_id, currency=currency)
+                    )
+                    locations.places.append(details)
 
-            trip_data.days.append(locations)
+                trip_data.days.append(locations)
 
-        trips.append(trip_data)
+            trips.append(trip_data)
 
     return trips
 
@@ -113,7 +114,7 @@ async def create_new_trip_plan(
 ):
     """Zapisuje nowy plan podróży aktualnego użytkownika"""
 
-    await  create_trip_plan(auth_result.user_id, trip_plan)
+    await  create_trip_plan(auth_result.id, trip_plan)
     return {"message": "Trip plan created successfully"}
 
 @router.patch("/trip/update")
@@ -123,7 +124,7 @@ async def update_trip_plan(
 ):
     """Aktualizuje plan podróży aktualnego użytkownika"""
 
-    await database.update_trip(auth_result.user_id, trip_plan)
+    await database.update_trip(auth_result.id, trip_plan)
     return {"message": "Trip plan updated successfully"}
 
 @router.delete("/trip/delete")
@@ -133,5 +134,5 @@ async def delete_current_user_trip_plan(
 ):
     """Usuwa plan podróży o danym id z konta aktualnego użytkownika"""
 
-    await database.remove_trip(auth_result.user_id, trip_id)
+    await database.remove_trip(auth_result.id, trip_id)
     return {"message": "Trip plan removed successfully"}

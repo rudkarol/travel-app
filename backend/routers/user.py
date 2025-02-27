@@ -26,7 +26,7 @@ async def delete_current_user_account(
 
         async with httpx.AsyncClient() as client:
             response = await client.delete(
-                f"https://{settings.auth0_domain}/api/v2/users/{auth_result.user_id}",
+                f"https://{settings.auth0_domain}/api/v2/users/{auth_result.id}",
                 headers={
                     "Authorization": f"Bearer {m2m_token}",
                     "Content-Type": "application/json"
@@ -39,7 +39,7 @@ async def delete_current_user_account(
                     detail=f"Unable to delete profile: {response.json().get('message', 'Unknown error')}"
                 )
 
-            await database.delete_user(auth_result.user_id)
+            await database.delete_user(auth_result.id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -56,7 +56,7 @@ async def update_current_user_email(
 
         async with httpx.AsyncClient() as client:
             response = await client.patch(
-                f"https://{settings.auth0_domain}/api/v2/users/{auth_result.user_id}",
+                f"https://{settings.auth0_domain}/api/v2/users/{auth_result.id}",
                 headers = {
                     "Authorization": f"Bearer {m2m_token}",
                     "Content-Type": "application/json"
@@ -85,14 +85,16 @@ async def get_current_user_favorites(
 ):
     """Returns current user favorite places list"""
 
-    user = await database.get_user(auth_result.user_id)
+    user = await database.get_user(auth_result.id)
     locations = []
 
-    for location_id in user.favorite_places:
-        details = await get_location_all_details(
-            DetailsRequest(location_id=location_id, currency=currency)
-        )
-        locations.append(details)
+
+    if user.favorite_places:
+        for location_id in user.favorite_places:
+            details = await get_location_all_details(
+                DetailsRequest(location_id=location_id, currency=currency)
+            )
+            locations.append(details)
 
     return locations
 
@@ -104,5 +106,5 @@ async def update_current_user_favorites(
 ):
     """Updates current user favorite places list"""
 
-    await database.update_user_favorites(user_id=auth_result.user_id, favorites_list=data)
+    await database.update_user_favorites(user_id=auth_result.id, favorites_list=data)
     return {"message": "User's favorites list successfully updated"}

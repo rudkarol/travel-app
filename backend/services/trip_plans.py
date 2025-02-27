@@ -1,11 +1,12 @@
 from dependencies import get_database
 from models.trip_plans import Trip
 from models.user import User
+from bson import ObjectId
 
 database = get_database()
 
 
-async def create_trip_plan(user_id: str, plan: Trip):
+async def create_trip_plan(user_id: ObjectId, plan: Trip):
     user = await database.get_user(user_id)
     new_user_data = User(**user.model_dump())
 
