@@ -4,7 +4,7 @@ from odmantic.bson import ObjectId
 from typing import List
 
 from models.trip_plans import Trip
-from models.user import DbUser, User
+from models.user import DbUser
 from models.risks import DbCountryAdvisories, CountryItem
 from dependencies import get_settings
 
@@ -25,9 +25,14 @@ class Database:
     async def delete_user(self, user_id: ObjectId):
         await self.engine.remove(DbUser, DbUser.id == user_id)
 
-    async def update_user(self, user_id: ObjectId, new_user_data: User):
+    async def create_user_trip(self, user_id: ObjectId, plan: Trip):
         user_data = await self.get_user(user_id)
-        user_data.model_update(new_user_data)
+
+        if not user_data.trips:
+            user_data.trips = [plan]
+        else:
+            user_data.trips.append(plan)
+
         await self.engine.save(user_data)
 
     async def update_user_favorites(self, user_id: ObjectId, favorites_list: List[str]):

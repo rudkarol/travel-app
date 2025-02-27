@@ -4,7 +4,6 @@ import math
 
 from services.openai import openai_request
 from services.locations import fetch_tripadvisor_nearby_search, get_location_all_details
-from services.trip_plans import create_trip_plan
 from models.openai import GenerateTripPlanRequest
 from models.trip_plans import Trip, TripDay, TripResponse, TripDayResponse
 from models.auth import TokenData
@@ -67,7 +66,7 @@ async def generate_trip_plan(
         trip_data.days.append(locations)
         trip_to_save.days.append(locations_to_save)
 
-    await create_trip_plan(auth_result.id, trip_to_save)
+    await database.create_user_trip(auth_result.id, trip_to_save)
 
     return trip_data
 
@@ -114,7 +113,7 @@ async def create_new_trip_plan(
 ):
     """Zapisuje nowy plan podróży aktualnego użytkownika"""
 
-    await  create_trip_plan(auth_result.id, trip_plan)
+    await  database.create_user_trip(auth_result.id, trip_plan)
     return {"message": "Trip plan created successfully"}
 
 @router.patch("/trip/update")
