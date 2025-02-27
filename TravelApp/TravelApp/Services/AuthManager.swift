@@ -95,9 +95,9 @@ import Auth0
     }
     
     func changeEmail(newEmail: String) async throws {
-        let endpointUrl = "/user/me/change-email?new_email=\(newEmail)"
+        let endpointUrl = "/user/me/change-email"
         
-        let _ = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+        let _ = try await TravelApiRequest.shared.patchData(endpointUrl: endpointUrl, body: ChangeEmail(newEmail: newEmail))
     }
     
     func deleteUser() async throws {
