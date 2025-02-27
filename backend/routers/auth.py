@@ -2,7 +2,10 @@ from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 from httpx import AsyncClient
 
+from dependencies import get_settings
+
 router = APIRouter()
+settings = get_settings()
 
 # Test Only
 @router.get("/auth/login")
@@ -11,7 +14,7 @@ def login():
         "https://dev-i0adeksdsq2nka6l.eu.auth0.com/authorize"
         "?response_type=code"
         "&client_id=qnXTziaZimSsP4kmSwfrEC1LXMR0bIxS"
-        "&redirect_uri=http://localhost:8000/auth/token"
+        f"&redirect_uri=http://{settings.server_address}/auth/token"
         "&scope=offline_access"
         "&audience=https://travel-planner.com"
     )
@@ -25,7 +28,7 @@ async def get_access_token(code: str):
         "client_id": "qnXTziaZimSsP4kmSwfrEC1LXMR0bIxS",
         "client_secret": "sbSHBeQjCFqsGyrQHHZANV4uV4JxsQegaTSFQTtjJBGNP7SFjM6N3ZSVCsB02I54",
         "code": code,
-        "redirect_uri": "http://localhost:8000/auth/token"
+        "redirect_uri": f"http://{settings.server_address}/auth/token"
     }
     headers = {"content-type": "application/x-www-form-urlencoded"}
 
