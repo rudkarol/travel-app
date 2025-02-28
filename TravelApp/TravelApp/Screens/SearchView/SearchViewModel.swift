@@ -2,7 +2,7 @@
 //  SearchViewModel.swift
 //  TravelApp
 //
-//  Created by osx on 05/02/2025.
+//  Created by Karol Rudkowski on 05/02/2025.
 //
 
 import Foundation
