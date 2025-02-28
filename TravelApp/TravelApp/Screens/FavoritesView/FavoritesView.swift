@@ -2,22 +2,21 @@
 //  FavoritesView.swift
 //  TravelApp
 //
-//  Created by osx on 17/01/2025.
+//  Created by Karol Rudkowski on 17/01/2025.
 //
 
 import SwiftUI
 
 struct FavoritesView: View {
     
-    @State private var path = NavigationPath()
+    @State private var isLoading: Bool = false
+    @State private var alertData: AlertData?
     
     @Environment(FavoritesService.self) private var favoritesService
-    private var viewModel = FavoritesViewModel()
-    
     
     var body: some View {
         ZStack {
-            NavigationStack(path: $path) {
+            NavigationStack {
                 ZStack {
                     List(favoritesService.favorites) { location in
                         ZStack {
@@ -41,7 +40,7 @@ struct FavoritesView: View {
                         }
                     }
                     .navigationDestination(for: Location.self) { location in
-                        LocationDetailsView(location: location, path: $path)
+                        LocationDetailsView(location: location)
                     }
                     .listStyle(.plain)
                     
@@ -55,17 +54,17 @@ struct FavoritesView: View {
                 .navigationTitle("Favorite Places")
             }
             
-            if viewModel.isLoading {
+            if isLoading {
                 LoadingView()
             }
         }
         .alert(
-            viewModel.alertData?.title ?? "",
-            isPresented: .constant(viewModel.alertData != nil),
-            presenting: viewModel.alertData
+            alertData?.title ?? "Error",
+            isPresented: .constant(alertData != nil),
+            presenting: alertData
         ) { alertData in
             Button(alertData.buttonText) {
-                viewModel.alertData = nil
+                self.alertData = nil
             }
         }
     }

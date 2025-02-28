@@ -2,7 +2,7 @@
 //  LocationDetailsView.swift
 //  TravelApp
 //
-//  Created by osx on 19/01/2025.
+//  Created by Karol Rudkowski on 19/01/2025.
 //
 
 import SwiftUI
@@ -13,7 +13,6 @@ import MapKit
 struct LocationDetailsView: View {
     
     let location: Location
-    @Binding var path: NavigationPath
     
     @Environment(FavoritesService.self) private var favoritesService
     @Environment(PlansService.self) private var plansService
@@ -134,5 +133,5 @@ struct LocationDetailsView: View {
 
 
 //#Preview {
-//    LocationDetailsView(location: MockDataLocationDetails.sampleLocationDetails, path: <#T##Binding<NavigationPath>#>)
+//    LocationDetailsView(location: MockDataLocationDetails.sampleLocationDetails)
 //}

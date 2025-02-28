@@ -88,7 +88,7 @@ struct PlanPage: View {
                 }
             }
             .navigationDestination(for: Location.self) { location in
-                LocationDetailsView(location: location, path: $path)
+                LocationDetailsView(location: location)
             }
             
             if plan.days.isEmpty {
