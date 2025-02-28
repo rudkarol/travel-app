@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct HomePageView: View {
-
-    @State private var path = NavigationPath()
     
     @Bindable private var viewModel = HomePageViewModel()
     
     
     var body: some View {
         ZStack {
-            NavigationStack(path: $path) {
+            NavigationStack() {
                 ScrollView {
                     VStack(alignment: .leading) {
                         ZStack(alignment: .top) {
@@ -55,17 +53,24 @@ struct HomePageView: View {
                             .bold()
                             .padding([.horizontal, .top])
                         
-                        LazyVStack(spacing: 0) {
-                            ForEach(viewModel.recommendedLocations) { location in
-                                NavigationLink(value: location) {
-                                    PlaceListCell(location: location)
-                                        .padding()
+                        ZStack {
+                            LazyVStack(spacing: 8) {
+                                ForEach(viewModel.recommendedLocations) { location in
+                                    NavigationLink(value: location) {
+                                        PlaceListCell(location: location)
+                                            .padding(.horizontal)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                .padding(.vertical, 8)
                             }
-                        }
-                        .navigationDestination(for: Location.self) { location in
-                            LocationDetailsView(location: location)
+                            .navigationDestination(for: Location.self) { location in
+                                LocationDetailsView(location: location)
+                            }
+                            
+                            if viewModel.isLoading {
+                                LoadingView()
+                            }
                         }
                         
                         Spacer()
@@ -74,10 +79,6 @@ struct HomePageView: View {
                 }
                 .ignoresSafeArea()
             }
-            
-            if viewModel.isLoading {
-                LoadingView()
-            }
         }
         .navigationTitle("Home Page")
         .sheet(isPresented: $viewModel.userSettingsSheetVisible) {
@@ -85,6 +86,15 @@ struct HomePageView: View {
         }
         .task {
             await viewModel.loadRecommendedLocations()
+        }
+        .alert(
+            viewModel.alertData?.title ?? "Error",
+            isPresented: .constant(viewModel.alertData != nil),
+            presenting: viewModel.alertData
+        ) { alertData in
+            Button(alertData.buttonText) {
+                viewModel.alertData = nil
+            }
         }
     }
 }
