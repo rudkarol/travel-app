@@ -53,6 +53,7 @@ struct PlaceListCell: View {
             Text(location.name)
                 .bold()
                 .padding(.leading)
+            
             Text(location.addressObj.country ?? location.addressObj.addressString)
                 .padding(.leading)
         }

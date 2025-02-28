@@ -20,18 +20,24 @@ struct FavoritesView: View {
             NavigationStack(path: $path) {
                 ZStack {
                     List(favoritesService.favorites) { location in
-                        NavigationLink(value: location) {
+                        ZStack {
+                            NavigationLink(value: location) {
+                                EmptyView()
+                            }
+                            .opacity(0)
+                            
                             PlaceListCell(location: location, showingAddToFavButton: false)
-                                .swipeActions(allowsFullSwipe: false) {
-                                    Button(role: .destructive) {
-                                        Task {
-                                            try await favoritesService.remove(id: location.id)
-                                        }
-                                        print("item deleted")
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
+                        }
+                        .listRowSeparator(.hidden)
+                        .swipeActions(allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                Task {
+                                    try await favoritesService.remove(id: location.id)
                                 }
+                                print("item deleted")
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
                     }
                     .navigationDestination(for: Location.self) { location in
