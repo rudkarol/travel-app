@@ -38,7 +38,18 @@ struct LocationDetailsView: View {
                     
                     Text(location.description ?? "")
                         .multilineTextAlignment(.center)
+//                        .lineLimit(viewModel.isDescriptionExpanded ? nil : 4)
+                        .animation(.easeInOut, value: viewModel.isDescriptionExpanded)
                         .padding()
+                    
+//                    Button(action: {
+//                        viewModel.isDescriptionExpanded.toggle()
+//                    }) {
+//                        Text(viewModel.isDescriptionExpanded ? "Show less" : "Show more")
+//                            .font(.caption)
+//                            .foregroundColor(.gray)
+//                            .padding(.bottom)
+//                    }
                     
                     if location.climate != nil {
                         ClimateDataView(climateData: location.climate!)
@@ -47,14 +58,14 @@ struct LocationDetailsView: View {
                     Grid {
                         GridRow {
                             InfoLinkCell(
-                                systemName: "1.circle",
+                                systemName: location.safetyLevel != nil ? "\(location.safetyLevel!.level).circle" : "questionmark.circle",
                                 name: "Safety",
-                                url: location.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/"
+                                url: location.safetyLevel?.link ?? "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html"
                             )
                             InfoLinkCell(
                                 systemName: "lightbulb.max",
                                 name: "Nice To Know",
-                                url: "https://en.wikivoyage.org/wiki/\(location.addressObj.country ?? "https://google.com")"
+                                url: "https://en.wikivoyage.org/wiki/\(location.addressObj.country ?? "https://www.wikivoyage.org/")"
                             )
                         }
                         GridRow {
@@ -73,6 +84,8 @@ struct LocationDetailsView: View {
                     .padding()
                     
                     Text(location.addressObj.addressString)
+                        .multilineTextAlignment(.center)
+                        .padding([.top, .horizontal])
                     
                     Map {
                         Marker(
@@ -132,6 +145,6 @@ struct LocationDetailsView: View {
 }
 
 
-//#Preview {
-//    LocationDetailsView(location: MockDataLocationDetails.sampleLocationDetails)
-//}
+#Preview {
+    LocationDetailsView(location: MockDataLocationDetails.sampleLocationDetails)
+}

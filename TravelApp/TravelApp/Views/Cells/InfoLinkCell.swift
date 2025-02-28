@@ -2,7 +2,7 @@
 //  InfoLinkCell.swift
 //  TravelApp
 //
-//  Created by osx on 19/01/2025.
+//  Created by Karol Rudkowski on 19/01/2025.
 //
 
 import SwiftUI
@@ -25,6 +25,12 @@ struct InfoLinkCell: View {
                 Text(name)
                     .font(.body)
             }
+            .frame(width: 150, height: 150)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.systemBackground))
+                    .shadow(color: Color.primary.opacity(0.1), radius: 5, x: 0, y: 2)
+            )
             .padding()
         }
     }

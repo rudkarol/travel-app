@@ -16,25 +16,28 @@ struct ClimateMonthCell: View {
             Text(getMonthName(date: climateData.time))
                 .font(.headline)
                 .foregroundColor(.primary)
+                .padding([.top, .horizontal])
             
             if let tavg = climateData.tavg {
                 Text(formatTemperature(celsius: tavg))
                     .font(.title2)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
+                    .padding()
             } else {
                 Image(systemName: "nosign")
                     .font(.title2)
                     .foregroundColor(.secondary)
+                    .padding()
             }
         }
         .frame(width: 100)
-        .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.systemBackground))
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                .shadow(color: Color.primary.opacity(0.1), radius: 5, x: 0, y: 2)
         )
+        .padding(.vertical)
     }
 }
 

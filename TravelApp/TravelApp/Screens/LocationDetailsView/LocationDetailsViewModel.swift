@@ -2,7 +2,7 @@
 //  LocationDetailsViewModel.swift
 //  TravelApp
 //
-//  Created by osx on 26/01/2025.
+//  Created by Karol Rudkowski on 26/01/2025.
 //
 
 import Foundation
@@ -12,6 +12,7 @@ import Foundation
     
     var sheetVisible: Bool = false
     var isSheetLoading: Bool = false
+    var isDescriptionExpanded: Bool = false
     var alertData: AlertData?
     
 }
