@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 import MapKit
 
 
@@ -23,18 +22,14 @@ struct LocationDetailsView: View {
         ZStack {
             ScrollView {
                 VStack {
-                    CachedAsyncImage(url: URL(string: location.photos?.first?.url ?? "")) {image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                            .cornerRadius(12)
-                    } placeholder: {
+                    if let photos = location.photos, !photos.isEmpty {
+                        ImageCarouselView(photos: photos)
+                    } else {
                         ImagePlaceholder()
-                            .frame(height: 400)
+                            .frame(height: 300)
                             .cornerRadius(12)
+                            .padding()
                     }
-                    .padding()
                     
                     Text(location.description ?? "")
                         .multilineTextAlignment(.center)
