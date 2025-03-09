@@ -96,7 +96,6 @@ struct PlanPage: View {
     private func daySectionHeader(for dayIndex: Int) -> some View {
         HStack {
             Text("Day \(dayIndex + 1)")
-                .font(.headline)
             
             Spacer()
             

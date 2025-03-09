@@ -24,7 +24,7 @@ struct HomePageView: View {
                                 .clipped()
                             
                             HStack {
-                                Logo(size: 32, color: .primary)
+                                Logo(size: 32, color: .white)
                                 
                                 Spacer()
                                 
