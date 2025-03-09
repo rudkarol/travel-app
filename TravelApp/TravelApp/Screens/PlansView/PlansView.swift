@@ -19,41 +19,51 @@ struct PlansView: View {
         ZStack {
             NavigationStack(path: $path) {
                 ZStack(alignment: .bottomTrailing) {
-                    VStack {
+                    List {
                         Button {
                             path.append(GeneratePlanViewDestination())
                         } label: {
                             Label("Generate plan with AI", systemImage: "wand.and.sparkles")
+                                .frame(maxWidth: .infinity)
                         }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.roundedRectangle(radius: 14))
+                        .listRowSeparator(.hidden)
                         
-                        List(plansService.plans) { plan in
-                            NavigationLink(value: plan) {
+                        ForEach(plansService.plans) { plan in
+                            ZStack {
+                                NavigationLink(value: plan) {
+                                    EmptyView()
+                                }
+                                .opacity(0)
+                                
                                 PlanListCell(plan: plan)
-                                    .swipeActions(allowsFullSwipe: false) {
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    try await plansService.deletePlan(id: plan.id)
-                                                } catch let error as AppError {
-                                                    viewModel.alertData = error.alertData
-                                                } catch {
-                                                    viewModel.alertData = AppError.genericError(error).alertData
-                                                }
-                                            }
-                                            print("plan item deleted")
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
+                            }
+                            .listRowSeparator(.hidden)
+                            .swipeActions(allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    Task {
+                                        do {
+                                            try await plansService.deletePlan(id: plan.id)
+                                        } catch let error as AppError {
+                                            viewModel.alertData = error.alertData
+                                        } catch {
+                                            viewModel.alertData = AppError.genericError(error).alertData
                                         }
                                     }
+                                    print("plan item deleted")
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
                         }
-                        .navigationDestination(for: Plan.self) { plan in
-                            PlanPage(planId: plan.id, path: $path)
-                        }
-                        .navigationDestination(for: GeneratePlanViewDestination.self) { _ in
-                            GeneratePlanView(path: $path)
-                        }
-                        .listStyle(.plain)
+                    }
+                    .listStyle(.plain)
+                    .navigationDestination(for: Plan.self) { plan in
+                        PlanPage(planId: plan.id, path: $path)
+                    }
+                    .navigationDestination(for: GeneratePlanViewDestination.self) { _ in
+                        GeneratePlanView(path: $path)
                     }
                     
                     Button {
