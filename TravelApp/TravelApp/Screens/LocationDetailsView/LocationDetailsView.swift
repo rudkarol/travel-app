@@ -35,7 +35,10 @@ struct LocationDetailsView: View {
                         .multilineTextAlignment(.center)
 //                        .lineLimit(viewModel.isDescriptionExpanded ? nil : 4)
                         .animation(.easeInOut, value: viewModel.isDescriptionExpanded)
-                        .padding()
+                        .padding([.horizontal, .top])
+                    
+                    TripadvisorLabel()
+                        .padding(.bottom)
                     
 //                    Button(action: {
 //                        viewModel.isDescriptionExpanded.toggle()

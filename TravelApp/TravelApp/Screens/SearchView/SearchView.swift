@@ -85,6 +85,9 @@ struct SearchView: View {
             .navigationDestination(for: Location.self) { location in
                 LocationDetailsView(location: location)
             }
+            
+            TripadvisorLabel()
+                .padding(.bottom)
         }
     }
 }
