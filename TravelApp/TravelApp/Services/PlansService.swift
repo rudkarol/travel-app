@@ -26,7 +26,7 @@ class PlansService {
             startDate: plan.startDate,
             days: [])
         
-        try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: planData)
+        try await FastApiRequest.shared.putData(endpointUrl: endpointUrl, body: planData)
     }
     
     func removePlace(from planId: UUID, dayIndex: Int, placeIndex: Int) {
@@ -43,7 +43,7 @@ class PlansService {
             let currencyCode = locale.currency?.identifier
             let endpointUrl = "/trip/plans?currency=\(currencyCode ?? "usd")"
             
-            let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+            let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
             
             do {
                 let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
@@ -74,13 +74,13 @@ class PlansService {
             planData.days.append(day)
         }
         
-        try await TravelApiRequest.shared.patchData(endpointUrl: endpointUrl, body: planData)
+        try await FastApiRequest.shared.patchData(endpointUrl: endpointUrl, body: planData)
     }
     
     func deletePlan(id: UUID) async throws {
         let endpointUrl = "/trip/delete?trip_id=\(id)"
         
-        let _ = try await TravelApiRequest.shared.deleteData(endpointUrl: endpointUrl)
+        let _ = try await FastApiRequest.shared.deleteData(endpointUrl: endpointUrl)
     }
     
     func generateAIPlan(latitude: Float, longitude: Float, days: Int) async throws {
@@ -92,7 +92,7 @@ class PlansService {
         
         let body = AIPlanRequestBody(lat: latitude, lon: longitude, currency: "\(currencyCode ?? "usd")", days: days)
         
-        let data = try await TravelApiRequest.shared.postData(endpointUrl: endpointUrl, body: body)
+        let data = try await FastApiRequest.shared.postData(endpointUrl: endpointUrl, body: body)
 
         do {
             let decoder = JSONDecoder.withFastApiDateDecodingStrategy()

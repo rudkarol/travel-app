@@ -2,7 +2,7 @@
 //  BiometricsAuthService.swift
 //  TravelApp
 //
-//  Created by osx on 07/02/2025.
+//  Created by Karol Rudkowski on 07/02/2025.
 //
 
 import Foundation
@@ -13,7 +13,9 @@ func authenticateWithBiometrics(completion: @escaping (Bool) -> Void) {
     var error: NSError?
 
     if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Confirm your identity") { success, error in
+        context.evaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics,
+            localizedReason: "Confirm your identity") { success, error in
             DispatchQueue.main.async {
                 if success {
                     print("Face ID success")

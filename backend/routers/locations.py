@@ -13,8 +13,8 @@ verify_user = get_token_verification()
 
 @router.get("/home/", response_model=List[LocationDetails])
 async def get_recommended_locations(
-    currency: Annotated[Currency, Query()],
-    auth_result: Annotated[TokenData, Security(verify_user.verify)]
+        currency: Annotated[Currency, Query()],
+        auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
     """Endpoint do pobrania rekomendowanych lokalizacji"""
 

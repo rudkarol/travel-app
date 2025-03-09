@@ -2,7 +2,7 @@
 //  FavoritesService.swift
 //  TravelApp
 //
-//  Created by osx on 22/01/2025.
+//  Created by Karol Rudkowski on 22/01/2025.
 //
 
 import Foundation
@@ -39,7 +39,7 @@ class FavoritesService {
         let currencyCode = locale.currency?.identifier
         let endpointUrl = "/user/me/favorites?currency=\(currencyCode ?? "usd")"
         
-        let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+        let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
             let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
@@ -54,6 +54,6 @@ class FavoritesService {
         let endpointUrl = "/user/me/favorites"
         let ids = favorites.map { $0.id }
         
-        try await TravelApiRequest.shared.putData(endpointUrl: endpointUrl, body: ids)
+        try await FastApiRequest.shared.putData(endpointUrl: endpointUrl, body: ids)
     }
 }

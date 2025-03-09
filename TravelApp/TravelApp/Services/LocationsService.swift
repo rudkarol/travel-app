@@ -2,7 +2,7 @@
 //  LocationsService.swift
 //  TravelApp
 //
-//  Created by osx on 19/01/2025.
+//  Created by Karol Rudkowski on 19/01/2025.
 //
 
 import Foundation
@@ -14,7 +14,7 @@ final class LocationsService {
         let currencyCode = locale.currency?.identifier
         let endpointUrl = "/location/?location_id=\(locationId)&currency=\(currencyCode ?? "usd")"
         
-        let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+        let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
             let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
@@ -30,7 +30,7 @@ final class LocationsService {
         let currencyCode = locale.currency?.identifier
         let endpointUrl = "/home/?currency=\(currencyCode ?? "usd")"
         
-        let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+        let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
             let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
@@ -47,7 +47,7 @@ final class LocationsService {
             endpointUrl += "&category=\(category!.rawValue)"
         }
         
-        let data = try await TravelApiRequest.shared.getData(endpointUrl: endpointUrl)
+        let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
         
         do {
             let decoder = JSONDecoder.withFastApiDateDecodingStrategy()

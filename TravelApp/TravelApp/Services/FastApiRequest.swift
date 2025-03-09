@@ -2,13 +2,13 @@
 //  TravelApiRequest.swift
 //  TravelApp
 //
-//  Created by osx on 21/01/2025.
+//  Created by Karol Rudkowski on 21/01/2025.
 //
 
 import Foundation
 
-class TravelApiRequest {
-    static let shared = TravelApiRequest()
+class FastApiRequest {
+    static let shared = FastApiRequest()
     private init() {}
     
     private let baseUrl = "http://192.168.1.14:8000"
@@ -32,8 +32,6 @@ class TravelApiRequest {
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
         
         let (data, _) = try await URLSession.shared.data(for: request)
-
-        print("request successful")
         
         return data
     }

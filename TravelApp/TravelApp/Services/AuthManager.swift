@@ -2,7 +2,7 @@
 //  AuthManager.swift
 //  TravelApp
 //
-//  Created by osx on 19/01/2025.
+//  Created by Karol Rudkowski on 19/01/2025.
 //
 
 import Foundation
@@ -11,9 +11,9 @@ import Auth0
 @Observable final class AuthManager {
     var user: User? = nil
     var isLoggedIn: Bool = false
-    
-    static let shared = AuthManager() //Singleton - dostępne w całej aplikaacji
     private let credentialsManager = CredentialsManager(authentication: Auth0.authentication())
+    
+    static let shared = AuthManager() //Singleton
     private init() {}
     
     
@@ -97,13 +97,13 @@ import Auth0
     func changeEmail(newEmail: String) async throws {
         let endpointUrl = "/user/me/change-email"
         
-        let _ = try await TravelApiRequest.shared.patchData(endpointUrl: endpointUrl, body: ChangeEmail(newEmail: newEmail))
+        let _ = try await FastApiRequest.shared.patchData(endpointUrl: endpointUrl, body: ChangeEmail(newEmail: newEmail))
     }
     
     func deleteUser() async throws {
         let endpointUrl = "/user/me/delete"
         
-        let _ = try await TravelApiRequest.shared.deleteData(endpointUrl: endpointUrl)
+        let _ = try await FastApiRequest.shared.deleteData(endpointUrl: endpointUrl)
         
         await logout()
     }
