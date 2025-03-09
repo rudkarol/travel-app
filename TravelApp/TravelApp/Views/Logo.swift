@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct Logo: View {
+    let size: CGFloat
+    let color: Color
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Triplando")
+            .font(Font.custom("Geist-SemiBold", size: size))
+            .foregroundStyle(color)
+            .shadow(color: .secondary, radius: 1)
     }
 }
 
 #Preview {
-    Logo()
+    Logo(size: 48, color: .accent)
 }
