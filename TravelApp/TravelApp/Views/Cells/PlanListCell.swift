@@ -32,7 +32,7 @@ struct PlanListCell: View {
                 .padding(.leading)
             
             if (plan.startDate != nil) {
-                Text(plan.startDate!.formatted())
+                Text(plan.startDate!.formatted(date: .abbreviated, time: .omitted))
                     .padding(.leading)
             }
         }
