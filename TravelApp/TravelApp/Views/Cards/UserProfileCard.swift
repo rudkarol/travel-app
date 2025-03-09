@@ -10,6 +10,8 @@ import SwiftUI
 struct UserProfileCard: View {
     
     @State private var changeEmailSheetVisible = false
+    @State private var isShowingDeleteAlert: Bool = false
+    @State var alertData: AlertData?
     
     @State private var authManager = AuthManager.shared
     @Environment(\.dismiss) var dismiss
@@ -18,26 +20,28 @@ struct UserProfileCard: View {
         NavigationStack() {
             Form {
                 Section() {
-                    VStack {
+                    Label {
                         Text(authManager.user?.name ?? "Name")
-                            .bold()
-                        
-                        Text(authManager.user?.email ?? "Email")
+                    } icon: {
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .imageScale(.large)
+                            .symbolRenderingMode(.hierarchical)
                     }
-                }
-                
-                Section() {
-                    NavigationLink("Change email", destination: ChangeEmailCard())
                 }
                 
                 Section(header: Text("Account management")) {
-                    Button("Logout") {
-                        Task { await authManager.logout() }
-                        dismiss()
-                    }
+                    NavigationLink("Change email", destination: ChangeEmailCard())
                     
                     Button("Delete account") {
-                        deleteAccountWithBiometrics()
+                        isShowingDeleteAlert = true
+                    }
+                }
+                
+                Section {
+                    Button("Logout") {
+                        Task { await authManager.logout() }
                         dismiss()
                     }
                 }
@@ -54,6 +58,17 @@ struct UserProfileCard: View {
         }
         .task {
             await authManager.fetchUserProfile()
+        }
+        .alert("Delete account", isPresented: $isShowingDeleteAlert) {
+            Group {
+                Button("Delete", role: .destructive) {
+                    deleteAccountWithBiometrics()
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) { }
+            }
+        } message: {
+            Text("Are you sure you want to delete your account and all the data it contains?")
         }
 
         .presentationDetents([.medium, .large])
