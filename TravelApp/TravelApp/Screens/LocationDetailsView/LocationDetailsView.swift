@@ -79,7 +79,7 @@ struct LocationDetailsView: View {
                             )
                         }
                     }
-                    .padding()
+                    .padding(.horizontal)
                     
                     Text(location.addressObj.addressString)
                         .multilineTextAlignment(.center)

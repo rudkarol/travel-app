@@ -31,7 +31,7 @@ struct ClimateMonthCell: View {
                     .padding()
             }
         }
-        .frame(width: 100)
+        .frame(width: 110)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.systemBackground))
@@ -66,5 +66,5 @@ extension ClimateMonthCell {
 }
 
 #Preview {
-    ClimateMonthCell(climateData: ClimateMonth(time: Date(), tavg: 12.6))
+    ClimateMonthCell(climateData: ClimateMonth(time: Date(), tavg: 23.6))
 }

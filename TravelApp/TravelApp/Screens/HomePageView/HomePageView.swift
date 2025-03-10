@@ -18,7 +18,7 @@ struct HomePageView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         ZStack(alignment: .top) {
-                            Image("ha-long-view")
+                            Image("main-photo")
                                 .resizable()
                                 .aspectRatio(0.62, contentMode: .fill)
                                 .clipped()

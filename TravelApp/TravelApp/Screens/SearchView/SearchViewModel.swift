@@ -21,6 +21,7 @@ import Foundation
     func search() async {
         if searchText != "" {
             isLoading = true
+            searchResult = []
             
             do {
                 searchResult = try await locationsService.searchLocations(query: searchText, category: selectedCategory)
