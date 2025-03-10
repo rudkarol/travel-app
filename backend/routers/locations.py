@@ -22,10 +22,13 @@ async def get_recommended_locations(
     locations = []
 
     for location_id in RECOMMENDED_IDS:
-        details = await get_location_all_details(
-            DetailsRequest(location_id=location_id, currency=currency)
-        )
-        locations.append(details)
+        try:
+            details = await get_location_all_details(
+                DetailsRequest(location_id=location_id, currency=currency)
+            )
+            locations.append(details)
+        except:
+            pass
 
     return locations
 

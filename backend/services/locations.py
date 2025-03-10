@@ -28,10 +28,13 @@ async def fetch_tripadvisor_find_search(search_params: lm.SearchRequest):
     locations = []
 
     for location in search_response.data:
-        details = await get_location_all_details(
-            lm.DetailsRequest(location_id=location.location_id, currency=Currency(currency="usd"))
-        )
-        locations.append(details)
+        try:
+            details = await get_location_all_details(
+                lm.DetailsRequest(location_id=location.location_id, currency=Currency(currency="usd"))
+            )
+            locations.append(details)
+        except:
+            pass
 
     return locations
 
@@ -41,14 +44,22 @@ async def fetch_tripadvisor_location_details(query_params: lm.DetailsRequest):
     params = lm.TripadvisorLocationDetailsRequest(currency=query_params.currency)
     headers = {"accept": "application/json"}
 
-    async with httpx.AsyncClient() as client:
-        r = await client.get(url, params=params.model_dump(), headers=headers)
-        r.raise_for_status()
-        return lm.LocationDetails(**r.json())
+    try:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url, params=params.model_dump(), headers=headers)
+            r.raise_for_status()
+            return lm.LocationDetails(**r.json())
+    except Exception as e:
+        print(e)
+        return
 
 
 async def get_location_all_details(query_params: lm.DetailsRequest):
-    location_details = await fetch_tripadvisor_location_details(query_params)
+    try:
+        location_details = await fetch_tripadvisor_location_details(query_params)
+    except Exception as e:
+        print(e)
+        return
 
     try:
         # if location_details.category.name == "geographic":
@@ -58,10 +69,10 @@ async def get_location_all_details(query_params: lm.DetailsRequest):
         elif location_details.subcategory[0].name == "country":
             safety_level = await database.get_country_advisories(location_details.name)
             safety_level = CountryAdvisories(**safety_level.model_dump())
-    except:
-        pass
 
-    location_details.safety_level = safety_level
+        location_details.safety_level = safety_level
+    except Exception as e:
+        print(e)
 
     photos = await fetch_tripadvisor_location_photos(location_details.location_id)
     location_details.photos = photos.photos
@@ -80,10 +91,13 @@ async def fetch_tripadvisor_location_photos(location_id: str):
     params = lm.TripadvisorRequest()
     headers = {"accept": "application/json"}
 
-    async with httpx.AsyncClient() as client:
-        r = await client.get(url, params=params.model_dump(), headers=headers)
-        r.raise_for_status()
-        return lm.Photos.from_response(r.json())
+    try:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url, params=params.model_dump(), headers=headers)
+            r.raise_for_status()
+            return lm.Photos.from_response(r.json())
+    except:
+        return None
 
 
 async def fetch_tripadvisor_nearby_search(search_params: lm.NearbySearchRequest):

@@ -57,11 +57,15 @@ async def generate_trip_plan(
         locations_to_save = TripDay(places=[])
 
         for place in trip_day.places:
-            details = await get_location_all_details(
-                DetailsRequest(location_id=place.location_id, currency=Currency(currency=query_params.currency))
-            )
-            locations.places.append(details)
             locations_to_save.places.append(place.location_id)
+
+            try:
+                details = await get_location_all_details(
+                    DetailsRequest(location_id=place.location_id, currency=Currency(currency=query_params.currency))
+                )
+                locations.places.append(details)
+            except:
+                pass
 
         trip_data.days.append(locations)
         trip_to_save.days.append(locations_to_save)
@@ -95,10 +99,13 @@ async def get_current_user_trip_plans(
                 locations = TripDayResponse(places=[])
 
                 for location_id in trip_day.places:
-                    details = await get_location_all_details(
-                        DetailsRequest(location_id=location_id, currency=currency)
-                    )
-                    locations.places.append(details)
+                    try:
+                        details = await get_location_all_details(
+                            DetailsRequest(location_id=location_id, currency=currency)
+                        )
+                        locations.places.append(details)
+                    except:
+                        pass
 
                 trip_data.days.append(locations)
 

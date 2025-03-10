@@ -91,10 +91,13 @@ async def get_current_user_favorites(
 
     if user.favorite_places:
         for location_id in user.favorite_places:
-            details = await get_location_all_details(
-                DetailsRequest(location_id=location_id, currency=currency)
-            )
-            locations.append(details)
+            try:
+                details = await get_location_all_details(
+                    DetailsRequest(location_id=location_id, currency=currency)
+                )
+                locations.append(details)
+            except:
+                pass
 
     return locations
 
