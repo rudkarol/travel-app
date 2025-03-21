@@ -26,7 +26,7 @@ async def delete_current_user_account(
 
         async with httpx.AsyncClient() as client:
             response = await client.delete(
-                f"https://{settings.auth0_domain}/api/v2/users/{auth_result.id}",
+                f"https://{settings.auth0_domain}/api/v2/users/email|{auth_result.id}",
                 headers={
                     "Authorization": f"Bearer {m2m_token}",
                     "Content-Type": "application/json"
