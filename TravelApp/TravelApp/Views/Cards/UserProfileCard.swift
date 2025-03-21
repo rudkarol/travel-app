@@ -44,11 +44,8 @@ struct UserProfileCard: View {
                 Section {
                     Button("Logout") {
                         Task {
-                            await authManager.logout()
-                            plansService.clearPlans()
-                            favoritesService.clearFavorites()
+                            await performLogout()
                         }
-                        dismiss()
                     }
                 }
             }
@@ -69,7 +66,6 @@ struct UserProfileCard: View {
             Group {
                 Button("Delete", role: .destructive) {
                     deleteAccountWithBiometrics()
-                    dismiss()
                 }
                 Button("Cancel", role: .cancel) { }
             }
@@ -91,11 +87,28 @@ extension UserProfileCard {
             }
             
             Task {
-                try await authManager.deleteUser()
-                await authManager.logout()
-                plansService.clearPlans()
-                favoritesService.clearFavorites()
+                do {
+                    try await authManager.deleteUser()
+                    await performLogout()
+                } catch {
+                    alertData = AlertData(
+                        title: "Account Deletion Failed",
+                        message: "We couldn't delete your account at this time. Please try again later.",
+                        buttonText: "OK"
+                    )
+                }
             }
+        }
+    }
+    
+    func performLogout() async {
+        plansService.clearPlans()
+        favoritesService.clearFavorites()
+        
+        await authManager.logout()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            dismiss()
         }
     }
 }

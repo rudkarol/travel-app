@@ -29,7 +29,7 @@ import Auth0
             
             await MainActor.run { self.isLoggedIn = true }
             
-            print("Login successfull")
+            print("Login successful")
         } catch {
             await MainActor.run { self.isLoggedIn = false }
             print("Failed login with: \(error)")
@@ -37,15 +37,18 @@ import Auth0
     }
     
     func logout() async {
+        _ = credentialsManager.clear()
+        
         do {
             try await Auth0.webAuth().clearSession()
-            _ = credentialsManager.clear()
-
-            await MainActor.run { self.isLoggedIn = false }
-            
-            print("Session cookie cleared")
+            print("Session cleared")
         } catch {
-            print("Failed logout with: \(error)")
+            print("Failed to clear session: \(error)")
+        }
+        
+        await MainActor.run {
+            self.isLoggedIn = false
+            self.user = nil
         }
     }
     
@@ -104,5 +107,9 @@ import Auth0
         let endpointUrl = "/user/me/delete"
         
         let _ = try await FastApiRequest.shared.deleteData(endpointUrl: endpointUrl)
+        
+        await MainActor.run {
+            self.user = nil
+        }
     }
 }
