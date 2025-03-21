@@ -11,7 +11,9 @@ import MapKit
 struct GeneratePlanView: View {
     
     @State private var selectedDays: Int = 1
-    @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
+    @State private var position: MapCameraPosition = .automatic
+    @State private var mapRegion: MKCoordinateRegion?
+    @State private var locationManager = LocationManager()
     @Binding var path: NavigationPath
     @State private var isLoading: Bool = false
     @State private var alertData: AlertData? = nil
@@ -48,10 +50,14 @@ struct GeneratePlanView: View {
                         .padding(.leading)
                     
                     ZStack {
-                        Map(position: $position)
-//                            .onMapCameraChange(frequency: .continuous)
-                            .frame(height: 380)
-                            .cornerRadius(12)
+                        Map(position: $position) {
+                            UserAnnotation()
+                        }
+                        .onMapCameraChange { context in
+                            mapRegion = context.region
+                        }
+                        .frame(height: 380)
+                        .cornerRadius(12)
                         
                         Image(systemName: "mappin")
                             .font(.system(size: 30))
@@ -95,6 +101,12 @@ struct GeneratePlanView: View {
                 self.alertData = nil
             }
         }
+        .task {
+            if let location = await locationManager.requestLocation() {
+                position = .camera(MapCamera(centerCoordinate: location.coordinate,
+                                            distance: 1000))
+            }
+        }
     }
     
     private func generatePlan() {
@@ -102,9 +114,12 @@ struct GeneratePlanView: View {
         
         Task {
             do {
+                let latitude = Float(mapRegion?.center.latitude ?? 52.232972)
+                let longitude = Float(mapRegion?.center.longitude ?? 21.000659)
+                
                 try await plansService.generateAIPlan(
-                    latitude: Float(position.region?.center.latitude ?? 52.232972),
-                    longitude: Float(position.region?.center.longitude ?? 21.000659),
+                    latitude: latitude,
+                    longitude: longitude,
                     days: selectedDays
                 )
                 
@@ -121,6 +136,37 @@ struct GeneratePlanView: View {
             
             isLoading = false
         }
+    }
+}
+
+class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    private let locationManager = CLLocationManager()
+    private var locationCompletion: ((CLLocation?) -> Void)?
+    
+    override init() {
+        super.init()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    }
+    
+    func requestLocation() async -> CLLocation? {
+        return await withCheckedContinuation { continuation in
+            locationCompletion = { location in
+                continuation.resume(returning: location)
+            }
+            
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.requestLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        locationCompletion?(locations.first)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location manager failed with error: \(error.localizedDescription)")
+        locationCompletion?(nil)
     }
 }
 
