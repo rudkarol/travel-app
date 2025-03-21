@@ -2,7 +2,7 @@
 //  UserProfileCard.swift
 //  TravelApp
 //
-//  Created by osx on 06/02/2025.
+//  Created by Karol Rudkowski on 06/02/2025.
 //
 
 import SwiftUI
@@ -14,6 +14,8 @@ struct UserProfileCard: View {
     @State var alertData: AlertData?
     
     @State private var authManager = AuthManager.shared
+    @Environment(PlansService.self) private var plansService
+    @Environment(FavoritesService.self) private var favoritesService
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -41,7 +43,11 @@ struct UserProfileCard: View {
                 
                 Section {
                     Button("Logout") {
-                        Task { await authManager.logout() }
+                        Task {
+                            await authManager.logout()
+                            plansService.clearPlans()
+                            favoritesService.clearFavorites()
+                        }
                         dismiss()
                     }
                 }
@@ -80,13 +86,15 @@ extension UserProfileCard {
     func deleteAccountWithBiometrics() {
         authenticateWithBiometrics { isAuthenticated in
             guard isAuthenticated else {
-//                TODO alert with button to open email app
                 UIApplication.shared.openEmailApp()
                 return
             }
             
             Task {
                 try await authManager.deleteUser()
+                await authManager.logout()
+                plansService.clearPlans()
+                favoritesService.clearFavorites()
             }
         }
     }

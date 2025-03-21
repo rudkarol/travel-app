@@ -56,4 +56,8 @@ class FavoritesService {
         
         try await FastApiRequest.shared.putData(endpointUrl: endpointUrl, body: ids)
     }
+    
+    func clearFavorites() {
+        favorites.removeAll()
+    }
 }

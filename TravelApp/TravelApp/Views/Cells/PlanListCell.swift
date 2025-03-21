@@ -23,8 +23,6 @@ struct PlanListCell: View {
                     .cornerRadius(12)
             } placeholder: {
                 ImagePlaceholder()
-                    .frame(height: 200)
-                    .cornerRadius(12)
             }
 
             Text(plan.name)

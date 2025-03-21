@@ -104,7 +104,5 @@ import Auth0
         let endpointUrl = "/user/me/delete"
         
         let _ = try await FastApiRequest.shared.deleteData(endpointUrl: endpointUrl)
-        
-        await logout()
     }
 }

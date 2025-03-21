@@ -104,4 +104,8 @@ class PlansService {
         
         self.plans.append(planResponse)
     }
+    
+    func clearPlans() {
+        self.plans.removeAll()
+    }
 }
