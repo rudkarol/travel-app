@@ -13,51 +13,52 @@ struct SearchView: View {
     
     
     var body: some View {
-           NavigationStack() {
-               VStack {
-                   searchField
-                   categoryPicker
-                   
-                   if viewModel.isLoading {
-                       LoadingView()
-                   } else if viewModel.searchResult.isEmpty {
-                       EmptyState(
-                           systemName: "magnifyingglass",
-                           message: "No search results"
-                       )
-                   } else {
-                       resultsList
-                   }
-               }
-               .navigationTitle("Search")
-           }
-       }
-       
-       private var searchField: some View {
-           HStack {
-               Image(systemName: "magnifyingglass")
-                   .foregroundColor(.gray)
-               
-               TextField("Search \(viewModel.selectedCategory?.displayName ?? "")...", text: $viewModel.searchText)
-                   .textFieldStyle(RoundedBorderTextFieldStyle())
-                   .submitLabel(.search)
-                   .onSubmit {
-                       Task {
-                           await viewModel.search()
-                       }
-                   }
-                   
-               if !viewModel.searchText.isEmpty {
-                   Button(action: {
-                       viewModel.searchText = ""
-                   }) {
-                       Image(systemName: "xmark.circle.fill")
-                           .foregroundColor(.gray)
-                   }
-               }
-           }
-           .padding(.horizontal)
-       }
+        NavigationStack() {
+            VStack {
+                searchField
+                categoryPicker
+                
+                if viewModel.isLoading {
+                    LoadingView()
+                } else if viewModel.searchResult.isEmpty {
+                    EmptyState(
+                        systemName: "magnifyingglass",
+                        message: "No search results"
+                    )
+                } else {
+                    resultsList
+                }
+            }
+            .navigationTitle("Search")
+        }
+    }
+    
+    private var searchField: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.secondary)
+            
+            TextField("Search \(viewModel.selectedCategory?.displayName ?? "")...", text: $viewModel.searchText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .submitLabel(.search)
+                .onSubmit {
+                    Task {
+                        await viewModel.search()
+                    }
+                }
+            
+            if !viewModel.searchText.isEmpty {
+                Button(action: {
+                    viewModel.searchText = ""
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }) {
+                    Text("Cancel")
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
     
     private var categoryPicker: some View {
         Picker("Category", selection: $viewModel.selectedCategory) {
