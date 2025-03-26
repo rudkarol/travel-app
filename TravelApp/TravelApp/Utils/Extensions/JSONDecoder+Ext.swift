@@ -2,7 +2,7 @@
 //  JSONDecoder+Ext.swift
 //  TravelApp
 //
-//  Created by osx on 26/01/2025.
+//  Created by Karol Rudkowski on 26/01/2025.
 //
 
 import Foundation

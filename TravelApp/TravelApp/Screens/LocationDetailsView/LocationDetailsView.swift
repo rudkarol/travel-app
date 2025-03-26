@@ -70,12 +70,12 @@ struct LocationDetailsView: View {
                             InfoLinkCell(
                                 systemName: "airplane.departure",
                                 name: "Flights",
-                                url: "https://google.com"
+                                url: "https://www.google.com/travel/flights?q=Flights%20to%20\(location.addressObj.country ?? "")"
                             )
                             InfoLinkCell(
                                 systemName: "building",
                                 name: "Hotels",
-                                url: "https://google.com"
+                                url: "https://www.booking.com/searchresults.en-gb.html?ss=\(location.addressObj.country ?? "")&group_adults=2&no_rooms=1"
                             )
                         }
                     }

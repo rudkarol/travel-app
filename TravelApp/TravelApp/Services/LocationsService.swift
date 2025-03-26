@@ -9,26 +9,10 @@ import Foundation
 
 final class LocationsService {
 
-    func getLocationDetails(locationId: String) async throws -> Location {
-        let locale = NSLocale.current
-        let currencyCode = locale.currency?.identifier
-        let endpointUrl = "/location/?location_id=\(locationId)&currency=\(currencyCode ?? "usd")"
-        
-        let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
-        
-        do {
-            let decoder = JSONDecoder.withFastApiDateDecodingStrategy()
-            return try decoder.decode(Location.self, from: data)
-        } catch {
-            print("decoder error")
-            throw AppError.invalidData
-        }
-    }
-    
     func getRecommendedLocations() async throws -> [Location] {
         let locale = NSLocale.current
         let currencyCode = locale.currency?.identifier
-        let endpointUrl = "/home/?currency=\(currencyCode ?? "usd")"
+        let endpointUrl = "/home?currency=\(currencyCode ?? "usd")"
         
         let data = try await FastApiRequest.shared.getData(endpointUrl: endpointUrl)
         
@@ -42,7 +26,7 @@ final class LocationsService {
     }
     
     func searchLocations(query: String, category: SearchCategory?) async throws -> [Location] {
-        var endpointUrl = "/locations/search/?searchQuery=\(query)"
+        var endpointUrl = "/locations/search?searchQuery=\(query)"
         if category != nil {
             endpointUrl += "&category=\(category!.rawValue)"
         }

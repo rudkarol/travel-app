@@ -11,7 +11,7 @@ class FastApiRequest {
     static let shared = FastApiRequest()
     private init() {}
     
-    private let baseUrl = "http://192.168.1.14:8000"
+    private let baseUrl = "http://127.0.0.1:8000"
     private var accessToken: String = ""
     
     

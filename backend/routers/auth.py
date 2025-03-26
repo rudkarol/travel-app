@@ -7,9 +7,11 @@ from dependencies import get_settings
 router = APIRouter()
 settings = get_settings()
 
-# Test Only
+
 @router.get("/auth/login")
 def login():
+    """Endpoint do logowania - użycie tylko w dokumentacji"""
+
     return RedirectResponse(
         "https://dev-i0adeksdsq2nka6l.eu.auth0.com/authorize"
         "?response_type=code"
@@ -20,9 +22,10 @@ def login():
     )
 
 
-# Test Only
 @router.get("/auth/token")
 async def get_access_token(code: str):
+    """Endpoint do pobrania accessToken po zalogowaniu - użycie tylko w dokumentacji"""
+
     payload = {
         "grant_type": "authorization_code",
         "client_id": "qnXTziaZimSsP4kmSwfrEC1LXMR0bIxS",

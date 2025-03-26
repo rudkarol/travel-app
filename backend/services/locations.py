@@ -1,7 +1,6 @@
 import httpx
 from datetime import datetime
 from meteostat import Monthly, Point
-import pandas as pd
 
 import models.locations as lm
 from dependencies import get_database

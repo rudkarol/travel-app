@@ -51,7 +51,7 @@ struct PlansView: View {
     // MARK: - Views
     private var contentView: some View {
         ZStack(alignment: .bottomTrailing) {
-            VStack(spacing: 0) {
+            VStack {
                 generatePlanButton
                 
                 if plansService.plans.isEmpty {

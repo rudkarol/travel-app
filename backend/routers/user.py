@@ -19,7 +19,7 @@ verify_user = get_token_verification()
 async def delete_current_user_account(
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Deletes current user"""
+    """Usuwa konto aktualnego użytkownika"""
 
     try:
         m2m_token = await get_m2m_auth0_token()
@@ -49,7 +49,7 @@ async def update_current_user_email(
     new_email: EmailStr,
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Updates current user email and marks it as verified"""
+    """Aktualizuje adres email konta aktualnego użytkownika i oznacza jako zweryfikowany"""
 
     try:
         m2m_token = await get_m2m_auth0_token()
@@ -83,7 +83,7 @@ async def get_current_user_favorites(
     currency: Annotated[Currency, Query()],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Returns current user favorite places list"""
+    """Zwraca listę ulubionych miejsc aktualnego użytkownika"""
 
     user = await database.get_user(auth_result.id)
     locations = []
@@ -107,7 +107,7 @@ async def update_current_user_favorites(
     data: List[str],
     auth_result: Annotated[TokenData, Security(verify_user.verify)]
 ):
-    """Updates current user favorite places list"""
+    """Aktualizuje listę ulubionych miejsc aktualnego użytkownika"""
 
     await database.update_user_favorites(user_id=auth_result.id, favorites_list=data)
     return {"message": "User's favorites list successfully updated"}

@@ -2,7 +2,7 @@
 //  AddLocationToPlanDaysCard.swift
 //  TravelApp
 //
-//  Created by osx on 26/01/2025.
+//  Created by Karol Rudkowski on 26/01/2025.
 //
 
 import SwiftUI
@@ -36,7 +36,6 @@ struct AddLocationToPlanDaysCard: View {
                     }
 
                     dismiss()
-//                    TODO dismiss all sheets (może dodać func dismissSheet { dismiss() } do path items)
                 }
                 .buttonStyle(.plain)
             }

@@ -2,7 +2,7 @@
 //  ChangeEmailCard.swift
 //  TravelApp
 //
-//  Created by osx on 06/02/2025.
+//  Created by Karol Rudkowski on 06/02/2025.
 //
 
 import SwiftUI
@@ -43,7 +43,6 @@ extension ChangeEmailCard {
     func changeEmailWithBiometrics(newEmail: String) {
         authenticateWithBiometrics { isAuthenticated in
             guard isAuthenticated else {
-//                TODO alert with button to open email app
                 UIApplication.shared.openEmailApp()
                 return
             }

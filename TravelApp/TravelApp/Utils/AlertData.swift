@@ -2,7 +2,7 @@
 //  AlertItem.swift
 //  TravelApp
 //
-//  Created by osx on 21/01/2025.
+//  Created by Karol Rudkowski on 21/01/2025.
 //
 
 import SwiftUI

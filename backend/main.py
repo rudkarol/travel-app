@@ -33,6 +33,5 @@ from dependencies import get_settings
 @app.get("/info")
 async def info(settings: Annotated[Settings, Depends(get_settings)]):
     return {
-        "app_name": settings.app_name,
-        "admin_email": settings.admin_email
+        "app_name": settings.app_name
     }

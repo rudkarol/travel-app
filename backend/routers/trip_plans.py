@@ -113,6 +113,7 @@ async def get_current_user_trip_plans(
 
     return trips
 
+
 @router.put("/trip/create")
 async def create_new_trip_plan(
     trip_plan: Trip,
@@ -123,6 +124,7 @@ async def create_new_trip_plan(
     await  database.create_user_trip(auth_result.id, trip_plan)
     return {"message": "Trip plan created successfully"}
 
+
 @router.patch("/trip/update")
 async def update_trip_plan(
     trip_plan: Trip,
@@ -132,6 +134,7 @@ async def update_trip_plan(
 
     await database.update_trip(auth_result.id, trip_plan)
     return {"message": "Trip plan updated successfully"}
+
 
 @router.delete("/trip/delete")
 async def delete_current_user_trip_plan(

@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  TravelApp
 //
-//  Created by osx on 20/01/2025.
+//  Created by Karol Rudkowski on 20/01/2025.
 //
 
 import SwiftUI
@@ -28,7 +28,7 @@ struct ContentView: View {
                 do {
                     try await favoritesService.getUserFavorites()
                 } catch {
-//                    TODO
+                    print("Error: \(error).")
                 }
             }
         }
